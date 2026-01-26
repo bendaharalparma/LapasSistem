@@ -11,72 +11,99 @@
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
     <style>
         body { font-family: 'Poppins', sans-serif; background: #eee; padding: 20px; }
-        .container { max-width: 900px; margin: 0 auto; background: white; padding: 30px; border-radius: 10px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
-        h2 { border-bottom: 2px solid #8B0000; color: #8B0000; padding-bottom: 10px; }
+        .container { max-width: 1000px; margin: 0 auto; background: white; padding: 30px; border-radius: 10px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
         
-        .tab-btn { padding: 10px 20px; background: #ccc; border: none; cursor: pointer; font-weight: bold; }
+        .tab-btn { padding: 12px 20px; background: #ddd; border: none; cursor: pointer; font-weight: bold; margin-right: 5px; border-radius: 5px 5px 0 0; }
         .tab-btn.active { background: #8B0000; color: white; }
         
-        label { display: block; margin-top: 15px; font-weight: bold; font-size: 14px; }
-        input, textarea { width: 100%; padding: 10px; margin-top: 5px; border: 1px solid #ddd; border-radius: 5px; box-sizing: border-box; }
-        button.save { background: #28a745; color: white; border: none; padding: 15px; width: 100%; margin-top: 20px; font-size: 16px; cursor: pointer; border-radius: 5px; }
+        h3 { border-bottom: 2px solid #8B0000; padding-bottom: 5px; color: #8B0000; margin-top: 30px; }
+        label { display: block; margin-top: 15px; font-weight: bold; font-size: 13px; color: #555; }
+        input, textarea { width: 100%; padding: 10px; margin-top: 5px; border: 1px solid #ccc; border-radius: 5px; box-sizing: border-box; }
         
-        table { width: 100%; border-collapse: collapse; margin-top: 20px; font-size: 13px; }
-        th, td { border: 1px solid #ddd; padding: 8px; text-align: left; }
+        button.save { background: #28a745; color: white; border: none; padding: 15px; width: 100%; margin-top: 20px; font-size: 16px; cursor: pointer; border-radius: 5px; font-weight: bold; }
+        button.del { background: #dc3545; color: white; border: none; padding: 5px 10px; border-radius: 4px; cursor: pointer; font-size: 12px; }
+        
+        table { width: 100%; border-collapse: collapse; margin-top: 10px; font-size: 13px; }
+        th, td { border: 1px solid #ddd; padding: 10px; text-align: left; }
         th { background: #8B0000; color: white; }
-        
-        #login-box { max-width: 400px; margin: 100px auto; text-align: center; background: white; padding: 40px; border-radius: 10px; }
+        tr:nth-child(even) { background: #f9f9f9; }
+
+        #login-box { max-width: 400px; margin: 80px auto; text-align: center; background: white; padding: 40px; border-radius: 10px; }
     </style>
 </head>
 <body>
 
 <div id="login-box">
-    <h2>Login Admin</h2>
+    <h2 style="color:#8B0000">Login Admin</h2>
     <input id="email" type="email" placeholder="Email Admin">
     <input id="pass" type="password" placeholder="Password">
-    <button class="save" onclick="login()">Masuk</button>
+    <button class="save" onclick="login()" style="background:#8B0000">Masuk</button>
 </div>
 
 <div id="panel-box" class="container" style="display:none;">
-    <div style="display:flex; justify-content:space-between;">
-        <h2>Panel Kontrol</h2>
-        <button onclick="logout()" style="background:#333; color:white; border:none; padding:5px 15px;">Logout</button>
+    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px;">
+        <h2 style="margin:0; color:#8B0000;">Panel Kontrol Aplikasi</h2>
+        <button onclick="logout()" style="background:#333; color:white; border:none; padding:8px 20px; border-radius:5px; cursor:pointer;">Logout</button>
     </div>
 
     <div>
-        <button class="tab-btn active" onclick="showTab('settings')" id="btn-set">⚙️ Edit Tampilan & Menu</button>
-        <button class="tab-btn" onclick="showTab('data')" id="btn-data">📥 Data Pendaftar</button>
+        <button class="tab-btn active" onclick="showTab('settings')" id="t1">⚙️ Pengaturan</button>
+        <button class="tab-btn" onclick="showTab('data_fisik')" id="t2">📥 Data Tatap Muka</button>
+        <button class="tab-btn" onclick="showTab('data_online')" id="t3">💻 Data Online</button>
     </div>
 
     <div id="tab-settings">
-        <h3>1. Header & Tampilan Utama</h3>
+        <h3>1. Tampilan Utama</h3>
         <label>Nama Aplikasi:</label> <input id="app_name">
         <label>Link Logo (URL):</label> <input id="logo_url">
-        <label>Pengumuman (Running Text):</label> <textarea id="announcement"></textarea>
+        <label>Pengumuman (Running/Box):</label> <textarea id="announcement"></textarea>
         <label>Ucapan Selamat Datang:</label> <textarea id="welcome_msg"></textarea>
 
-        <h3>2. Isi Menu</h3>
-        <label>Jadwal Kunjungan:</label> <textarea id="txt_jadwal" rows="3"></textarea>
-        <label>Syarat & Ketentuan:</label> <textarea id="txt_syarat" rows="3"></textarea>
-        <label>Nomor WA Video Call (628xxx):</label> <input id="wa_vc">
-        <label>Nomor WA Toko Lapas (628xxx):</label> <input id="wa_toko">
-        <label>Kontak & Pengaduan:</label> <textarea id="txt_kontak" rows="3"></textarea>
+        <h3>2. Jadwal Kunjungan (Tampil di Kartu)</h3>
+        <label>Senin - Kamis (Pagi):</label> <input id="sch_mon_am">
+        <label>Senin - Kamis (Siang):</label> <input id="sch_mon_pm">
+        <label>Jumat (Pagi):</label> <input id="sch_fri">
+        <label>Sabtu (Info Khusus):</label> <input id="sch_sat">
+        <label>Minggu (Info Tutup):</label> <input id="sch_sun">
+
+        <h3>3. Syarat & Ketentuan (Sub Menu)</h3>
+        <label>Teks: Dokumen & Pakaian:</label> <textarea id="txt_doc" rows="4"></textarea>
+        <label>Teks: Barang & Makanan:</label> <textarea id="txt_item" rows="4"></textarea>
+
+        <h3>4. Toko Lapas</h3>
+        <label>Pengumuman Toko:</label> <textarea id="toko_announce"></textarea>
+        <label>Link Aplikasi Toko:</label> <input id="toko_link">
+
+        <h3>5. Kontak & Sosial Media</h3>
+        <label>Teks Pengaduan:</label> <textarea id="txt_contact"></textarea>
+        <label>Link Instagram:</label> <input id="soc_ig">
+        <label>Link Facebook:</label> <input id="soc_fb">
+        <label>Link Twitter/X:</label> <input id="soc_tw">
+        <label>Link Youtube:</label> <input id="soc_yt">
 
         <button class="save" onclick="saveData()">💾 SIMPAN SEMUA PERUBAHAN</button>
     </div>
 
-    <div id="tab-data" style="display:none;">
-        <h3>Daftar Pendaftaran Kunjungan</h3>
+    <div id="tab-data_fisik" style="display:none;">
+        <h3>Daftar Kunjungan Tatap Muka</h3>
         <table>
-            <thead><tr><th>Tanggal</th><th>Nama</th><th>NIK</th><th>WBP</th><th>Aksi</th></tr></thead>
-            <tbody id="table-body"></tbody>
+            <thead><tr><th>Tgl</th><th>Nama</th><th>NIK</th><th>No. HP</th><th>WBP (Bin)</th><th>Aksi</th></tr></thead>
+            <tbody id="tb_fisik"></tbody>
+        </table>
+    </div>
+
+    <div id="tab-data_online" style="display:none;">
+        <h3>Daftar Kunjungan Online (VC)</h3>
+        <table>
+            <thead><tr><th>Tgl</th><th>Nama</th><th>NIK</th><th>No. HP</th><th>WBP (Bin)</th><th>Aksi</th></tr></thead>
+            <tbody id="tb_online"></tbody>
         </table>
     </div>
 </div>
 
 <script>
-    // --- KONFIGURASI FIREBASE (PASTE SAMA PERSIS DI SINI) ---
-    const firebaseConfig = {
+    // --- KONFIGURASI FIREBASE ---
+    cconst firebaseConfig = {
   apiKey: "AIzaSyDvpFZtiG_fXLOf8okjafNm7gqbJZr2pSY",
   authDomain: "lapassistem.firebaseapp.com",
   databaseURL: "https://lapassistem-default-rtdb.asia-southeast1.firebasedatabase.app",
@@ -91,78 +118,73 @@
     const auth = firebase.auth();
     const db = firebase.database();
 
-    // Cek Login
-    auth.onAuthStateChanged(user => {
-        if(user) {
-            document.getElementById('login-box').style.display = 'none';
-            document.getElementById('panel-box').style.display = 'block';
-            loadSettings();
-            loadRegistrations();
+    // LOGIN CHECK
+    auth.onAuthStateChanged(u => {
+        if(u) {
+            document.getElementById('login-box').style.display='none';
+            document.getElementById('panel-box').style.display='block';
+            loadSettings(); loadData('registrations', 'tb_fisik'); loadData('online_registrations', 'tb_online');
         } else {
-            document.getElementById('login-box').style.display = 'block';
-            document.getElementById('panel-box').style.display = 'none';
+            document.getElementById('login-box').style.display='block';
+            document.getElementById('panel-box').style.display='none';
         }
     });
 
     function login() {
-        const e = document.getElementById('email').value;
-        const p = document.getElementById('pass').value;
-        auth.signInWithEmailAndPassword(e, p).catch(err => alert(err.message));
+        auth.signInWithEmailAndPassword(document.getElementById('email').value, document.getElementById('pass').value)
+        .catch(e => alert(e.message));
     }
     function logout() { auth.signOut(); }
 
     function showTab(t) {
-        document.getElementById('tab-settings').style.display = (t==='settings') ? 'block' : 'none';
-        document.getElementById('tab-data').style.display = (t==='data') ? 'block' : 'none';
-        document.getElementById('btn-set').className = (t==='settings') ? 'tab-btn active' : 'tab-btn';
-        document.getElementById('btn-data').className = (t==='data') ? 'tab-btn active' : 'tab-btn';
+        ['settings','data_fisik','data_online'].forEach(x => document.getElementById('tab-'+x).style.display = 'none');
+        document.getElementById('tab-'+t).style.display = 'block';
+        
+        ['t1','t2','t3'].forEach(x => document.getElementById(x).className = 'tab-btn');
+        if(t=='settings') document.getElementById('t1').className += ' active';
+        if(t=='data_fisik') document.getElementById('t2').className += ' active';
+        if(t=='data_online') document.getElementById('t3').className += ' active';
     }
 
-    // LOAD & SAVE SETTINGS
+    // SETTINGS
+    const fields = ['app_name','logo_url','announcement','welcome_msg',
+                    'sch_mon_am','sch_mon_pm','sch_fri','sch_sat','sch_sun',
+                    'txt_doc','txt_item','toko_announce','toko_link','txt_contact',
+                    'soc_ig','soc_fb','soc_tw','soc_yt'];
+
     function loadSettings() {
         db.ref('app_config').once('value', s => {
             if(s.exists()) {
                 const d = s.val();
-                ['app_name','logo_url','announcement','welcome_msg','txt_jadwal','txt_syarat','wa_vc','wa_toko','txt_kontak'].forEach(k => {
-                    document.getElementById(k).value = d[k] || "";
-                });
+                fields.forEach(f => document.getElementById(f).value = d[f] || "");
             }
         });
     }
 
     function saveData() {
         const data = {};
-        ['app_name','logo_url','announcement','welcome_msg','txt_jadwal','txt_syarat','wa_vc','wa_toko','txt_kontak'].forEach(k => {
-            data[k] = document.getElementById(k).value;
-        });
+        fields.forEach(f => data[f] = document.getElementById(f).value);
         db.ref('app_config').set(data).then(() => alert("Tersimpan!"));
     }
 
-    // DATA REGISTRATIONS
-    function loadRegistrations() {
-        db.ref('registrations').on('value', s => {
-            const body = document.getElementById('table-body');
-            body.innerHTML = "";
+    // DATA TABLES
+    function loadData(path, tableId) {
+        db.ref(path).on('value', s => {
+            const tb = document.getElementById(tableId);
+            tb.innerHTML = "";
             if(s.exists()) {
-                Object.entries(s.val()).forEach(([key, val]) => {
-                    body.innerHTML += `
-                        <tr>
-                            <td>${val.tgl}</td>
-                            <td>${val.nama}</td>
-                            <td>${val.nik}</td>
-                            <td>${val.wbp}</td>
-                            <td><button onclick="delReg('${key}')" style="background:red; color:white; border:none; cursor:pointer;">Hapus</button></td>
-                        </tr>
-                    `;
+                Object.entries(s.val()).reverse().forEach(([k, v]) => {
+                    tb.innerHTML += `<tr>
+                        <td>${v.tgl}</td><td>${v.nama}</td><td>${v.nik}</td><td>${v.telp}</td><td>${v.wbp}</td>
+                        <td><button class="del" onclick="del('${path}','${k}')">Hapus</button></td>
+                    </tr>`;
                 });
-            } else {
-                body.innerHTML = "<tr><td colspan='5'>Belum ada data.</td></tr>";
-            }
+            } else tb.innerHTML = "<tr><td colspan='6'>Belum ada data.</td></tr>";
         });
     }
 
-    function delReg(k) {
-        if(confirm("Hapus data ini?")) db.ref('registrations/'+k).remove();
+    function del(path, key) {
+        if(confirm("Hapus data ini?")) db.ref(path+'/'+key).remove();
     }
 </script>
 </body>
