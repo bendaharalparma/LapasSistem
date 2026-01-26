@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sistem Pelayanan Lapas</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
+
+    <style>
+        :root { --primary: #8B0000; --bg: #eef2f5; --chat-bg: #fff; }
+        body { font-family: 'Poppins', sans-serif; background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%); margin: 0; display: flex; justify-content: center; min-height: 100vh; }
+        
+        .app-container { width: 100%; max-width: 420px; background: var(--chat-bg); min-height: 100vh; box-shadow: 0 0 20px rgba(0,0,0,0.1); display: flex; flex-direction: column; position: relative; }
+        
+        /* 1. HEADER (GAMBAR & NAMA) */
+        .header { background: linear-gradient(to right, #8B0000, #a00000); padding: 20px; text-align: center; color: white; border-bottom-left-radius: 20px; border-bottom-right-radius: 20px; }
+        .logo-area { width: 70px; height: 70px; background: white; border-radius: 50%; margin: 0 auto 10px; padding: 3px; overflow: hidden; }
+        .logo-area img { width: 100%; height: 100%; object-fit: contain; border-radius: 50%; }
+        .app-name { font-weight: 600; font-size: 18px; margin: 0; }
+        .app-sub { font-size: 12px; opacity: 0.9; }
+
+        /* 2. PENGUMUMAN (DI BAWAH HEADER) */
+        .announcement-box { background: #fff3cd; color: #856404; padding: 12px 20px; font-size: 13px; text-align: center; border-bottom: 1px solid #ffeeba; display: none; }
+        
+        /* AREA CHAT */
+        #chat-box { flex: 1; padding: 20px; overflow-y: auto; display: flex; flex-direction: column; gap: 10px; background-color: #f8f9fa; }
+        
+        .msg { max-width: 85%; padding: 12px 16px; border-radius: 15px; font-size: 14px; line-height: 1.5; animation: fadeUp 0.3s; }
+        .bot { background: white; align-self: flex-start; border: 1px solid #eee; border-top-left-radius: 2px; }
+        .user { background: #ffe6e6; align-self: flex-end; border-top-right-radius: 2px; }
+        
+        /* TOMBOL MENU */
+        .menu-grid { display: grid; grid-template-columns: 1fr; gap: 8px; margin-top: 5px; }
+        .btn { background: white; border: 1px solid var(--primary); color: var(--primary); padding: 12px; border-radius: 10px; font-size: 14px; cursor: pointer; text-align: left; display: flex; justify-content: space-between; align-items: center; transition: 0.2s; }
+        .btn:hover { background: var(--primary); color: white; }
+        .btn:after { content: '›'; font-weight: bold; font-size: 18px; }
+
+        /* FORMULIR */
+        .form-box { display: flex; flex-direction: column; gap: 10px; margin-top: 10px; }
+        .inp { padding: 10px; border: 1px solid #ccc; border-radius: 5px; font-family: inherit; }
+        .submit-btn { background: #28a745; color: white; border: none; padding: 12px; border-radius: 5px; font-weight: bold; cursor: pointer; }
+
+        @keyframes fadeUp { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+    </style>
+</head>
+<body>
+
+<div class="app-container">
+    <div class="header">
+        <div class="logo-area"><img id="logo_img" src="" alt="Logo"></div>
+        <h1 class="app-name" id="app_title">Loading...</h1>
+        <div class="app-sub">Pelayanan Publik Terpadu</div>
+    </div>
+
+    <div id="announcement" class="announcement-box"></div>
+
+    <div id="chat-box"></div>
+</div>
+
+<script>
+    // --- KONFIGURASI FIREBASE (PASTE DI SINI) ---
+    const firebaseConfig = {
+  apiKey: "AIzaSyDvpFZtiG_fXLOf8okjafNm7gqbJZr2pSY",
+  authDomain: "lapassistem.firebaseapp.com",
+  databaseURL: "https://lapassistem-default-rtdb.asia-southeast1.firebasedatabase.app",
+  projectId: "lapassistem",
+  storageBucket: "lapassistem.firebasestorage.app",
+  messagingSenderId: "951059663532",
+  appId: "1:951059663532:web:716bc3010eecc741a4ed09",
+  measurementId: "G-25HSNZ35ZH"
+};
+
+    firebase.initializeApp(firebaseConfig);
+    const db = firebase.database();
+    let config = {};
+
+    // 1. Ambil Data Konfigurasi (Realtime)
+    db.ref('app_config').on('value', (snap) => {
+        if(snap.exists()) {
+            config = snap.val();
+            updateUI();
+        } else {
+            // Data Default jika database kosong
+            config = {
+                app_name: "Lapas Arga Makmur",
+                logo_url: "https://upload.wikimedia.org/wikipedia/commons/e/e2/Logo_Pengayoman_Kementerian_Hukum_dan_HAM_RI.png",
+                announcement: "Selamat Datang di Layanan Digital.",
+                welcome_msg: "Halo! Silakan pilih layanan di bawah ini:",
+                
+                // Default Text
+                txt_jadwal: "Senin-Kamis: 09.00-14.00",
+                txt_syarat: "Bawa KTP Asli.",
+                wa_vc: "62800000000",
+                wa_toko: "62800000000",
+                txt_kontak: "Hubungi Admin."
+            };
+            updateUI();
+        }
+    });
+
+    function updateUI() {
+        document.getElementById('app_title').innerText = config.app_name;
+        document.getElementById('logo_img').src = config.logo_url;
+        
+        const ann = document.getElementById('announcement');
+        if(config.announcement && config.announcement.trim() !== "") {
+            ann.style.display = 'block';
+            ann.innerHTML = "📢 <b>INFO:</b> " + config.announcement;
+        } else {
+            ann.style.display = 'none';
+        }
+        
+        // Reset Chat dan Mulai Ulang
+        document.getElementById('chat-box').innerHTML = '';
+        startChat();
+    }
+
+    // 2. Logika Menu & Respon
+    function getMenu() {
+        return {
+            'start': {
+                text: config.welcome_msg,
+                options: [
+                    { text: "📅 Jadwal Kunjungan", val: "jadwal" },
+                    { text: "📋 Syarat & Ketentuan", val: "syarat" },
+                    { text: "📝 Pendaftaran Kunjungan", val: "daftar_offline" }, // Form
+                    { text: "💻 Pendaftaran Online (VC)", val: "daftar_online" }, // Link WA
+                    { text: "🛒 Toko Lapas", val: "toko" },
+                    { text: "📞 Kontak & Pengaduan", val: "kontak" }
+                ]
+            },
+            'jadwal': { text: "🕒 **Jadwal Kunjungan:**\n\n" + config.txt_jadwal, back: true },
+            'syarat': { text: "📋 **Syarat & Ketentuan:**\n\n" + config.txt_syarat, back: true },
+            'kontak': { text: "📞 **Kontak Pengaduan:**\n\n" + config.txt_kontak, back: true },
+            
+            'daftar_online': { 
+                text: "💻 **Video Call:**\nKlik tombol di bawah untuk mendaftar via WhatsApp.",
+                options: [{ text: "📞 Chat WA Admin", type: "link", url: `https://wa.me/${config.wa_vc}` }, { text: "⬅️ Kembali", val: "start" }]
+            },
+            'toko': { 
+                text: "🛒 **Koperasi Lapas:**\nPesan kebutuhan WBP melalui WhatsApp Koperasi.",
+                options: [{ text: "🛒 Chat WA Koperasi", type: "link", url: `https://wa.me/${config.wa_toko}` }, { text: "⬅️ Kembali", val: "start" }]
+            },
+            'daftar_offline': { isForm: true, text: "📝 **Formulir Kunjungan Tatap Muka**\nSilakan isi data diri Anda:" }
+        };
+    }
+
+    // 3. Render Chat
+    const chatBox = document.getElementById('chat-box');
+
+    function appendMsg(sender, text, type = 'text') {
+        const div = document.createElement('div');
+        div.className = `msg ${sender}`;
+        
+        if (type === 'form') {
+            div.innerHTML = text.replace(/\n/g, '<br>') + `
+                <div class="form-box">
+                    <input id="f_nama" class="inp" placeholder="Nama Pengunjung">
+                    <input id="f_nik" class="inp" type="number" placeholder="NIK (KTP)">
+                    <input id="f_wbp" class="inp" placeholder="Nama WBP Tujuan">
+                    <label style="font-size:12px">Tanggal Kunjungan:</label>
+                    <input id="f_tgl" class="inp" type="date">
+                    <button onclick="submitForm()" class="submit-btn">KIRIM DATA</button>
+                    <button onclick="updateUI()" style="background:#ddd; border:none; padding:8px; border-radius:5px; cursor:pointer">Batal</button>
+                </div>
+            `;
+        } else {
+            div.innerHTML = text.replace(/\n/g, '<br>').replace(/\*\*(.*?)\*\*/g, '<b>$1</b>');
+        }
+        chatBox.appendChild(div);
+        chatBox.scrollTop = chatBox.scrollHeight;
+    }
+
+    function showOptions(opts) {
+        const div = document.createElement('div');
+        div.className = 'menu-grid';
+        opts.forEach(o => {
+            const btn = document.createElement('button');
+            btn.className = 'btn';
+            btn.innerText = o.text;
+            btn.onclick = () => {
+                div.remove();
+                appendMsg('user', o.text);
+                if(o.type === 'link') window.open(o.url);
+                else setTimeout(() => respond(o.val), 500);
+            };
+            div.appendChild(btn);
+        });
+        chatBox.appendChild(div);
+        chatBox.scrollTop = chatBox.scrollHeight;
+    }
+
+    function respond(key) {
+        const menu = getMenu()[key];
+        if(!menu) return;
+
+        if(menu.isForm) {
+            appendMsg('bot', menu.text, 'form');
+        } else {
+            appendMsg('bot', menu.text);
+            if(menu.options) showOptions(menu.options);
+            if(menu.back) showOptions([{ text: "⬅️ Menu Utama", val: "start" }]);
+        }
+    }
+
+    function startChat() {
+        const m = getMenu()['start'];
+        appendMsg('bot', m.text);
+        showOptions(m.options);
+    }
+
+    // 4. Kirim Data Form
+    function submitForm() {
+        const nama = document.getElementById('f_nama').value;
+        const nik = document.getElementById('f_nik').value;
+        const wbp = document.getElementById('f_wbp').value;
+        const tgl = document.getElementById('f_tgl').value;
+
+        if(!nama || !nik || !wbp || !tgl) return alert("Lengkapi semua data!");
+
+        db.ref('registrations').push({
+            nama: nama, nik: nik, wbp: wbp, tgl: tgl,
+            timestamp: new Date().toString()
+        }).then(() => {
+            appendMsg('bot', "✅ **Pendaftaran Berhasil!**\nData telah disimpan. Silakan datang sesuai jadwal.");
+            showOptions([{ text: "⬅️ Menu Utama", val: "start" }]);
+        });
+    }
+</script>
+</body>
+</html>
