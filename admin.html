@@ -8,30 +8,29 @@
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
     
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.25/jspdf.plugin.autotable.min.js"></script>
+    
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
     <style>
         body { font-family: 'Poppins', sans-serif; background: #eee; padding: 20px; }
         .container { max-width: 1000px; margin: 0 auto; background: white; padding: 30px; border-radius: 10px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
-        
         .tab-btn { padding: 12px 20px; background: #ddd; border: none; cursor: pointer; font-weight: bold; margin-right: 5px; border-radius: 5px 5px 0 0; }
         .tab-btn.active { background: #8B0000; color: white; }
-        
         h3 { border-bottom: 2px solid #8B0000; padding-bottom: 5px; color: #8B0000; margin-top: 30px; }
         label { display: block; margin-top: 15px; font-weight: bold; font-size: 13px; color: #555; }
         input, textarea { width: 100%; padding: 10px; margin-top: 5px; border: 1px solid #ccc; border-radius: 5px; box-sizing: border-box; }
-        
         button.save { background: #28a745; color: white; border: none; padding: 15px; width: 100%; margin-top: 20px; font-size: 16px; cursor: pointer; border-radius: 5px; font-weight: bold; }
         button.del { background: #dc3545; color: white; border: none; padding: 5px 10px; border-radius: 4px; cursor: pointer; font-size: 12px; }
-        button.download { background: #007bff; color: white; border: none; padding: 8px 15px; border-radius: 5px; cursor: pointer; font-size: 13px; margin-left: 10px; }
-        button.download:hover { background: #0056b3; }
         
+        button.pdf-btn { background: #FF5722; color: white; border: none; padding: 8px 15px; border-radius: 5px; cursor: pointer; font-size: 13px; margin-left: 10px; }
+        button.clean-btn { background: #555; color: white; border: none; padding: 8px 15px; border-radius: 5px; cursor: pointer; font-size: 13px; float: right; }
+
         table { width: 100%; border-collapse: collapse; margin-top: 10px; font-size: 13px; }
         th, td { border: 1px solid #ddd; padding: 10px; text-align: left; }
         th { background: #8B0000; color: white; }
         tr:nth-child(even) { background: #f9f9f9; }
-
         #login-box { max-width: 400px; margin: 80px auto; text-align: center; background: white; padding: 40px; border-radius: 10px; }
-        .header-row { display: flex; justify-content: space-between; align-items: center; }
     </style>
 </head>
 <body>
@@ -45,8 +44,11 @@
 
 <div id="panel-box" class="container" style="display:none;">
     <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px;">
-        <h2 style="margin:0; color:#8B0000;">Panel Kontrol Aplikasi</h2>
-        <button onclick="logout()" style="background:#333; color:white; border:none; padding:8px 20px; border-radius:5px; cursor:pointer;">Logout</button>
+        <h2 style="margin:0; color:#8B0000;">Panel Kontrol</h2>
+        <div>
+            <button onclick="cleanData()" class="clean-btn">🧹 Bersihkan Data Lama</button>
+            <button onclick="logout()" style="background:#333; color:white; border:none; padding:8px 20px; border-radius:5px; cursor:pointer; margin-left:10px;">Logout</button>
+        </div>
     </div>
 
     <div>
@@ -59,52 +61,45 @@
         <h3>1. Tampilan Utama</h3>
         <label>Nama Aplikasi:</label> <input id="app_name">
         <label>Link Logo (URL):</label> <input id="logo_url">
-        <label>Pengumuman (Running/Box):</label> <textarea id="announcement"></textarea>
+        <label>Pengumuman:</label> <textarea id="announcement"></textarea>
         <label>Ucapan Selamat Datang:</label> <textarea id="welcome_msg"></textarea>
 
-        <h3>2. Jadwal Kunjungan (Tampil di Kartu)</h3>
+        <h3>2. Jadwal Kunjungan</h3>
         <label>Senin - Kamis (Pagi):</label> <input id="sch_mon_am">
         <label>Senin - Kamis (Siang):</label> <input id="sch_mon_pm">
         <label>Jumat (Pagi):</label> <input id="sch_fri">
         <label>Sabtu (Info Khusus):</label> <input id="sch_sat">
         <label>Minggu (Info Tutup):</label> <input id="sch_sun">
 
-        <h3>3. Syarat & Ketentuan (Sub Menu)</h3>
-        <label>Teks: Dokumen & Pakaian:</label> <textarea id="txt_doc" rows="4"></textarea>
-        <label>Teks: Barang & Makanan:</label> <textarea id="txt_item" rows="4"></textarea>
-
-        <h3>4. Toko Lapas</h3>
+        <h3>3. Konten Lain</h3>
+        <label>Teks Dokumen & Pakaian:</label> <textarea id="txt_doc"></textarea>
+        <label>Teks Barang & Makanan:</label> <textarea id="txt_item"></textarea>
         <label>Pengumuman Toko:</label> <textarea id="toko_announce"></textarea>
-        <label>Link Aplikasi Toko:</label> <input id="toko_link">
+        <label>Link Toko:</label> <input id="toko_link">
+        <label>Link Sosmed (IG/FB/TW/YT):</label> 
+        <input id="soc_ig" placeholder="Instagram"><input id="soc_fb" placeholder="Facebook"><input id="soc_tw" placeholder="Twitter"><input id="soc_yt" placeholder="Youtube">
 
-        <h3>5. Kontak & Sosial Media</h3>
-        <label>Teks Pengaduan:</label> <textarea id="txt_contact"></textarea>
-        <label>Link Instagram:</label> <input id="soc_ig">
-        <label>Link Facebook:</label> <input id="soc_fb">
-        <label>Link Twitter/X:</label> <input id="soc_tw">
-        <label>Link Youtube:</label> <input id="soc_yt">
-
-        <button class="save" onclick="saveData()">💾 SIMPAN SEMUA PERUBAHAN</button>
+        <button class="save" onclick="saveData()">💾 SIMPAN PERUBAHAN</button>
     </div>
 
     <div id="tab-data_fisik" style="display:none;">
-        <div class="header-row">
+        <div style="display:flex; justify-content:space-between; align-items:center;">
             <h3>Daftar Kunjungan Tatap Muka</h3>
-            <button class="download" onclick="downloadExcel('tb_fisik_full', 'Laporan_Kunjungan_Fisik')">📥 Download Excel</button>
+            <button class="pdf-btn" onclick="printPDF('tb_fisik', 'Laporan_Tatap_Muka')">📄 Cetak PDF</button>
         </div>
-        <table id="tb_fisik_full">
-            <thead><tr><th>Tgl</th><th>Nama</th><th>NIK</th><th>No. HP</th><th>WBP (Bin)</th><th>Aksi</th></tr></thead>
+        <table id="table_fisik">
+            <thead><tr><th>Tgl Kunjungan</th><th>Nama Pengunjung</th><th>NIK</th><th>No. HP</th><th>WBP Tujuan</th><th>Aksi</th></tr></thead>
             <tbody id="tb_fisik"></tbody>
         </table>
     </div>
 
     <div id="tab-data_online" style="display:none;">
-        <div class="header-row">
+        <div style="display:flex; justify-content:space-between; align-items:center;">
             <h3>Daftar Kunjungan Online (VC)</h3>
-            <button class="download" onclick="downloadExcel('tb_online_full', 'Laporan_Kunjungan_Online')">📥 Download Excel</button>
+            <button class="pdf-btn" onclick="printPDF('tb_online', 'Laporan_Online_VC')">📄 Cetak PDF</button>
         </div>
-        <table id="tb_online_full">
-            <thead><tr><th>Tgl</th><th>Nama</th><th>NIK</th><th>No. HP</th><th>WBP (Bin)</th><th>Aksi</th></tr></thead>
+        <table id="table_online">
+            <thead><tr><th>Tgl Kunjungan</th><th>Nama Pengunjung</th><th>NIK</th><th>No. HP</th><th>WBP Tujuan</th><th>Aksi</th></tr></thead>
             <tbody id="tb_online"></tbody>
         </table>
     </div>
@@ -112,7 +107,6 @@
 
 <script>
     // --- KONFIGURASI FIREBASE ---
-    // PASTE KODE FIREBASE CONFIG ANDA DI SINI (HAPUS KODE INI DAN GANTI DENGAN MILIK ANDA)
    const firebaseConfig = {
   apiKey: "AIzaSyDvpFZtiG_fXLOf8okjafNm7gqbJZr2pSY",
   authDomain: "lapassistem.firebaseapp.com",
@@ -128,7 +122,6 @@
     const auth = firebase.auth();
     const db = firebase.database();
 
-    // LOGIN CHECK
     auth.onAuthStateChanged(u => {
         if(u) {
             document.getElementById('login-box').style.display='none';
@@ -141,22 +134,19 @@
     });
 
     function login() {
-        auth.signInWithEmailAndPassword(document.getElementById('email').value, document.getElementById('pass').value)
-        .catch(e => alert(e.message));
+        auth.signInWithEmailAndPassword(document.getElementById('email').value, document.getElementById('pass').value).catch(e => alert(e.message));
     }
     function logout() { auth.signOut(); }
 
     function showTab(t) {
         ['settings','data_fisik','data_online'].forEach(x => document.getElementById('tab-'+x).style.display = 'none');
         document.getElementById('tab-'+t).style.display = 'block';
-        
         ['t1','t2','t3'].forEach(x => document.getElementById(x).className = 'tab-btn');
         if(t=='settings') document.getElementById('t1').className += ' active';
         if(t=='data_fisik') document.getElementById('t2').className += ' active';
         if(t=='data_online') document.getElementById('t3').className += ' active';
     }
 
-    // SETTINGS
     const fields = ['app_name','logo_url','announcement','welcome_msg',
                     'sch_mon_am','sch_mon_pm','sch_fri','sch_sat','sch_sun',
                     'txt_doc','txt_item','toko_announce','toko_link','txt_contact',
@@ -177,9 +167,8 @@
         db.ref('app_config').set(data).then(() => alert("Tersimpan!"));
     }
 
-    // DATA TABLES
     function loadData(path, tableId) {
-        db.ref(path).on('value', s => {
+        db.ref(path).limitToLast(100).on('value', s => { // Ambil 100 data terakhir agar ringan
             const tb = document.getElementById(tableId);
             tb.innerHTML = "";
             if(s.exists()) {
@@ -197,30 +186,42 @@
         if(confirm("Hapus data ini?")) db.ref(path+'/'+key).remove();
     }
 
-    // FUNGSI DOWNLOAD EXCEL
-    function downloadExcel(tableId, name) {
-        let table = document.getElementById(tableId);
-        let rows = table.querySelectorAll('tr');
-        let csv = [];
+    // --- FITUR CETAK PDF ---
+    function printPDF(tbodyId, filename) {
+        const { jsPDF } = window.jspdf;
+        const doc = new jsPDF();
         
-        for (let i = 0; i < rows.length; i++) {
-            let row = [], cols = rows[i].querySelectorAll("td, th");
-            // Lewati kolom terakhir (Tombol Hapus)
-            for (let j = 0; j < cols.length - 1; j++) { 
-                let data = cols[j].innerText.replace(/(\r\n|\n|\r)/gm, "").replace(/(\s\s)/gm, " ");
-                data = data.replace(/"/g, '""');
-                row.push('"' + data + '"');
-            }
-            csv.push(row.join(","));
+        // Ambil data dari tabel
+        doc.text(filename.replace(/_/g, " "), 14, 15);
+        
+        let tableId = tbodyId === 'tb_fisik' ? '#table_fisik' : '#table_online';
+        
+        doc.autoTable({ 
+            html: tableId,
+            startY: 20,
+            columns: [0, 1, 2, 3, 4], // Jangan cetak kolom aksi (tombol hapus)
+            theme: 'grid',
+            styles: { fontSize: 8 }
+        });
+
+        doc.save(filename + '.pdf');
+    }
+
+    // --- FITUR BERSIH DATA (HEMAT DATABASE) ---
+    function cleanData() {
+        if(confirm("PERINGATAN: Ini akan menghapus data kunjungan yang lebih lama dari 30 hari untuk menghemat ruang penyimpanan. Lanjutkan?")) {
+            const now = Date.now();
+            const cutoff = now - (30 * 24 * 60 * 60 * 1000); // 30 Hari yang lalu
+            
+            ['registrations', 'online_registrations'].forEach(path => {
+                db.ref(path).orderByChild('createdAt').endAt(cutoff).once('value', (snap) => {
+                    if(snap.exists()) {
+                        snap.forEach(child => child.ref.remove());
+                    }
+                });
+            });
+            alert("Pembersihan selesai! Data lama telah dihapus.");
         }
-        
-        let csvFile = new Blob([csv.join("\n")], {type: "text/csv"});
-        let downloadLink = document.createElement("a");
-        downloadLink.download = name + ".csv";
-        downloadLink.href = window.URL.createObjectURL(csvFile);
-        downloadLink.style.display = "none";
-        document.body.appendChild(downloadLink);
-        downloadLink.click();
     }
 </script>
 </body>
