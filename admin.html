@@ -22,6 +22,8 @@
         
         button.save { background: #28a745; color: white; border: none; padding: 15px; width: 100%; margin-top: 20px; font-size: 16px; cursor: pointer; border-radius: 5px; font-weight: bold; }
         button.del { background: #dc3545; color: white; border: none; padding: 5px 10px; border-radius: 4px; cursor: pointer; font-size: 12px; }
+        button.download { background: #007bff; color: white; border: none; padding: 8px 15px; border-radius: 5px; cursor: pointer; font-size: 13px; margin-left: 10px; }
+        button.download:hover { background: #0056b3; }
         
         table { width: 100%; border-collapse: collapse; margin-top: 10px; font-size: 13px; }
         th, td { border: 1px solid #ddd; padding: 10px; text-align: left; }
@@ -29,6 +31,7 @@
         tr:nth-child(even) { background: #f9f9f9; }
 
         #login-box { max-width: 400px; margin: 80px auto; text-align: center; background: white; padding: 40px; border-radius: 10px; }
+        .header-row { display: flex; justify-content: space-between; align-items: center; }
     </style>
 </head>
 <body>
@@ -85,16 +88,22 @@
     </div>
 
     <div id="tab-data_fisik" style="display:none;">
-        <h3>Daftar Kunjungan Tatap Muka</h3>
-        <table>
+        <div class="header-row">
+            <h3>Daftar Kunjungan Tatap Muka</h3>
+            <button class="download" onclick="downloadExcel('tb_fisik_full', 'Laporan_Kunjungan_Fisik')">📥 Download Excel</button>
+        </div>
+        <table id="tb_fisik_full">
             <thead><tr><th>Tgl</th><th>Nama</th><th>NIK</th><th>No. HP</th><th>WBP (Bin)</th><th>Aksi</th></tr></thead>
             <tbody id="tb_fisik"></tbody>
         </table>
     </div>
 
     <div id="tab-data_online" style="display:none;">
-        <h3>Daftar Kunjungan Online (VC)</h3>
-        <table>
+        <div class="header-row">
+            <h3>Daftar Kunjungan Online (VC)</h3>
+            <button class="download" onclick="downloadExcel('tb_online_full', 'Laporan_Kunjungan_Online')">📥 Download Excel</button>
+        </div>
+        <table id="tb_online_full">
             <thead><tr><th>Tgl</th><th>Nama</th><th>NIK</th><th>No. HP</th><th>WBP (Bin)</th><th>Aksi</th></tr></thead>
             <tbody id="tb_online"></tbody>
         </table>
@@ -103,7 +112,8 @@
 
 <script>
     // --- KONFIGURASI FIREBASE ---
-  const firebaseConfig = {
+    // PASTE KODE FIREBASE CONFIG ANDA DI SINI (HAPUS KODE INI DAN GANTI DENGAN MILIK ANDA)
+   const firebaseConfig = {
   apiKey: "AIzaSyDvpFZtiG_fXLOf8okjafNm7gqbJZr2pSY",
   authDomain: "lapassistem.firebaseapp.com",
   databaseURL: "https://lapassistem-default-rtdb.asia-southeast1.firebasedatabase.app",
@@ -186,8 +196,32 @@
     function del(path, key) {
         if(confirm("Hapus data ini?")) db.ref(path+'/'+key).remove();
     }
+
+    // FUNGSI DOWNLOAD EXCEL
+    function downloadExcel(tableId, name) {
+        let table = document.getElementById(tableId);
+        let rows = table.querySelectorAll('tr');
+        let csv = [];
+        
+        for (let i = 0; i < rows.length; i++) {
+            let row = [], cols = rows[i].querySelectorAll("td, th");
+            // Lewati kolom terakhir (Tombol Hapus)
+            for (let j = 0; j < cols.length - 1; j++) { 
+                let data = cols[j].innerText.replace(/(\r\n|\n|\r)/gm, "").replace(/(\s\s)/gm, " ");
+                data = data.replace(/"/g, '""');
+                row.push('"' + data + '"');
+            }
+            csv.push(row.join(","));
+        }
+        
+        let csvFile = new Blob([csv.join("\n")], {type: "text/csv"});
+        let downloadLink = document.createElement("a");
+        downloadLink.download = name + ".csv";
+        downloadLink.href = window.URL.createObjectURL(csvFile);
+        downloadLink.style.display = "none";
+        document.body.appendChild(downloadLink);
+        downloadLink.click();
+    }
 </script>
 </body>
 </html>
-
-
