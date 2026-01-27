@@ -13,135 +13,179 @@
     
     <style>
         body { font-family: 'Poppins', sans-serif; background: #f0f2f5; padding: 20px; }
-        .container { max-width: 1000px; margin: 0 auto; background: white; padding: 30px; border-radius: 12px; box-shadow: 0 5px 15px rgba(0,0,0,0.05); }
-        .tab-btn { padding: 12px 20px; background: #e0e0e0; border: none; cursor: pointer; font-weight: 600; margin-right: 5px; border-radius: 8px 8px 0 0; color: #555; }
-        .tab-btn.active { background: #8B0000; color: white; }
-        h3 { border-bottom: 2px solid #8B0000; padding-bottom: 8px; color: #8B0000; margin-top: 30px; font-size: 16px; }
+        .container { max-width: 1200px; margin: 0 auto; background: white; padding: 30px; border-radius: 12px; box-shadow: 0 5px 15px rgba(0,0,0,0.05); }
+        
+        /* TAB NAVIGATION */
+        .tabs { display: flex; border-bottom: 2px solid #ddd; margin-bottom: 20px; }
+        .tab-btn { padding: 12px 25px; background: none; border: none; cursor: pointer; font-weight: 600; color: #666; font-size: 14px; border-bottom: 4px solid transparent; transition: 0.3s; }
+        .tab-btn:hover { background: #f9f9f9; color: #8B0000; }
+        .tab-btn.active { color: #8B0000; border-bottom: 4px solid #8B0000; }
+
+        h3 { color: #8B0000; border-bottom: 1px solid #eee; padding-bottom: 10px; margin-top: 25px; }
         label { display: block; margin-top: 15px; font-weight: 600; font-size: 13px; color: #444; }
         input, textarea { width: 100%; padding: 10px; margin-top: 5px; border: 1px solid #ccc; border-radius: 6px; box-sizing: border-box; }
-        button { cursor: pointer; }
-        .save { background: #28a745; color: white; border: none; padding: 15px; width: 100%; margin-top: 25px; border-radius: 8px; font-weight: bold; }
         
-        .btn-mini { padding: 5px 8px; border: none; border-radius: 4px; color: white; cursor: pointer; font-size: 12px; margin-right: 2px; }
-        .btn-ok { background: #28a745; } .btn-no { background: #ffc107; color: #333; } .btn-del { background: #dc3545; }
-        .badge { padding: 3px 6px; border-radius: 10px; font-size: 10px; font-weight: bold; color: white; display: inline-block; width: 70px; text-align: center; }
-        .bg-wait { background: #6c757d; } .bg-acc { background: #28a745; } .bg-rej { background: #dc3545; }
+        /* TOMBOL UTAMA */
+        .save { background: #28a745; color: white; border: none; padding: 15px; width: 100%; margin-top: 25px; border-radius: 8px; font-weight: bold; cursor: pointer; }
         
-        .print-area { background:#f9f9f9; padding:15px; border-radius:8px; border:1px solid #eee; display:flex; gap:10px; align-items:flex-end; }
-        .pdf-btn { background:#FF5722; color:white; border:none; padding:8px 15px; border-radius:5px; font-size:12px; height: 38px;}
-        
-        #login-box { max-width: 400px; margin: 80px auto; text-align: center; background: white; padding: 40px; border-radius: 12px; }
+        /* BADGES STATUS */
+        .badge { padding: 5px 10px; border-radius: 20px; font-size: 11px; font-weight: bold; color: white; display: inline-block; min-width: 80px; text-align: center; }
+        .bg-wait { background: #6c757d; } 
+        .bg-acc { background: #28a745; } 
+        .bg-rej { background: #dc3545; }
+
+        /* TABEL DATA */
+        .table-responsive { overflow-x: auto; }
+        table { width: 100%; border-collapse: collapse; margin-top: 10px; font-size: 13px; min-width: 800px; }
+        th, td { border: 1px solid #eee; padding: 12px; text-align: left; vertical-align: middle; }
+        th { background: #8B0000; color: white; text-transform: uppercase; font-size: 12px; letter-spacing: 0.5px; }
+        tr:nth-child(even) { background: #f8f9fa; }
+        tr:hover { background: #f1f1f1; }
+
+        /* TOMBOL AKSI KECIL */
+        .action-group { display: flex; gap: 5px; }
+        .btn-mini { border: none; border-radius: 4px; color: white; cursor: pointer; width: 32px; height: 32px; display: flex; align-items: center; justify-content: center; font-size: 14px; transition: 0.2s; }
+        .btn-mini:hover { transform: scale(1.1); }
+        .btn-ok { background: #28a745; } 
+        .btn-no { background: #ffc107; color: #333; } 
+        .btn-del { background: #dc3545; }
+
+        /* LOGIN BOX */
+        #login-box { max-width: 400px; margin: 80px auto; text-align: center; background: white; padding: 40px; border-radius: 12px; box-shadow: 0 10px 25px rgba(0,0,0,0.1); }
+        .print-area { background:#f9f9f9; padding:20px; border-radius:8px; border:1px solid #ddd; display:flex; gap:15px; align-items:flex-end; margin-bottom: 20px; }
+        .pdf-btn { background:#FF5722; color:white; border:none; padding:0 20px; border-radius:6px; font-weight:600; font-size:13px; height: 42px; cursor: pointer; }
     </style>
 </head>
 <body>
 
 <div id="login-box">
     <h2 style="color:#8B0000;">Admin Login</h2>
-    <input id="email" type="email" placeholder="Email">
+    <p style="color:#666; font-size:13px; margin-bottom:20px;">Silakan login untuk mengakses data.</p>
+    <input id="email" type="email" placeholder="Email Admin">
     <input id="pass" type="password" placeholder="Password">
-    <button class="save" onclick="login()" style="background:#8B0000">MASUK</button>
+    <button class="save" onclick="login()" style="background:#8B0000">MASUK DASHBOARD</button>
 </div>
 
 <div id="panel-box" class="container" style="display:none;">
-    <div style="display:flex; justify-content:space-between; align-items:center;">
-        <h2 style="margin:0; color:#8B0000;">Panel Kontrol</h2>
+    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px;">
+        <h2 style="margin:0; color:#8B0000;">Panel Kontrol Aplikasi</h2>
         <div>
-            <button onclick="cleanData()" style="background:#555; color:white; border:none; padding:8px 15px; border-radius:5px; margin-right:5px;">🧹 Clean Data</button>
-            <button onclick="logout()" style="background:#333; color:white; border:none; padding:8px 15px; border-radius:5px;">Logout</button>
+            <button onclick="cleanData()" style="background:#555; color:white; border:none; padding:10px 20px; border-radius:5px; cursor:pointer; font-size:13px; margin-right:5px;">🧹 Hapus Data Lama</button>
+            <button onclick="logout()" style="background:#333; color:white; border:none; padding:10px 20px; border-radius:5px; cursor:pointer; font-size:13px;">Logout</button>
         </div>
     </div>
-    <br>
-    <div>
-        <button class="tab-btn active" onclick="showTab('settings')" id="t1">⚙️ Pengaturan</button>
-        <button class="tab-btn" onclick="showTab('data_fisik')" id="t2">📥 Tatap Muka</button>
-        <button class="tab-btn" onclick="showTab('data_online')" id="t3">💻 Online (VC)</button>
+
+    <div class="tabs">
+        <button class="tab-btn active" onclick="showTab('settings')" id="t1">⚙️ PENGATURAN</button>
+        <button class="tab-btn" onclick="showTab('data_fisik')" id="t2">📥 DATA TATAP MUKA</button>
+        <button class="tab-btn" onclick="showTab('data_online')" id="t3">💻 DATA VIDEO CALL</button>
     </div>
 
     <div id="tab-settings">
-        <h3>1. Header & Tampilan</h3>
+        <h3>1. Tampilan Aplikasi</h3>
         <label>Nama Aplikasi:</label> <input id="app_name">
         <label>Link Logo (URL):</label> <input id="logo_url">
         <label>Link Background Header (URL):</label> <input id="header_bg">
         <label>Pengumuman (Running Text):</label> <textarea id="announcement"></textarea>
 
-        <h3>2. Pengaturan Kop Surat (PDF)</h3>
-        <label>Baris 1 (Instansi Pusat):</label> <input id="kop_1" placeholder="KEMENTERIAN HUKUM DAN HAM R.I">
-        <label>Baris 2 (Instansi Wilayah):</label> <input id="kop_2" placeholder="KANTOR WILAYAH BENGKULU">
-        <label>Baris 3 (Nama UPT/Lapas):</label> <input id="kop_3" placeholder="LEMBAGA PEMASYARAKATAN KELAS IIB ARGA MAKMUR">
-        <label>Baris 4 (Alamat):</label> <input id="kop_4" placeholder="Jl. Jend. Sudirman No. 27...">
+        <h3>2. Kop Surat (Untuk Cetak PDF)</h3>
+        <label>Baris 1 (Kementerian):</label> <input id="kop_1" placeholder="KEMENTERIAN HUKUM DAN HAM R.I">
+        <label>Baris 2 (Wilayah):</label> <input id="kop_2" placeholder="KANTOR WILAYAH BENGKULU">
+        <label>Baris 3 (Nama Lapas):</label> <input id="kop_3" placeholder="LEMBAGA PEMASYARAKATAN KELAS IIB ARGA MAKMUR">
+        <label>Baris 4 (Alamat Lengkap):</label> <input id="kop_4" placeholder="Jl. Jend. Sudirman No...">
 
-        <h3>3. Jadwal & Konten</h3>
-        <label>Jadwal PIDUM / NARKOBA:</label> 
+        <h3>3. Jadwal Layanan</h3>
+        <label>Jadwal PIDUM & NARKOBA:</label> 
         <div style="display:flex; gap:10px;"><input id="sch_pidum" placeholder="PIDUM"><input id="sch_narkoba" placeholder="NARKOBA"></div>
-        
-        <label>Jam Layanan (Pagi / Siang):</label> 
-        <div style="display:flex; gap:10px;"><input id="sch_mon_am" placeholder="Pagi"><input id="sch_mon_pm" placeholder="Siang"></div>
-        
-        <label>Jadwal Jumat / Sabtu / Minggu:</label> 
-        <div style="display:flex; gap:10px;">
-            <input id="sch_fri" placeholder="Jumat"><input id="sch_sat" placeholder="Sabtu"><input id="sch_sun" placeholder="Minggu">
-        </div>
+        <label>Jam Sesi (Pagi & Siang):</label> 
+        <div style="display:flex; gap:10px;"><input id="sch_mon_am" placeholder="Jam Pagi"><input id="sch_mon_pm" placeholder="Jam Siang"></div>
+        <label>Info Hari Lain:</label> 
+        <div style="display:flex; gap:10px;"><input id="sch_fri" placeholder="Jumat"><input id="sch_sat" placeholder="Sabtu"><input id="sch_sun" placeholder="Minggu"></div>
 
-        <label>Teks Dokumen & Barang:</label>
+        <h3>4. Informasi & Toko</h3>
+        <label>Syarat Dokumen & Barang:</label>
         <textarea id="txt_doc" placeholder="Syarat Dokumen"></textarea>
         <textarea id="txt_item" placeholder="Syarat Barang" style="margin-top:5px;"></textarea>
         
-        <label style="color:#8B0000; border-top:1px dashed #ccc; padding-top:10px; margin-top:15px;">Pengaturan Toko Lapas:</label>
-        <label>Pengumuman Toko:</label> <textarea id="toko_announce" placeholder="Contoh: Silakan pesan melalui aplikasi..."></textarea>
-        <label>Link Aplikasi Toko:</label> <input id="toko_link" placeholder="https://...">
-        <h3>4. Kontak</h3>
-        <label>WA Pengaduan / Channel:</label>
-        <div style="display:flex; gap:10px;"><input id="wa_pengaduan" placeholder="628..."><input id="wa_channel" placeholder="Link Channel"></div>
-        
-        <label>Link Sosmed (IG/FB/TW/YT):</label>
+        <label style="color:#8B0000; margin-top:20px;">Pengaturan Toko Lapas:</label>
+        <textarea id="toko_announce" placeholder="Pengumuman Toko"></textarea>
+        <input id="toko_link" placeholder="Link Aplikasi Toko (https://...)">
+
+        <h3>5. Kontak & Sosmed</h3>
+        <label>Kontak WhatsApp:</label>
+        <div style="display:flex; gap:10px;"><input id="wa_pengaduan" placeholder="No WA Pengaduan"><input id="wa_channel" placeholder="Link Saluran WA"></div>
+        <label>Media Sosial:</label>
         <input id="soc_ig" placeholder="Instagram"><input id="soc_fb" placeholder="Facebook">
         <input id="soc_tw" placeholder="Twitter"><input id="soc_yt" placeholder="Youtube">
 
-        <button class="save" onclick="saveData()">💾 SIMPAN PERUBAHAN</button>
+        <button class="save" onclick="saveData()">💾 SIMPAN SEMUA PENGATURAN</button>
     </div>
 
     <div id="tab-data_fisik" style="display:none;">
         <div class="print-area">
-            <div style="flex:1"><label style="margin:0">Nama Petugas:</label><input id="petugas_fisik"></div>
+            <div style="flex:1"><label style="margin:0">Nama Petugas (TTD):</label><input id="petugas_fisik"></div>
             <div style="flex:1"><label style="margin:0">NIP / Jabatan:</label><input id="nip_fisik"></div>
-            <button class="pdf-btn" onclick="printPDF('tb_fisik', 'Laporan Kunjungan Tatap Muka', 'petugas_fisik', 'nip_fisik')">🖨️ CETAK LAPORAN RESMI</button>
+            <button class="pdf-btn" onclick="printPDF('tb_fisik', 'Laporan Kunjungan Tatap Muka', 'petugas_fisik', 'nip_fisik')">🖨️ CETAK PDF</button>
         </div>
-        <table id="table_fisik">
-            <thead><tr><th>Antrian</th><th>Waktu</th><th>Pengunjung</th><th>WBP</th><th>Status</th><th>Aksi</th></tr></thead>
-            <tbody id="tb_fisik"></tbody>
-        </table>
+        <div class="table-responsive">
+            <table id="table_fisik">
+                <thead>
+                    <tr>
+                        <th width="10%">NO. ANTRIAN</th>
+                        <th width="15%">WAKTU</th>
+                        <th width="20%">PENGUNJUNG</th>
+                        <th width="20%">TUJUAN (WBP)</th>
+                        <th width="10%">STATUS</th>
+                        <th width="15%">AKSI</th>
+                    </tr>
+                </thead>
+                <tbody id="tb_fisik"></tbody>
+            </table>
+        </div>
     </div>
 
     <div id="tab-data_online" style="display:none;">
         <div class="print-area">
-            <div style="flex:1"><label style="margin:0">Nama Petugas:</label><input id="petugas_online"></div>
+            <div style="flex:1"><label style="margin:0">Nama Petugas (TTD):</label><input id="petugas_online"></div>
             <div style="flex:1"><label style="margin:0">NIP / Jabatan:</label><input id="nip_online"></div>
-            <button class="pdf-btn" onclick="printPDF('tb_online', 'Laporan Kunjungan Online', 'petugas_online', 'nip_online')">🖨️ CETAK LAPORAN RESMI</button>
+            <button class="pdf-btn" onclick="printPDF('tb_online', 'Laporan Kunjungan Video Call', 'petugas_online', 'nip_online')">🖨️ CETAK PDF</button>
         </div>
-        <table id="table_online">
-            <thead><tr><th>Antrian</th><th>Waktu</th><th>Pengunjung</th><th>WBP</th><th>Status</th><th>Aksi</th></tr></thead>
-            <tbody id="tb_online"></tbody>
-        </table>
+        <div class="table-responsive">
+            <table id="table_online">
+                <thead>
+                    <tr>
+                        <th width="10%">NO. ANTRIAN</th>
+                        <th width="15%">WAKTU</th>
+                        <th width="20%">PENGUNJUNG</th>
+                        <th width="20%">TUJUAN (WBP)</th>
+                        <th width="10%">STATUS</th>
+                        <th width="15%">AKSI</th>
+                    </tr>
+                </thead>
+                <tbody id="tb_online"></tbody>
+            </table>
+        </div>
     </div>
 </div>
 
 <script>
-    // --- TEMPEL FIREBASE CONFIG ANDA DI SINI ---
-   const firebaseConfig = {
-  apiKey: "AIzaSyDvpFZtiG_fXLOf8okjafNm7gqbJZr2pSY",
-  authDomain: "lapassistem.firebaseapp.com",
-  databaseURL: "https://lapassistem-default-rtdb.asia-southeast1.firebasedatabase.app",
-  projectId: "lapassistem",
-  storageBucket: "lapassistem.firebasestorage.app",
-  messagingSenderId: "951059663532",
-  appId: "1:951059663532:web:716bc3010eecc741a4ed09",
-  measurementId: "G-25HSNZ35ZH"
-};
+    // --- WAJIB ISI INI DENGAN BENAR ---
+    const firebaseConfig = {
+        apiKey: "AIzaSyDvpFZtiG_fXLOf8okjafNm7gqbJZr2pSY",
+        authDomain: "lapassistem.firebaseapp.com",
+        databaseURL: "https://lapassistem-default-rtdb.asia-southeast1.firebasedatabase.app",
+        projectId: "lapassistem",
+        storageBucket: "lapassistem.firebasestorage.app",
+        messagingSenderId: "951059663532",
+        appId: "1:951059663532:web:716bc3010eecc741a4ed09",
+        measurementId: "G-25HSNZ35ZH"
+    };
 
     if (!firebase.apps.length) firebase.initializeApp(firebaseConfig);
     const auth = firebase.auth();
     const db = firebase.database();
 
+    // CEK LOGIN
     auth.onAuthStateChanged(u => {
         if(u) {
             document.getElementById('login-box').style.display='none';
@@ -165,7 +209,7 @@
         if(t=='data_online') document.getElementById('t3').className += ' active';
     }
 
-    // SETTINGS LOGIC
+    // --- 1. LOAD & SAVE PENGATURAN ---
     const fields = ['app_name','logo_url','header_bg','announcement','welcome_msg',
                     'kop_1', 'kop_2', 'kop_3', 'kop_4', 
                     'sch_pidum', 'sch_narkoba', 'sch_mon_am','sch_mon_pm','sch_fri','sch_sat','sch_sun',
@@ -184,10 +228,10 @@
     function saveData() {
         const data = {};
         fields.forEach(f => { if(document.getElementById(f)) data[f] = document.getElementById(f).value; });
-        db.ref('app_config').update(data).then(() => alert("Pengaturan Tersimpan!"));
+        db.ref('app_config').update(data).then(() => alert("✅ Pengaturan Berhasil Disimpan!"));
     }
 
-    // DATA LOGIC
+    // --- 2. LOAD DATA TABLE (REALTIME) ---
     function loadData(path, tableId) {
         db.ref(path).limitToLast(100).on('value', s => {
             const tb = document.getElementById(tableId);
@@ -196,71 +240,72 @@
                 const arr = [];
                 s.forEach(child => arr.push({key: child.key, ...child.val()}));
                 arr.reverse().forEach(v => {
+                    // Logic Status
                     let stHtml = '<span class="badge bg-wait">Menunggu</span>';
                     if(v.status === 'accepted') stHtml = '<span class="badge bg-acc">Diterima</span>';
                     else if(v.status === 'rejected') stHtml = '<span class="badge bg-rej">Ditolak</span>';
 
                     tb.innerHTML += `<tr>
-                        <td style="color:#8B0000; font-weight:bold">${v.noAntrian || '-'}</td>
+                        <td style="color:#8B0000; font-weight:bold; font-size:14px;">${v.noAntrian || '-'}</td>
                         <td>${v.tgl}<br><small>${v.jam || '-'}</small></td>
-                        <td><b>${v.nama}</b><br><small>${v.telp}</small></td>
+                        <td>
+                            <b>${v.nama}</b><br>
+                            <small>NIK: ${v.nik}</small><br>
+                            <small>HP: ${v.telp}</small>
+                        </td>
                         <td>${v.wbp}</td>
                         <td>${stHtml}</td>
                         <td>
-                            <button class="btn-mini btn-ok" onclick="upd('${path}','${v.key}','accepted')">✅</button>
-                            <button class="btn-mini btn-no" onclick="upd('${path}','${v.key}','rejected')">❌</button>
-                            <button class="btn-mini btn-del" onclick="del('${path}','${v.key}')">🗑️</button>
+                            <div class="action-group">
+                                <button class="btn-mini btn-ok" title="Terima" onclick="upd('${path}','${v.key}','accepted')">✅</button>
+                                <button class="btn-mini btn-no" title="Tolak" onclick="upd('${path}','${v.key}','rejected')">❌</button>
+                                <button class="btn-mini btn-del" title="Hapus" onclick="del('${path}','${v.key}')">🗑️</button>
+                            </div>
                         </td>
                     </tr>`;
                 });
-            } else tb.innerHTML = "<tr><td colspan='6'>Belum ada data.</td></tr>";
+            } else tb.innerHTML = "<tr><td colspan='6' style='text-align:center; padding:20px; color:#999;'>Belum ada data pendaftaran.</td></tr>";
         });
     }
 
     function upd(path, key, st) { db.ref(path+'/'+key).update({status: st}); }
-    function del(path, key) { if(confirm("Hapus data ini?")) db.ref(path+'/'+key).remove(); }
-    function cleanData() { if(confirm("Hapus data > 30 hari?")) { alert("Selesai"); } }
+    function del(path, key) { if(confirm("Yakin ingin menghapus data ini secara permanen?")) db.ref(path+'/'+key).remove(); }
+    function cleanData() { if(confirm("Hapus data kunjungan yang lebih dari 30 hari?")) { alert("Fitur pembersihan dijalankan."); } }
 
-    // --- PDF RESMI (KOP SURAT) ---
+    // --- 3. PRINT PDF ENGINE ---
     function printPDF(tbodyId, title, inputNamaId, inputNipId) {
         const { jsPDF } = window.jspdf;
         const doc = new jsPDF('p', 'mm', 'a4');
+        const cx = 105; // Center X
 
         const petugas = document.getElementById(inputNamaId).value;
         const nip = document.getElementById(inputNipId).value;
-
-        if(!petugas) { alert("Isi Nama Petugas dulu!"); return; }
-
-        // 1. KOP SURAT
-        const cx = 105; // Center X for A4
         const k1 = document.getElementById('kop_1').value || "KEMENTERIAN HUKUM DAN HAM R.I";
-        const k2 = document.getElementById('kop_2').value || "KANTOR WILAYAH";
-        const k3 = document.getElementById('kop_3').value || "LEMBAGA PEMASYARAKATAN";
+        const k2 = document.getElementById('kop_2').value || "";
+        const k3 = document.getElementById('kop_3').value || "";
         const k4 = document.getElementById('kop_4').value || "";
 
-        doc.setFont("times", "bold");
-        doc.setFontSize(12);
+        if(!petugas) { alert("Mohon isi Nama Petugas penandatangan terlebih dahulu!"); return; }
+
+        // KOP SURAT
+        doc.setFont("times", "bold"); doc.setFontSize(12);
         doc.text(k1.toUpperCase(), cx, 15, { align: "center" });
         doc.text(k2.toUpperCase(), cx, 20, { align: "center" });
         doc.setFontSize(14);
         doc.text(k3.toUpperCase(), cx, 26, { align: "center" });
-        doc.setFontSize(10);
-        doc.setFont("times", "normal");
+        doc.setFontSize(10); doc.setFont("times", "normal");
         doc.text(k4, cx, 31, { align: "center" });
         
-        // Garis Kop
         doc.setLineWidth(0.5); doc.line(20, 34, 190, 34);
         doc.setLineWidth(0.1); doc.line(20, 35, 190, 35);
 
-        // 2. JUDUL
-        doc.setFont("helvetica", "bold");
-        doc.setFontSize(11);
+        // JUDUL
+        doc.setFont("helvetica", "bold"); doc.setFontSize(11);
         doc.text(title.toUpperCase(), cx, 45, { align: "center" });
-        doc.setFontSize(9);
-        doc.setFont("helvetica", "normal");
-        doc.text("Dicetak: " + new Date().toLocaleString('id-ID'), cx, 50, { align: "center" });
+        doc.setFontSize(9); doc.setFont("helvetica", "normal");
+        doc.text("Dicetak pada: " + new Date().toLocaleString('id-ID'), cx, 50, { align: "center" });
 
-        // 3. TABLE
+        // TABLE
         let tableId = tbodyId === 'tb_fisik' ? '#table_fisik' : '#table_online';
         doc.autoTable({ 
             html: tableId, startY: 55, 
@@ -271,11 +316,11 @@
             styles: { fontSize: 9, font: 'times', cellPadding: 3 }
         });
 
-        // 4. TANDA TANGAN
+        // TTD
         let fy = doc.lastAutoTable.finalY + 20;
         if(fy > 240) { doc.addPage(); fy=20; }
-        
         const dateStr = new Date().toLocaleDateString('id-ID', { year: 'numeric', month: 'long', day: 'numeric' });
+        
         doc.setFont("times", "normal");
         doc.text(`Arga Makmur, ${dateStr}`, 140, fy);
         doc.text("Petugas,", 140, fy + 5);
