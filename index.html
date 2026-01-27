@@ -28,7 +28,7 @@
             position: relative; 
         }
         
-        /* HEADER DENGAN BACKGROUND IMAGE */
+        /* HEADER */
         .header { 
             position: relative;
             height: 180px;
@@ -46,7 +46,6 @@
             text-shadow: 0 2px 4px rgba(0,0,0,0.5);
             box-shadow: 0 4px 15px rgba(0,0,0,0.2);
         }
-        /* Overlay hitam transparan agar tulisan terbaca */
         .header::before {
             content: ''; position: absolute; top:0; left:0; right:0; bottom:0;
             background: linear-gradient(to bottom, rgba(0,0,0,0.3), rgba(139,0,0,0.9));
@@ -114,12 +113,13 @@
             padding: 14px 16px; border-radius: 12px; 
             font-size: 13px; cursor: pointer; text-align: left; 
             margin-bottom: 8px; width: 100%; transition: all 0.2s; 
-            font-weight: 500; display: flex; justify-content: space-between; align-items: center;
+            font-weight: 600; /* Lebih tebal agar tegas */
+            display: flex; justify-content: space-between; align-items: center;
             border: 1px solid #eee; box-shadow: 0 2px 5px rgba(0,0,0,0.02);
         }
         .btn:hover { background: #fff5f5; border-color: #8B0000; color: #8B0000; transform: translateY(-1px); }
         .btn i { font-size: 14px; opacity: 0.6; }
-        /* Tombol Kembali khusus */
+        
         .btn-back { background: #f8f9fa; color: #666; border: 1px solid #ddd; justify-content: center; font-weight: 600; margin-top: 10px; }
         .btn-back:hover { background: #e2e6ea; color: #333; transform: none; }
 
@@ -152,6 +152,7 @@
 
 <script>
     // --- KONFIGURASI FIREBASE ---
+    // GANTI BAGIAN INI DENGAN KODE DARI FIREBASE CONSOLE ANDA
     const firebaseConfig = {
   apiKey: "AIzaSyDvpFZtiG_fXLOf8okjafNm7gqbJZr2pSY",
   authDomain: "lapassistem.firebaseapp.com",
@@ -175,7 +176,6 @@
         document.getElementById('app_title').innerText = config.app_name || "Lapas App";
         document.getElementById('logo_img').src = config.logo_url || "";
         
-        // Update Background Header
         if(config.header_bg) {
             document.getElementById('header_bg').style.backgroundImage = `url('${config.header_bg}')`;
         }
@@ -208,18 +208,18 @@
             'start': {
                 text: config.welcome_msg || "Halo, silakan pilih menu layanan di bawah ini:",
                 options: [
-                    { text: "📝 Daftar Kunjungan (Tatap Muka)", val: "daftar_fisik" },
-                    { text: "💻 Daftar Online (Video Call)", val: "daftar_online" },
-                    { text: "📅 Jadwal Kunjungan", val: "jadwal" },
-                    { text: "📋 Syarat & Ketentuan", val: "syarat" },
-                    { text: "🛒 Toko Lapas", val: "toko" },
-                    { text: "📞 Kontak & Pengaduan", val: "kontak" }
+                    { text: "📝 DAFTAR KUNJUNGAN (TATAP MUKA)", val: "daftar_fisik" },
+                    { text: "💻 DAFTAR VIDEO CALL", val: "daftar_online" },
+                    { text: "📅 JADWAL KUNJUNGAN", val: "jadwal" },
+                    { text: "📋 SYARAT & KETENTUAN KUNJUNGAN", val: "syarat" },
+                    { text: "🛒 TOKO LAPAS", val: "toko" },
+                    { text: "📞 KONTAK & PENGADUAN", val: "kontak" }
                 ]
             },
             'jadwal': { text: "🕒 **Informasi Jadwal Kunjungan:**", customHtml: htmlJadwal, back: true },
             
             'syarat': { 
-                text: "📋 **Syarat & Ketentuan:**", 
+                text: "📋 **SYARAT & KETENTUAN:**", 
                 options: [
                     { text: "📄 Dokumen & Pakaian", val: "syarat_doc" }, 
                     { text: "📦 Barang Boleh/Dilarang", val: "syarat_item" }, 
@@ -230,7 +230,7 @@
             'syarat_item': { text: "📦 **Barang & Makanan:**\n\n" + (config.txt_item || "-"), backTo: "syarat" },
             
             'toko': { 
-                text: "🛒 **Toko Lapas:**\n\n" + (config.toko_announce || "-"), 
+                text: "🛒 **TOKO LAPAS:**\n\n" + (config.toko_announce || "-"), 
                 options: [
                     { text: "🌐 Buka Aplikasi Toko", type: "link", url: config.toko_link }, 
                     { text: "⬅️ Kembali ke Menu Utama", val: "start" }
@@ -238,7 +238,7 @@
             },
             
             'kontak': { 
-                text: "📞 **Pusat Kontak & Informasi:**\nSilakan pilih saluran di bawah:", 
+                text: "📞 **PUSAT KONTAK & PENGADUAN:**\nSilakan pilih saluran di bawah:", 
                 options: [
                     { text: "💬 WhatsApp Pengaduan", type: "link", url: `https://wa.me/${config.wa_pengaduan}` },
                     { text: "📢 Saluran Informasi (Channel)", type: "link", url: config.wa_channel },
@@ -247,7 +247,7 @@
                 ]
             },
             'sosmed': {
-                text: "🌐 **Media Sosial Resmi:**",
+                text: "🌐 **MEDIA SOSIAL RESMI:**",
                 options: [
                     { text: "📷 Instagram", type: "link", url: config.soc_ig },
                     { text: "📘 Facebook", type: "link", url: config.soc_fb },
@@ -257,8 +257,8 @@
                 ]
             },
 
-            'daftar_fisik': { text: "📝 **Formulir Kunjungan Tatap Muka**\nIsi data lengkap untuk ambil antrian.", isForm: true, formType: "fisik" },
-            'daftar_online': { text: "💻 **Formulir Kunjungan Online (VC)**\nIsi data untuk jadwal Video Call.", isForm: true, formType: "online" }
+            'daftar_fisik': { text: "📝 **FORMULIR KUNJUNGAN TATAP MUKA**\nIsi data lengkap untuk ambil antrian.", isForm: true, formType: "fisik" },
+            'daftar_online': { text: "💻 **FORMULIR VIDEO CALL**\nIsi data untuk jadwal Video Call.", isForm: true, formType: "online" }
         };
     }
 
@@ -301,10 +301,9 @@
     function showBtn(opts) {
         const div = document.createElement('div');
         opts.forEach(o => {
-            if(!o.url && !o.val) return; // Skip if empty
+            if(!o.url && !o.val) return; 
             const btn = document.createElement('button');
             
-            // Cek apakah ini tombol Kembali
             if(o.text.includes("Kembali")) btn.className = 'btn btn-back';
             else btn.className = 'btn';
 
@@ -325,7 +324,6 @@
         const menu = getMenu()[key];
         if(!menu) return;
         
-        // Logika Tombol Kembali otomatis
         let opts = menu.options || [];
         if(menu.back) opts.push({text:"⬅️ Kembali ke Menu Utama", val:"start"});
         if(menu.backTo) opts.push({text:"⬅️ Kembali", val: menu.backTo});
@@ -337,7 +335,6 @@
 
     function startChat() { respond('start'); }
 
-    // --- LOGIKA NOMOR ANTRIAN URUT ---
     function submitForm(type) {
         const nama = document.getElementById('f_nama').value;
         const nik = document.getElementById('f_nik').value;
@@ -353,11 +350,9 @@
         const prefix = type === 'fisik' ? 'A-' : 'V-';
         const label = type === 'fisik' ? 'Tatap Muka' : 'Video Call';
         
-        // 1. Buat referensi counter berdasarkan tanggal
-        const todayStr = tgl; // Format YYYY-MM-DD
+        const todayStr = tgl; 
         const counterRef = db.ref(`counters/${todayStr}/${type}`);
 
-        // 2. Transaction untuk Increment (Agar urut 1, 2, 3...)
         counterRef.transaction((current_value) => {
             return (current_value || 0) + 1;
         }, (error, committed, snapshot) => {
@@ -365,10 +360,8 @@
                 alert("Gagal mengambil antrian.");
             } else if (committed) {
                 const urutan = snapshot.val();
-                // Format nomor: 001, 002, 010, dst
                 const noAntrian = prefix + String(urutan).padStart(3, '0');
 
-                // 3. Simpan data setelah dapat nomor
                 db.ref(path).push({
                     nama, nik, alamat, telp, wbp, tgl, jam, noAntrian,
                     createdAt: firebase.database.ServerValue.TIMESTAMP
