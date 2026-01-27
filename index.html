@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Layanan Digital Lapas</title>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
@@ -28,19 +28,29 @@
         .bot { background: white; align-self: flex-start; border-top-left-radius: 2px; color: #333; }
         .user { background: var(--user-bg); align-self: flex-end; border-top-right-radius: 2px; color: #5a1e1e; border: 1px solid #ffcccc; }
 
+        /* JADWAL SPESIFIK TABLE */
+        .spec-table { width: 100%; border-collapse: collapse; margin-bottom: 10px; background: #fff; font-size: 12px; border-radius: 8px; overflow: hidden; border: 1px solid #ddd; }
+        .spec-table th { background: #8B0000; color: white; padding: 8px; text-align: left; }
+        .spec-table td { border-bottom: 1px solid #eee; padding: 8px; color: #333; }
+
         .schedule-card { background: white; border-radius: 8px; overflow: hidden; border: 1px solid #eee; margin-top: 5px; }
         .sch-row { display: flex; justify-content: space-between; padding: 10px 12px; border-bottom: 1px solid #f5f5f5; font-size: 12px; align-items: center; }
         .badge { padding: 3px 8px; border-radius: 4px; font-weight: 600; font-size: 11px; }
         .bg-green { background: #e8f5e9; color: #2e7d32; } .bg-blue { background: #e3f2fd; color: #1565c0; } .bg-red { background: #ffebee; color: #c62828; }
 
+        /* KARTU ANTRIAN */
+        .ticket-card { border: 2px dashed #8B0000; background: #fff; padding: 15px; border-radius: 10px; text-align: center; margin-top: 10px; position: relative; }
+        .ticket-title { font-weight: bold; color: #8B0000; font-size: 14px; margin-bottom: 5px; }
+        .ticket-number { font-size: 24px; font-weight: 800; color: #333; margin: 10px 0; letter-spacing: 2px; }
+        .ticket-info { font-size: 11px; color: #555; margin-bottom: 10px; line-height: 1.6; }
+        .ticket-btn { background: #333; color: white; border: none; padding: 5px 10px; border-radius: 4px; font-size: 11px; cursor: pointer; }
+
         .btn { background: white; border: 1px solid var(--primary); color: var(--primary); padding: 12px; border-radius: 50px; font-size: 13px; cursor: pointer; text-align: left; margin-bottom: 6px; width: 100%; transition: 0.2s; font-weight: 500; display: flex; justify-content: space-between; align-items: center; }
         .btn:hover { background: var(--primary); color: white; }
         
-        .sosmed-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 5px; margin-top: 5px; }
-        .btn-sos { text-align: center; padding: 10px; border-radius: 8px; color: white; font-size: 12px; text-decoration: none; display: block; }
-        
         .form-box { display: flex; flex-direction: column; gap: 8px; margin-top: 5px; }
         .inp { padding: 10px; border: 1px solid #ccc; border-radius: 8px; font-family: inherit; font-size: 13px; width: 100%; box-sizing: border-box; }
+        select.inp { background: white; }
         .submit-btn { background: #28a745; color: white; border: none; padding: 12px; border-radius: 8px; font-weight: bold; cursor: pointer; width: 100%; margin-top: 5px; }
 
         @keyframes fadeUp { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
@@ -62,7 +72,7 @@
 
 <script>
     // --- KONFIGURASI FIREBASE ---
-   const firebaseConfig = {
+    const firebaseConfig = {
   apiKey: "AIzaSyDvpFZtiG_fXLOf8okjafNm7gqbJZr2pSY",
   authDomain: "lapassistem.firebaseapp.com",
   databaseURL: "https://lapassistem-default-rtdb.asia-southeast1.firebasedatabase.app",
@@ -88,28 +98,27 @@
         if(config.announcement) { ann.style.display = 'block'; ann.innerHTML = "📢 " + config.announcement; } 
         else { ann.style.display = 'none'; }
         document.getElementById('loader').style.display = 'none';
-        
-        // PENTING: Bersihkan chat saat awal load
         startChat();
     }
 
     function getMenu() {
+        // HTML TABEL JADWAL PIDUM & NARKOBA
         const htmlJadwal = `
+            <div style="margin-bottom:5px; font-weight:bold; font-size:12px; color:#8B0000;">⚠️ Kategori Kunjungan:</div>
+            <table class="spec-table">
+                <tr><th>Jenis Tahanan</th><th>Hari Layanan</th></tr>
+                <tr><td><b>PIDUM</b> (Pidana Umum)</td><td>${config.sch_pidum || 'Senin & Rabu'}</td></tr>
+                <tr><td><b>NARKOBA</b></td><td>${config.sch_narkoba || 'Selasa & Kamis'}</td></tr>
+            </table>
+            
             <div class="schedule-card">
-                <div class="sch-row"><span>📅 Sen-Kam (Pagi)</span><span class="badge bg-green">${config.sch_mon_am || '-'}</span></div>
-                <div class="sch-row"><span>📅 Sen-Kam (Siang)</span><span class="badge bg-green">${config.sch_mon_pm || '-'}</span></div>
+                <div class="sch-row"><span>📅 Pagi (Sesi 1)</span><span class="badge bg-green">${config.sch_mon_am || '-'}</span></div>
+                <div class="sch-row"><span>📅 Siang (Sesi 2)</span><span class="badge bg-green">${config.sch_mon_pm || '-'}</span></div>
                 <div class="sch-row"><span>📅 Jumat</span><span class="badge bg-green">${config.sch_fri || '-'}</span></div>
                 <div class="sch-row"><span>📦 Sabtu</span><span class="badge bg-blue">${config.sch_sat || '-'}</span></div>
                 <div class="sch-row"><span>🛑 Minggu</span><span class="badge bg-red">${config.sch_sun || 'TUTUP'}</span></div>
             </div>`;
         
-        let htmlSosmed = `<div class="sosmed-grid">`;
-        if(config.soc_ig) htmlSosmed += `<a href="${config.soc_ig}" target="_blank" class="btn-sos" style="background:#E1306C"><i class="fab fa-instagram"></i> Instagram</a>`;
-        if(config.soc_fb) htmlSosmed += `<a href="${config.soc_fb}" target="_blank" class="btn-sos" style="background:#4267B2"><i class="fab fa-facebook"></i> Facebook</a>`;
-        if(config.soc_tw) htmlSosmed += `<a href="${config.soc_tw}" target="_blank" class="btn-sos" style="background:#1DA1F2"><i class="fab fa-twitter"></i> Twitter</a>`;
-        if(config.soc_yt) htmlSosmed += `<a href="${config.soc_yt}" target="_blank" class="btn-sos" style="background:#FF0000"><i class="fab fa-youtube"></i> Youtube</a>`;
-        htmlSosmed += `</div>`;
-
         return {
             'start': {
                 text: config.welcome_msg || "Halo, pilih layanan:",
@@ -122,14 +131,21 @@
                     { text: "📞 Kontak & Pengaduan", val: "kontak" }
                 ]
             },
-            'jadwal': { text: "🕒 **Jadwal Pelayanan:**", customHtml: htmlJadwal, back: true },
-            'syarat': { text: "📋 **Syarat & Ketentuan:**\nPilih detail informasi:", options: [{ text: "📄 Dokumen & Pakaian", val: "syarat_doc" }, { text: "📦 Barang Boleh/Dilarang", val: "syarat_item" }, { text: "⬅️ Menu Utama", val: "start" }] },
+            'jadwal': { text: "🕒 **Informasi Jadwal Kunjungan:**", customHtml: htmlJadwal, back: true },
+            'syarat': { text: "📋 **Syarat & Ketentuan:**", options: [{ text: "📄 Dokumen & Pakaian", val: "syarat_doc" }, { text: "📦 Barang Boleh/Dilarang", val: "syarat_item" }, { text: "⬅️ Menu Utama", val: "start" }] },
             'syarat_doc': { text: "📄 **Dokumen & Pakaian:**\n\n" + (config.txt_doc || "-"), backTo: "syarat" },
             'syarat_item': { text: "📦 **Barang & Makanan:**\n\n" + (config.txt_item || "-"), backTo: "syarat" },
             'toko': { text: "🛒 **Toko Lapas:**\n\n" + (config.toko_announce || "-"), options: [{ text: "🌐 Buka Aplikasi Toko", type: "link", url: config.toko_link }, { text: "⬅️ Menu Utama", val: "start" }] },
-            'kontak': { text: "📞 **Kontak & Pengaduan:**\n\n" + (config.txt_contact || "-"), customHtml: htmlSosmed, back: true },
-            'daftar_fisik': { text: "📝 **Formulir Kunjungan Tatap Muka**", isForm: true, formType: "fisik" },
-            'daftar_online': { text: "💻 **Formulir Kunjungan Online (VC)**", isForm: true, formType: "online" }
+            'kontak': { 
+                text: "📞 **Kontak & Pengaduan:**\n\n" + (config.txt_contact || "-"), 
+                options: [
+                    { text: "⚠️ WA Pengaduan", type: "link", url: `https://wa.me/${config.wa_pengaduan}` },
+                    { text: "📢 Saluran WA Lapas", type: "link", url: config.wa_channel },
+                    { text: "⬅️ Menu Utama", val: "start" }
+                ]
+            },
+            'daftar_fisik': { text: "📝 **Formulir Kunjungan Tatap Muka**\nIsi data lengkap untuk mendapatkan Nomor Antrian.", isForm: true, formType: "fisik" },
+            'daftar_online': { text: "💻 **Formulir Kunjungan Online (VC)**\nIsi data untuk jadwal Video Call.", isForm: true, formType: "online" }
         };
     }
 
@@ -144,14 +160,23 @@
         if(extra.isForm) {
             content += `
             <div class="form-box">
-                <input id="f_nama" class="inp" placeholder="Nama Pengunjung">
+                <input id="f_nama" class="inp" placeholder="Nama Pengunjung (Sesuai KTP)">
                 <input id="f_nik" class="inp" type="number" placeholder="NIK / No. KTP">
+                <input id="f_alamat" class="inp" placeholder="Alamat Sesuai KTP">
                 <input id="f_telp" class="inp" type="number" placeholder="No. Telepon / WA">
                 <input id="f_wbp" class="inp" placeholder="Nama WBP (Bin/Binti)">
-                <label style="font-size:12px; margin-left:2px;">Tanggal Kunjungan:</label>
-                <input id="f_tgl" class="inp" type="date">
-                <button onclick="submitForm('${extra.formType}')" class="submit-btn">KIRIM DATA</button>
-                <button onclick="startChat()" style="background:#ddd; border:none; padding:10px; width:100%; border-radius:8px; cursor:pointer;">Batal</button>
+                
+                <label style="font-size:12px; margin-left:2px;">Tanggal & Jam Kunjungan:</label>
+                <div style="display:flex; gap:5px;">
+                    <input id="f_tgl" class="inp" type="date" style="flex:1">
+                    <select id="f_jam" class="inp" style="flex:1">
+                        <option value="Pagi">Sesi Pagi</option>
+                        <option value="Siang">Sesi Siang</option>
+                    </select>
+                </div>
+                
+                <button onclick="submitForm('${extra.formType}')" class="submit-btn">DAFTAR & CETAK ANTRIAN</button>
+                <button onclick="respond('start')" style="background:#ddd; border:none; padding:10px; width:100%; border-radius:8px; cursor:pointer;">Batal</button>
             </div>`;
         }
         div.innerHTML = content;
@@ -178,19 +203,12 @@
     }
 
     function respond(key) {
-        // FITUR RESET: Jika user memilih 'start' (Menu Utama), bersihkan layar!
-        if (key === 'start') {
-            chatBox.innerHTML = '';
-        }
-
+        if (key === 'start') chatBox.innerHTML = ''; // Reset Chat
         const menu = getMenu()[key];
         if(!menu) return;
-
-        if(menu.isForm) {
-            appendMsg('bot', menu.text, { isForm: true, formType: menu.formType });
-        } else if (menu.customHtml) {
-            appendMsg('bot', menu.text, { customHtml: menu.customHtml, options: menu.back ? [{text:"⬅️ Menu Utama", val:"start"}] : [] });
-        } else {
+        if(menu.isForm) appendMsg('bot', menu.text, { isForm: true, formType: menu.formType });
+        else if (menu.customHtml) appendMsg('bot', menu.text, { customHtml: menu.customHtml, options: menu.back ? [{text:"⬅️ Menu Utama", val:"start"}] : [] });
+        else {
             let opts = menu.options || [];
             if(menu.back) opts.push({text:"⬅️ Menu Utama", val:"start"});
             if(menu.backTo) opts.push({text:"⬅️ Kembali", val: menu.backTo});
@@ -203,23 +221,41 @@
     function submitForm(type) {
         const nama = document.getElementById('f_nama').value;
         const nik = document.getElementById('f_nik').value;
+        const alamat = document.getElementById('f_alamat').value;
         const telp = document.getElementById('f_telp').value;
         const wbp = document.getElementById('f_wbp').value;
         const tgl = document.getElementById('f_tgl').value;
+        const jam = document.getElementById('f_jam').value;
 
-        if(!nama || !nik || !wbp || !tgl || !telp) return alert("Mohon lengkapi semua data!");
+        if(!nama || !nik || !alamat || !wbp || !tgl || !telp) return alert("Mohon lengkapi semua data!");
 
         const path = type === 'fisik' ? 'registrations' : 'online_registrations';
-        const label = type === 'fisik' ? 'Tatap Muka' : 'Online (VC)';
+        const label = type === 'fisik' ? 'Tatap Muka' : 'Video Call';
+        
+        // Buat Kode Antrian (Contoh: A-123)
+        const noAntrian = (type === 'fisik' ? 'A-' : 'V-') + Math.floor(100 + Math.random() * 900);
 
         db.ref(path).push({
-            nama, nik, telp, wbp, tgl,
-            // Simpan timestamp agar bisa disortir/dihapus admin
-            createdAt: firebase.database.ServerValue.TIMESTAMP,
-            waktu: new Date().toLocaleString()
+            nama, nik, alamat, telp, wbp, tgl, jam, noAntrian,
+            createdAt: firebase.database.ServerValue.TIMESTAMP
         }).then(() => {
-            chatBox.innerHTML = ''; // Bersihkan layar setelah daftar
-            appendMsg('bot', `✅ **Berhasil!**\nPendaftaran kunjungan **${label}** tersimpan.\n\nData sudah masuk ke sistem Admin.`);
+            chatBox.innerHTML = ''; 
+            
+            // TAMPILKAN KARTU ANTRIAN
+            const tiketHtml = `
+            <div class="ticket-card" id="ticketArea">
+                <div class="ticket-title">KARTU ANTRIAN ${label.toUpperCase()}</div>
+                <div class="ticket-info">Simpan/Screenshot kartu ini sebagai bukti.</div>
+                <div class="ticket-number">${noAntrian}</div>
+                <div class="ticket-info">
+                    <b>Nama:</b> ${nama}<br>
+                    <b>WBP:</b> ${wbp}<br>
+                    <b>Tanggal:</b> ${tgl} (${jam})
+                </div>
+                <button class="ticket-btn" onclick="window.print()"><i class="fas fa-print"></i> Cetak / Simpan PDF</button>
+            </div>`;
+            
+            appendMsg('bot', `✅ **Pendaftaran Berhasil!**\nSilakan simpan nomor antrian di bawah ini.`, { customHtml: tiketHtml });
             showBtn([{text:"⬅️ Kembali ke Menu Utama", val:"start"}]);
         }).catch(e => alert(e.message));
     }
