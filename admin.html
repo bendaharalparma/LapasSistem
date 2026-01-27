@@ -3,149 +3,93 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Admin Panel Lapas</title>
+    <title>Admin Panel v3.0</title>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.25/jspdf.plugin.autotable.min.js"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
-    
     <style>
-        body { font-family: 'Poppins', sans-serif; background: #f0f2f5; padding: 20px; }
-        .container { max-width: 1400px; margin: 0 auto; background: white; padding: 30px; border-radius: 12px; box-shadow: 0 5px 15px rgba(0,0,0,0.05); }
-        .tabs { display: flex; border-bottom: 2px solid #ddd; margin-bottom: 20px; }
-        .tab-btn { padding: 12px 25px; background: none; border: none; cursor: pointer; font-weight: 600; color: #666; border-bottom: 4px solid transparent; transition: 0.3s; }
-        .tab-btn:hover { background: #f9f9f9; color: #8B0000; }
-        .tab-btn.active { color: #8B0000; border-bottom: 4px solid #8B0000; }
-        
-        h3 { color: #8B0000; border-bottom: 1px solid #eee; padding-bottom: 10px; margin-top: 25px; }
-        label { display: block; margin-top: 15px; font-weight: 600; font-size: 13px; color: #444; }
-        input, textarea { width: 100%; padding: 10px; margin-top: 5px; border: 1px solid #ccc; border-radius: 6px; box-sizing: border-box; }
-        .save { background: #28a745; color: white; border: none; padding: 15px; width: 100%; margin-top: 25px; border-radius: 8px; font-weight: bold; cursor: pointer; }
-        
-        .filter-bar { background: #fff3cd; padding: 15px; border-radius: 8px; border: 1px solid #ffeeba; display: flex; align-items: flex-end; gap: 10px; margin-bottom: 15px; flex-wrap: wrap; }
-        .btn-search { background: #8B0000; color: white; border: none; padding: 10px 15px; border-radius: 5px; cursor: pointer; height: 42px; font-weight: 600; }
-        .btn-reset { background: #666; color: white; border: none; padding: 10px 15px; border-radius: 5px; cursor: pointer; height: 42px; }
-        
-        .table-responsive { overflow-x: auto; }
-        table { width: 100%; border-collapse: collapse; margin-top: 5px; font-size: 12px; min-width: 1000px; }
-        th, td { border: 1px solid #eee; padding: 10px; text-align: left; vertical-align: middle; }
-        th { background: #8B0000; color: white; text-transform: uppercase; font-size: 11px; white-space: nowrap; }
-        tr:nth-child(even) { background: #f8f9fa; }
-        
-        .badge { padding: 4px 8px; border-radius: 20px; font-size: 10px; font-weight: bold; color: white; display: inline-block; min-width: 70px; text-align: center; }
-        .bg-wait { background: #6c757d; } .bg-acc { background: #28a745; } .bg-rej { background: #dc3545; }
-        .btn-mini { border: none; border-radius: 4px; color: white; cursor: pointer; width: 28px; height: 28px; display: flex; align-items: center; justify-content: center; margin-right: 2px; }
-        .btn-ok { background: #28a745; } .btn-no { background: #ffc107; color: #333; } .btn-del { background: #dc3545; }
-
-        #login-box { max-width: 400px; margin: 80px auto; text-align: center; background: white; padding: 40px; border-radius: 12px; box-shadow: 0 10px 25px rgba(0,0,0,0.1); }
-        .print-area { display: flex; gap: 10px; background: #f9f9f9; padding: 15px; border-radius: 8px; align-items: flex-end; margin-bottom: 20px; border: 1px solid #ddd; flex-wrap: wrap; }
-        .pdf-btn { background:#FF5722; color:white; border:none; padding:0 20px; border-radius:6px; font-weight:600; font-size:13px; height: 42px; cursor: pointer; white-space: nowrap; }
+        body { font-family: sans-serif; background: #f4f6f9; padding: 20px; }
+        .container { background: white; max-width: 1200px; margin: 0 auto; padding: 20px; border-radius: 10px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
+        .tab-btn { padding: 10px 20px; cursor: pointer; border: none; background: none; font-weight: bold; border-bottom: 3px solid transparent; }
+        .tab-btn.active { border-color: #8B0000; color: #8B0000; }
+        .tab-content { display: none; margin-top: 20px; }
+        table { width: 100%; border-collapse: collapse; font-size: 13px; margin-top: 10px; }
+        th { background: #8B0000; color: white; padding: 10px; text-align: left; }
+        td { border: 1px solid #ddd; padding: 10px; }
+        .btn-live { background: #2196F3; color: white; padding: 10px 20px; border: none; border-radius: 5px; cursor: pointer; font-weight: bold; }
+        .btn-search { background: #4CAF50; color: white; padding: 10px 20px; border: none; border-radius: 5px; cursor: pointer; margin-left: 5px; }
     </style>
 </head>
 <body>
 
-<div id="login-box">
-    <h2 style="color:#8B0000;">Admin Login</h2>
-    <input id="email" type="email" placeholder="Email Admin">
-    <input id="pass" type="password" placeholder="Password">
-    <button class="save" onclick="login()" style="background:#8B0000">MASUK</button>
+<div id="login-box" style="text-align:center; padding:50px;">
+    <h2>Login Admin</h2>
+    <input id="email" placeholder="Email" style="padding:10px;">
+    <input id="pass" type="password" placeholder="Password" style="padding:10px;">
+    <button onclick="login()" style="padding:10px 20px; background:#8B0000; color:white; border:none;">MASUK</button>
 </div>
 
 <div id="panel-box" class="container" style="display:none;">
-    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px; flex-wrap: wrap; gap: 10px;">
-        <h2 style="margin:0; color:#8B0000;">Panel Kontrol Aplikasi</h2>
-        <div>
-            <button onclick="cleanData()" style="background:#555; color:white; border:none; padding:10px 20px; border-radius:5px; cursor:pointer;">🧹 Reset Data</button>
-            <button onclick="logout()" style="background:#333; color:white; border:none; padding:10px 20px; border-radius:5px; cursor:pointer; margin-left:5px;">Logout</button>
-        </div>
+    <div style="display:flex; justify-content:space-between;">
+        <h2>Panel Admin Lapas</h2>
+        <button onclick="logout()">Logout</button>
+    </div>
+    
+    <div style="border-bottom: 2px solid #ddd;">
+        <button class="tab-btn active" onclick="show('tatap')">TATAP MUKA</button>
+        <button class="tab-btn" onclick="show('online')">VIDEO CALL</button>
+        <button class="tab-btn" onclick="show('set')">PENGATURAN</button>
     </div>
 
-    <div class="tabs">
-        <button class="tab-btn active" onclick="showTab('settings')" id="t1">⚙️ PENGATURAN</button>
-        <button class="tab-btn" onclick="showTab('data_fisik')" id="t2">📥 TATAP MUKA</button>
-        <button class="tab-btn" onclick="showTab('data_online')" id="t3">💻 VIDEO CALL</button>
+    <div id="tab-tatap" class="tab-content" style="display:block;">
+        <div style="background:#eee; padding:15px; border-radius:8px; display:flex; align-items:center;">
+            <label>Filter:</label>
+            <input type="date" id="date_tatap" style="margin:0 10px; padding:8px;">
+            <button class="btn-search" onclick="loadData('db_utama/tatap_muka', 'tb_tatap', 'date_tatap')">🔍 Cari Tanggal</button>
+            <button class="btn-live" onclick="loadLive('db_utama/tatap_muka', 'tb_tatap')" style="margin-left:auto;">🔄 RESET (MODE LIVE)</button>
+        </div>
+        <div style="margin-top:10px;">
+            <input id="ptg_tatap" placeholder="Nama Petugas"> <input id="nip_tatap" placeholder="NIP">
+            <button onclick="printPDF('tb_tatap', 'Laporan Tatap Muka', 'ptg_tatap', 'nip_tatap')">🖨️ Cetak PDF</button>
+        </div>
+        <table>
+            <thead><tr><th>ANTRIAN</th><th>WAKTU</th><th>DATA PENGUNJUNG</th><th>TUJUAN</th><th>STATUS</th><th>AKSI</th></tr></thead>
+            <tbody id="tb_tatap"></tbody>
+        </table>
     </div>
 
-    <div id="tab-settings">
-        <h3>1. Kop Surat & Tampilan</h3>
-        <label>Baris 1 (Kementerian):</label> <input id="kop_1">
-        <label>Baris 2 (Wilayah):</label> <input id="kop_2">
-        <label>Baris 3 (Nama Lapas):</label> <input id="kop_3">
-        <label>Baris 4 (Alamat):</label> <input id="kop_4">
-        <label>Nama Aplikasi:</label> <input id="app_name">
-        <label>Link Logo (URL):</label> <input id="logo_url">
-        <label>Link Background (URL):</label> <input id="header_bg">
-        <label>Pengumuman:</label> <textarea id="announcement"></textarea>
-
-        <h3>2. Jadwal & Konten</h3>
-        <label>Jadwal PIDUM & NARKOBA:</label> 
-        <div style="display:flex; gap:10px;"><input id="sch_pidum"><input id="sch_narkoba"></div>
-        <label>Jam Sesi (Pagi & Siang):</label> 
-        <div style="display:flex; gap:10px;"><input id="sch_mon_am"><input id="sch_mon_pm"></div>
-        <label>Hari Lain:</label> 
-        <div style="display:flex; gap:10px;"><input id="sch_fri"><input id="sch_sat"><input id="sch_sun"></div>
-
-        <label>Syarat & Toko:</label>
-        <textarea id="txt_doc" placeholder="Syarat Dokumen"></textarea>
-        <textarea id="txt_item" placeholder="Syarat Barang" style="margin-top:5px;"></textarea>
-        <textarea id="toko_announce" placeholder="Info Toko" style="margin-top:5px;"></textarea>
-        <input id="toko_link" placeholder="Link Toko" style="margin-top:5px;">
-
-        <h3>3. Kontak</h3>
-        <div style="display:flex; gap:10px;"><input id="wa_pengaduan" placeholder="WA Pengaduan"><input id="wa_channel" placeholder="Channel WA"></div>
-        <input id="soc_ig" placeholder="Instagram" style="margin-top:5px;">
-        <input id="soc_fb" placeholder="Facebook" style="margin-top:5px;">
-        <input id="soc_tw" placeholder="Twitter" style="margin-top:5px;">
-        <input id="soc_yt" placeholder="Youtube" style="margin-top:5px;">
-
-        <button class="save" onclick="saveData()">💾 SIMPAN PENGATURAN</button>
+    <div id="tab-online" class="tab-content">
+        <div style="background:#eee; padding:15px; border-radius:8px; display:flex; align-items:center;">
+            <label>Filter:</label>
+            <input type="date" id="date_online" style="margin:0 10px; padding:8px;">
+            <button class="btn-search" onclick="loadData('db_utama/video_call', 'tb_online', 'date_online')">🔍 Cari Tanggal</button>
+            <button class="btn-live" onclick="loadLive('db_utama/video_call', 'tb_online')" style="margin-left:auto;">🔄 RESET (MODE LIVE)</button>
+        </div>
+        <div style="margin-top:10px;">
+            <input id="ptg_online" placeholder="Nama Petugas"> <input id="nip_online" placeholder="NIP">
+            <button onclick="printPDF('tb_online', 'Laporan Video Call', 'ptg_online', 'nip_online')">🖨️ Cetak PDF</button>
+        </div>
+        <table>
+            <thead><tr><th>ANTRIAN</th><th>WAKTU</th><th>DATA PENGUNJUNG</th><th>TUJUAN</th><th>STATUS</th><th>AKSI</th></tr></thead>
+            <tbody id="tb_online"></tbody>
+        </table>
     </div>
 
-    <div id="tab-data_fisik" style="display:none;">
-        <div class="filter-bar">
-            <div style="flex:1"><label>Cek Tanggal:</label><input type="date" id="date_fisik"></div>
-            <button class="btn-search" onclick="loadByDate('registrations', 'tb_fisik', 'date_fisik', 'cnt_fisik')">🔍 Cari</button>
-            <button class="btn-reset" onclick="resetLive('registrations', 'tb_fisik', 'cnt_fisik')">🔄 Live</button>
-        </div>
-        <div class="print-area">
-            <div style="flex:1"><label>Nama Petugas:</label><input id="petugas_fisik"></div>
-            <div style="flex:1"><label>NIP:</label><input id="nip_fisik"></div>
-            <button class="pdf-btn" onclick="printPDF('tb_fisik', 'Laporan Tatap Muka', 'petugas_fisik', 'nip_fisik')">🖨️ Cetak PDF</button>
-        </div>
-        <div id="cnt_fisik" style="font-size:12px; color:#666; margin-bottom:5px;">Menunggu data...</div>
-        <div class="table-responsive">
-            <table id="table_fisik">
-                <thead><tr><th>ANTRIAN</th><th>WAKTU</th><th>PENGUNJUNG</th><th>NIK</th><th>ALAMAT</th><th>TUJUAN</th><th>STATUS</th><th>AKSI</th></tr></thead>
-                <tbody id="tb_fisik"></tbody>
-            </table>
-        </div>
-    </div>
-
-    <div id="tab-data_online" style="display:none;">
-        <div class="filter-bar">
-            <div style="flex:1"><label>Cek Tanggal:</label><input type="date" id="date_online"></div>
-            <button class="btn-search" onclick="loadByDate('online_registrations', 'tb_online', 'date_online', 'cnt_online')">🔍 Cari</button>
-            <button class="btn-reset" onclick="resetLive('online_registrations', 'tb_online', 'cnt_online')">🔄 Live</button>
-        </div>
-        <div class="print-area">
-            <div style="flex:1"><label>Nama Petugas:</label><input id="petugas_online"></div>
-            <div style="flex:1"><label>NIP:</label><input id="nip_online"></div>
-            <button class="pdf-btn" onclick="printPDF('tb_online', 'Laporan Video Call', 'petugas_online', 'nip_online')">🖨️ Cetak PDF</button>
-        </div>
-        <div id="cnt_online" style="font-size:12px; color:#666; margin-bottom:5px;">Menunggu data...</div>
-        <div class="table-responsive">
-            <table id="table_online">
-                <thead><tr><th>ANTRIAN</th><th>WAKTU</th><th>PENGUNJUNG</th><th>NIK</th><th>ALAMAT</th><th>TUJUAN</th><th>STATUS</th><th>AKSI</th></tr></thead>
-                <tbody id="tb_online"></tbody>
-            </table>
-        </div>
+    <div id="tab-set" class="tab-content">
+        <h3>Pengaturan Dasar</h3>
+        <label>Nama Aplikasi:</label><br><input id="app_name" style="width:100%"><br><br>
+        <label>Baris 1 Kop Surat:</label><br><input id="kop_1" style="width:100%"><br><br>
+        <label>Baris 2 Kop Surat:</label><br><input id="kop_2" style="width:100%"><br><br>
+        <label>Baris 3 Kop Surat:</label><br><input id="kop_3" style="width:100%"><br><br>
+        <label>Baris 4 Kop Surat:</label><br><input id="kop_4" style="width:100%"><br><br>
+        <button onclick="saveSettings()" style="padding:10px; background:green; color:white;">SIMPAN PENGATURAN</button>
     </div>
 </div>
 
 <script>
-    // --- TEMPEL FIREBASE CONFIG ANDA DI SINI ---
+    // --- CONFIG FIREBASE ---
     const firebaseConfig = {
         apiKey: "AIzaSyDvpFZtiG_fXLOf8okjafNm7gqbJZr2pSY",
         authDomain: "lapassistem.firebaseapp.com",
@@ -157,7 +101,7 @@
         measurementId: "G-25HSNZ35ZH"
     };
 
-    if (!firebase.apps.length) firebase.initializeApp(firebaseConfig);
+    if(!firebase.apps.length) firebase.initializeApp(firebaseConfig);
     const auth = firebase.auth();
     const db = firebase.database();
     let listeners = {};
@@ -166,185 +110,118 @@
         if(u) {
             document.getElementById('login-box').style.display='none';
             document.getElementById('panel-box').style.display='block';
-            loadSettings(); 
-            resetLive('registrations', 'tb_fisik', 'cnt_fisik');
-            resetLive('online_registrations', 'tb_online', 'cnt_online');
+            loadSettings();
+            loadLive('db_utama/tatap_muka', 'tb_tatap');
+            loadLive('db_utama/video_call', 'tb_online');
         } else {
             document.getElementById('login-box').style.display='block';
             document.getElementById('panel-box').style.display='none';
         }
     });
 
-    function login() { auth.signInWithEmailAndPassword(document.getElementById('email').value, document.getElementById('pass').value).catch(e => alert(e.message)); }
+    function login() { auth.signInWithEmailAndPassword(document.getElementById('email').value, document.getElementById('pass').value).catch(e=>alert(e.message)); }
     function logout() { auth.signOut(); }
     
-    function showTab(t) {
-        ['settings','data_fisik','data_online'].forEach(x => document.getElementById('tab-'+x).style.display = 'none');
-        document.getElementById('tab-'+t).style.display = 'block';
-        ['t1','t2','t3'].forEach(x => document.getElementById(x).className = 'tab-btn');
-        if(t=='settings') document.getElementById('t1').className += ' active';
-        if(t=='data_fisik') document.getElementById('t2').className += ' active';
-        if(t=='data_online') document.getElementById('t3').className += ' active';
+    function show(id) {
+        document.querySelectorAll('.tab-content').forEach(d => d.style.display='none');
+        document.getElementById('tab-'+id).style.display='block';
     }
 
-    // --- RENDER TABLE FIXED (ACCUMULATOR METHOD) ---
-    function renderTable(snapshot, tableId, path, countId) {
+    // --- RENDER FUNCTION (ANTI-OVERWRITE) ---
+    function render(snap, tableId, path) {
         const tb = document.getElementById(tableId);
-        const cnt = document.getElementById(countId);
+        if(!snap.exists()) { tb.innerHTML = "<tr><td colspan='6' align='center'>Belum ada data.</td></tr>"; return; }
         
-        if(!snapshot.exists()) {
-            tb.innerHTML = "<tr><td colspan='8' style='text-align:center; padding:20px; color:#999;'>Tidak ada data.</td></tr>";
-            cnt.innerText = "Total: 0 Data";
-            return;
-        }
-
+        let html = "";
         const arr = [];
-        snapshot.forEach(child => arr.push({key: child.key, ...child.val()}));
+        snap.forEach(c => arr.push({k:c.key, ...c.val()}));
         
-        cnt.innerText = `Menampilkan ${arr.length} Data Terbaru`;
-        
-        let html = ""; 
         arr.reverse().forEach(v => {
-            let statusBadge = v.status === 'accepted' ? '<span class="badge bg-acc">Diterima</span>' : 
-                              v.status === 'rejected' ? '<span class="badge bg-rej">Ditolak</span>' : 
-                              '<span class="badge bg-wait">Menunggu</span>';
-
-            html += `
-                <tr style="border-bottom:1px solid #eee;">
-                    <td style="color:#8B0000; font-weight:bold;">${v.noAntrian || '-'}</td>
-                    <td>${v.tgl}<br><small>${v.jam || '-'}</small></td>
-                    <td><b>${v.nama}</b><br><small>${v.telp}</small></td>
-                    <td>${v.nik || '-'}</td>
-                    <td><div style="font-size:11px; max-width:180px; line-height:1.2;">${v.alamat || '-'}</div></td>
-                    <td>${v.wbp}</td>
-                    <td>${statusBadge}</td>
-                    <td>
-                        <div style="display:flex; gap:3px;">
-                            <button class="btn-mini btn-ok" onclick="upd('${path}','${v.key}','accepted')">✅</button>
-                            <button class="btn-mini btn-no" onclick="upd('${path}','${v.key}','rejected')">❌</button>
-                            <button class="btn-mini btn-del" onclick="del('${path}','${v.key}')">🗑️</button>
-                        </div>
-                    </td>
-                </tr>
-            `;
+            html += `<tr>
+                <td style="font-weight:bold; color:#8B0000">${v.noAntrian}</td>
+                <td>${v.tgl}<br>${v.jam}</td>
+                <td><b>${v.nama}</b><br>NIK: ${v.nik}<br>${v.alamat}<br>HP: ${v.telp}</td>
+                <td>${v.wbp}</td>
+                <td>${v.status || 'Menunggu'}</td>
+                <td>
+                    <button onclick="upd('${path}/${v.k}','accepted')">✅</button>
+                    <button onclick="upd('${path}/${v.k}','rejected')">❌</button>
+                    <button onclick="del('${path}/${v.k}')">🗑️</button>
+                </td>
+            </tr>`;
         });
-        
         tb.innerHTML = html;
     }
 
-    function resetLive(path, tableId, countId) {
+    function loadLive(path, tableId) {
         if(listeners[path]) db.ref(path).off();
-        const tb = document.getElementById(tableId);
-        tb.innerHTML = "<tr><td colspan='8' style='text-align:center;'>Memuat...</td></tr>";
         listeners[path] = db.ref(path).limitToLast(100);
-        listeners[path].on('value', s => renderTable(s, tableId, path, countId));
+        listeners[path].on('value', s => render(s, tableId, path));
     }
 
-    function loadByDate(path, tableId, dateInputId, countId) {
-        const dateVal = document.getElementById(dateInputId).value;
-        if(!dateVal) return alert("Pilih tanggal dulu!");
+    function loadData(path, tableId, dateId) {
+        const d = document.getElementById(dateId).value;
+        if(!d) return alert("Pilih tanggal!");
         if(listeners[path]) db.ref(path).off();
-        document.getElementById(tableId).innerHTML = "<tr><td colspan='8' style='text-align:center;'>Mencari...</td></tr>";
-        listeners[path] = db.ref(path).orderByChild('tgl').equalTo(dateVal);
-        listeners[path].on('value', s => renderTable(s, tableId, path, countId));
+        listeners[path] = db.ref(path).orderByChild('tgl').equalTo(d);
+        listeners[path].on('value', s => render(s, tableId, path));
     }
 
-    function upd(path, key, st) { db.ref(path+'/'+key).update({status: st}); }
-    function del(path, key) { if(confirm("Hapus?")) db.ref(path+'/'+key).remove(); }
-    function cleanData() { if(confirm("Hapus data > 30 hari?")) alert("Fitur clean dijalankan."); }
-
-    // --- SETTINGS ---
-    const fields = ['app_name','logo_url','header_bg','announcement','welcome_msg',
-                    'kop_1','kop_2','kop_3','kop_4', 
-                    'sch_pidum', 'sch_narkoba', 'sch_mon_am','sch_mon_pm','sch_fri','sch_sat','sch_sun',
-                    'txt_doc','txt_item','toko_announce','toko_link',
-                    'wa_pengaduan', 'wa_channel', 'soc_ig','soc_fb','soc_tw','soc_yt'];
+    function upd(path, st) { db.ref(path).update({status:st}); }
+    function del(path) { if(confirm("Hapus?")) db.ref(path).remove(); }
 
     function loadSettings() {
         db.ref('app_config').once('value', s => {
             if(s.exists()) {
                 const d = s.val();
-                fields.forEach(f => { if(document.getElementById(f)) document.getElementById(f).value = d[f] || ""; });
+                ['app_name','kop_1','kop_2','kop_3','kop_4'].forEach(k => { if(document.getElementById(k)) document.getElementById(k).value = d[k] || ""; });
             }
         });
     }
-
-    function saveData() {
-        const data = {};
-        fields.forEach(f => { if(document.getElementById(f)) data[f] = document.getElementById(f).value; });
-        db.ref('app_config').update(data).then(() => alert("Tersimpan!"));
+    function saveSettings() {
+        const d = {};
+        ['app_name','kop_1','kop_2','kop_3','kop_4'].forEach(k => d[k] = document.getElementById(k).value);
+        db.ref('app_config').update(d).then(()=>alert("Disimpan"));
     }
 
-    // --- PRINT PDF (MANUAL SCRAPING METHOD) ---
-    function printPDF(tbodyId, title, inputNamaId, inputNipId) {
+    function printPDF(tbodyId, title, pId, nId) {
         const { jsPDF } = window.jspdf;
-        const doc = new jsPDF('l', 'mm', 'a4');
-        const cx = 148; 
+        const doc = new jsPDF('l','mm','a4');
+        const cx = 148;
 
-        const petugas = document.getElementById(inputNamaId).value;
-        const nip = document.getElementById(inputNipId).value;
         const k1 = document.getElementById('kop_1').value || "";
         const k2 = document.getElementById('kop_2').value || "";
         const k3 = document.getElementById('kop_3').value || "";
         const k4 = document.getElementById('kop_4').value || "";
+        const ptg = document.getElementById(pId).value;
+        const nip = document.getElementById(nId).value;
 
-        if(!petugas) { alert("Nama Petugas wajib diisi!"); return; }
+        doc.setFontSize(14); doc.text(k1, cx, 15, 'center');
+        doc.text(k2, cx, 22, 'center');
+        doc.setFontSize(16); doc.text(k3, cx, 30, 'center');
+        doc.setFontSize(10); doc.text(k4, cx, 37, 'center');
+        doc.line(20,42,277,42);
 
-        doc.setFont("times", "bold"); doc.setFontSize(14);
-        doc.text(k1.toUpperCase(), cx, 15, { align: "center" });
-        doc.text(k2.toUpperCase(), cx, 22, { align: "center" });
-        doc.setFontSize(16);
-        doc.text(k3.toUpperCase(), cx, 30, { align: "center" });
-        doc.setFontSize(11); doc.setFont("times", "normal");
-        doc.text(k4, cx, 37, { align: "center" });
-        doc.setLineWidth(0.5); doc.line(20, 42, 277, 42); 
+        doc.setFontSize(14); doc.text(title, cx, 55, 'center');
 
-        doc.setFont("helvetica", "bold"); doc.setFontSize(12);
-        doc.text(title.toUpperCase(), cx, 52, { align: "center" });
-        doc.setFontSize(10); doc.setFont("helvetica", "normal");
-        doc.text("Dicetak: " + new Date().toLocaleString('id-ID'), cx, 58, { align: "center" });
-
-        // --- MANUAL DATA EXTRACTION ---
         const rows = [];
-        const trs = document.querySelectorAll(`#${tbodyId} tr`);
-        
-        trs.forEach(tr => {
+        document.querySelectorAll(`#${tbodyId} tr`).forEach(tr => {
             const tds = tr.querySelectorAll('td');
-            if(tds.length > 1) { // Skip empty/loading rows
-                rows.push([
-                    tds[0].innerText, // Antrian
-                    tds[1].innerText, // Waktu
-                    tds[2].innerText, // Nama
-                    tds[3].innerText, // NIK
-                    tds[4].innerText, // Alamat
-                    tds[5].innerText, // Tujuan
-                    tds[6].innerText  // Status
-                ]);
-            }
+            if(tds.length>1) rows.push([tds[0].innerText, tds[1].innerText, tds[2].innerText, tds[3].innerText, tds[4].innerText]);
         });
 
-        doc.autoTable({ 
-            head: [['ANTRIAN', 'WAKTU', 'PENGUNJUNG', 'NIK', 'ALAMAT', 'TUJUAN', 'STATUS']],
-            body: rows,
-            startY: 65, 
-            theme: 'plain', 
-            headStyles: { fillColor: [230,230,230], textColor: 0, lineWidth:0.1, lineColor: 150 },
-            bodyStyles: { lineWidth:0.1, lineColor: 200 },
-            styles: { fontSize: 9, font: 'times', cellPadding: 2, valign: 'middle' },
-            columnStyles: { 4: { cellWidth: 50 } } // Alamat lebih lebar
+        doc.autoTable({
+            head: [['ANTRIAN','WAKTU','DATA PENGUNJUNG','TUJUAN','STATUS']],
+            body: rows, startY: 65, theme: 'grid'
         });
 
-        let fy = doc.lastAutoTable.finalY + 20;
-        if(fy > 170) { doc.addPage(); fy=20; }
-        const dateStr = new Date().toLocaleDateString('id-ID', { year: 'numeric', month: 'long', day: 'numeric' });
-        doc.setFont("times", "normal");
-        doc.text(`Arga Makmur, ${dateStr}`, 220, fy);
-        doc.text("Petugas,", 220, fy + 5);
-        doc.setFont("times", "bold");
-        doc.text(`( ${petugas} )`, 220, fy + 25);
-        doc.setFont("times", "normal");
-        doc.text(`NIP. ${nip}`, 220, fy + 30);
-        doc.save(title.replace(/ /g,"_") + ".pdf");
+        const fy = doc.lastAutoTable.finalY + 20;
+        doc.text(`Arga Makmur, ${new Date().toLocaleDateString('id-ID')}`, 220, fy);
+        doc.text("Petugas,", 220, fy+7);
+        doc.text(`( ${ptg} )`, 220, fy+30);
+        doc.text(`NIP. ${nip}`, 220, fy+35);
+        
+        doc.save('Laporan.pdf');
     }
 </script>
 </body>
