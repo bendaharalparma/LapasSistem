@@ -24,7 +24,6 @@
         input, textarea { width: 100%; padding: 10px; margin-top: 5px; border: 1px solid #ccc; border-radius: 6px; box-sizing: border-box; }
         .save { background: #28a745; color: white; border: none; padding: 15px; width: 100%; margin-top: 25px; border-radius: 8px; font-weight: bold; cursor: pointer; }
         
-        /* TOOLS & TABLE */
         .filter-bar { background: #fff3cd; padding: 15px; border-radius: 8px; border: 1px solid #ffeeba; display: flex; align-items: flex-end; gap: 10px; margin-bottom: 15px; flex-wrap: wrap; }
         .btn-search { background: #8B0000; color: white; border: none; padding: 10px 15px; border-radius: 5px; cursor: pointer; height: 42px; font-weight: 600; }
         .btn-reset { background: #666; color: white; border: none; padding: 10px 15px; border-radius: 5px; cursor: pointer; height: 42px; }
@@ -91,10 +90,8 @@
         <label>Syarat & Toko:</label>
         <textarea id="txt_doc" placeholder="Syarat Dokumen"></textarea>
         <textarea id="txt_item" placeholder="Syarat Barang" style="margin-top:5px;"></textarea>
-        
-        <label style="color:#8B0000; margin-top:20px;">Toko Lapas:</label>
-        <textarea id="toko_announce" placeholder="Pengumuman Toko"></textarea>
-        <input id="toko_link" placeholder="Link Aplikasi Toko">
+        <textarea id="toko_announce" placeholder="Info Toko" style="margin-top:5px;"></textarea>
+        <input id="toko_link" placeholder="Link Toko" style="margin-top:5px;">
 
         <h3>3. Kontak</h3>
         <div style="display:flex; gap:10px;"><input id="wa_pengaduan" placeholder="WA Pengaduan"><input id="wa_channel" placeholder="Channel WA"></div>
@@ -148,9 +145,16 @@
 </div>
 
 <script>
-    // --- 1. KONFIGURASI FIREBASE ---
+    // --- TEMPEL FIREBASE CONFIG ANDA DI SINI ---
     const firebaseConfig = {
-        databaseURL: "https://GANTI-DENGAN-LINK-DATABASE-ANDA-DISINI.firebasedatabase.app/" 
+        apiKey: "AIzaSyDvpFZtiG_fXLOf8okjafNm7gqbJZr2pSY",
+        authDomain: "lapassistem.firebaseapp.com",
+        databaseURL: "https://lapassistem-default-rtdb.asia-southeast1.firebasedatabase.app",
+        projectId: "lapassistem",
+        storageBucket: "lapassistem.firebasestorage.app",
+        messagingSenderId: "951059663532",
+        appId: "1:951059663532:web:716bc3010eecc741a4ed09",
+        measurementId: "G-25HSNZ35ZH"
     };
 
     if (!firebase.apps.length) firebase.initializeApp(firebaseConfig);
@@ -158,13 +162,11 @@
     const db = firebase.database();
     let listeners = {};
 
-    // --- 2. CEK STATUS LOGIN ---
     auth.onAuthStateChanged(u => {
         if(u) {
             document.getElementById('login-box').style.display='none';
             document.getElementById('panel-box').style.display='block';
             loadSettings(); 
-            // Load Data Awal
             resetLive('registrations', 'tb_fisik', 'cnt_fisik');
             resetLive('online_registrations', 'tb_online', 'cnt_online');
         } else {
@@ -185,13 +187,13 @@
         if(t=='data_online') document.getElementById('t3').className += ' active';
     }
 
-    // --- 3. RENDER TABEL (Cara Aman Agar Data Tidak Tertimpa) ---
+    // --- RENDER TABLE FIXED (ACCUMULATOR METHOD) ---
     function renderTable(snapshot, tableId, path, countId) {
         const tb = document.getElementById(tableId);
         const cnt = document.getElementById(countId);
         
         if(!snapshot.exists()) {
-            tb.innerHTML = "<tr><td colspan='8' style='text-align:center; padding:20px; color:#999;'>Belum ada data pendaftaran.</td></tr>";
+            tb.innerHTML = "<tr><td colspan='8' style='text-align:center; padding:20px; color:#999;'>Tidak ada data.</td></tr>";
             cnt.innerText = "Total: 0 Data";
             return;
         }
@@ -202,8 +204,6 @@
         cnt.innerText = `Menampilkan ${arr.length} Data Terbaru`;
         
         let html = ""; 
-        
-        // Loop Data (Reverse agar yang baru paling atas)
         arr.reverse().forEach(v => {
             let statusBadge = v.status === 'accepted' ? '<span class="badge bg-acc">Diterima</span>' : 
                               v.status === 'rejected' ? '<span class="badge bg-rej">Ditolak</span>' : 
@@ -220,23 +220,22 @@
                     <td>${statusBadge}</td>
                     <td>
                         <div style="display:flex; gap:3px;">
-                            <button class="btn-mini btn-ok" title="Terima" onclick="upd('${path}','${v.key}','accepted')">✅</button>
-                            <button class="btn-mini btn-no" title="Tolak" onclick="upd('${path}','${v.key}','rejected')">❌</button>
-                            <button class="btn-mini btn-del" title="Hapus" onclick="del('${path}','${v.key}')">🗑️</button>
+                            <button class="btn-mini btn-ok" onclick="upd('${path}','${v.key}','accepted')">✅</button>
+                            <button class="btn-mini btn-no" onclick="upd('${path}','${v.key}','rejected')">❌</button>
+                            <button class="btn-mini btn-del" onclick="del('${path}','${v.key}')">🗑️</button>
                         </div>
                     </td>
                 </tr>
             `;
         });
         
-        tb.innerHTML = html; 
+        tb.innerHTML = html;
     }
 
-    // --- 4. LOGIC DATA & LISTENER ---
     function resetLive(path, tableId, countId) {
         if(listeners[path]) db.ref(path).off();
         const tb = document.getElementById(tableId);
-        tb.innerHTML = "<tr><td colspan='8' style='text-align:center;'>Memuat data...</td></tr>";
+        tb.innerHTML = "<tr><td colspan='8' style='text-align:center;'>Memuat...</td></tr>";
         listeners[path] = db.ref(path).limitToLast(100);
         listeners[path].on('value', s => renderTable(s, tableId, path, countId));
     }
@@ -245,100 +244,16 @@
         const dateVal = document.getElementById(dateInputId).value;
         if(!dateVal) return alert("Pilih tanggal dulu!");
         if(listeners[path]) db.ref(path).off();
-        document.getElementById(tableId).innerHTML = "<tr><td colspan='8' style='text-align:center;'>Mencari data...</td></tr>";
+        document.getElementById(tableId).innerHTML = "<tr><td colspan='8' style='text-align:center;'>Mencari...</td></tr>";
         listeners[path] = db.ref(path).orderByChild('tgl').equalTo(dateVal);
         listeners[path].on('value', s => renderTable(s, tableId, path, countId));
     }
 
     function upd(path, key, st) { db.ref(path+'/'+key).update({status: st}); }
-    function del(path, key) { if(confirm("Yakin hapus data ini?")) db.ref(path+'/'+key).remove(); }
+    function del(path, key) { if(confirm("Hapus?")) db.ref(path+'/'+key).remove(); }
     function cleanData() { if(confirm("Hapus data > 30 hari?")) alert("Fitur clean dijalankan."); }
 
-    // --- 5. PRINT PDF (METODE MANUAL SCRAPING - PASTI BERHASIL) ---
-    function printPDF(tbodyId, title, inputNamaId, inputNipId) {
-        const { jsPDF } = window.jspdf;
-        const doc = new jsPDF('l', 'mm', 'a4'); // Landscape
-        const cx = 148; 
-
-        // Ambil Data Header
-        const petugas = document.getElementById(inputNamaId).value;
-        const nip = document.getElementById(inputNipId).value;
-        const k1 = document.getElementById('kop_1').value || "";
-        const k2 = document.getElementById('kop_2').value || "";
-        const k3 = document.getElementById('kop_3').value || "";
-        const k4 = document.getElementById('kop_4').value || "";
-
-        if(!petugas) { alert("Nama Petugas wajib diisi!"); return; }
-
-        // --- HEADER KOP SURAT ---
-        doc.setFont("times", "bold"); doc.setFontSize(14);
-        doc.text(k1.toUpperCase(), cx, 15, { align: "center" });
-        doc.text(k2.toUpperCase(), cx, 22, { align: "center" });
-        doc.setFontSize(16);
-        doc.text(k3.toUpperCase(), cx, 30, { align: "center" });
-        doc.setFontSize(11); doc.setFont("times", "normal");
-        doc.text(k4, cx, 37, { align: "center" });
-        doc.setLineWidth(0.5); doc.line(20, 42, 277, 42); 
-
-        doc.setFont("helvetica", "bold"); doc.setFontSize(12);
-        doc.text(title.toUpperCase(), cx, 52, { align: "center" });
-        doc.setFontSize(10); doc.setFont("helvetica", "normal");
-        doc.text("Dicetak: " + new Date().toLocaleString('id-ID'), cx, 58, { align: "center" });
-
-        // --- PENGAMBILAN DATA MANUAL (INI SOLUSINYA) ---
-        // Kita ambil data langsung dari HTML per baris
-        const rows = [];
-        const trs = document.querySelectorAll(`#${tbodyId} tr`);
-        
-        trs.forEach(tr => {
-            const tds = tr.querySelectorAll('td');
-            // Pastikan ini bukan baris kosong "Tidak ada data"
-            if(tds.length > 1) {
-                const rowData = [
-                    tds[0].innerText, // Antrian
-                    tds[1].innerText, // Waktu
-                    tds[2].innerText, // Nama & HP
-                    tds[3].innerText, // NIK
-                    tds[4].innerText, // Alamat
-                    tds[5].innerText, // Tujuan
-                    tds[6].innerText  // Status
-                ];
-                rows.push(rowData);
-            }
-        });
-
-        // --- GENERATE TABEL PDF ---
-        doc.autoTable({ 
-            head: [['ANTRIAN', 'WAKTU', 'PENGUNJUNG', 'NIK', 'ALAMAT', 'TUJUAN', 'STATUS']],
-            body: rows, // Masukkan data manual tadi
-            startY: 65, 
-            theme: 'plain', 
-            headStyles: { fillColor: [230,230,230], textColor: 0, lineWidth:0.1, lineColor: 150 },
-            bodyStyles: { lineWidth:0.1, lineColor: 200 },
-            styles: { fontSize: 9, font: 'times', cellPadding: 2, valign: 'middle' },
-            columnStyles: {
-                0: { cellWidth: 25, fontStyle: 'bold' }, // Antrian
-                1: { cellWidth: 30 }, // Waktu
-                4: { cellWidth: 50 }  // Alamat (lebih lebar)
-            }
-        });
-
-        // --- FOOTER TANDA TANGAN ---
-        let fy = doc.lastAutoTable.finalY + 20;
-        if(fy > 170) { doc.addPage(); fy=20; }
-        const dateStr = new Date().toLocaleDateString('id-ID', { year: 'numeric', month: 'long', day: 'numeric' });
-        
-        doc.setFont("times", "normal");
-        doc.text(`Arga Makmur, ${dateStr}`, 220, fy);
-        doc.text("Petugas,", 220, fy + 5);
-        doc.setFont("times", "bold");
-        doc.text(`( ${petugas} )`, 220, fy + 25);
-        doc.setFont("times", "normal");
-        doc.text(`NIP. ${nip}`, 220, fy + 30);
-        doc.save(title.replace(/ /g,"_") + ".pdf");
-    }
-
-    // --- 6. SETTINGS LOAD/SAVE ---
+    // --- SETTINGS ---
     const fields = ['app_name','logo_url','header_bg','announcement','welcome_msg',
                     'kop_1','kop_2','kop_3','kop_4', 
                     'sch_pidum', 'sch_narkoba', 'sch_mon_am','sch_mon_pm','sch_fri','sch_sat','sch_sun',
@@ -359,7 +274,78 @@
         fields.forEach(f => { if(document.getElementById(f)) data[f] = document.getElementById(f).value; });
         db.ref('app_config').update(data).then(() => alert("Tersimpan!"));
     }
+
+    // --- PRINT PDF (MANUAL SCRAPING METHOD) ---
+    function printPDF(tbodyId, title, inputNamaId, inputNipId) {
+        const { jsPDF } = window.jspdf;
+        const doc = new jsPDF('l', 'mm', 'a4');
+        const cx = 148; 
+
+        const petugas = document.getElementById(inputNamaId).value;
+        const nip = document.getElementById(inputNipId).value;
+        const k1 = document.getElementById('kop_1').value || "";
+        const k2 = document.getElementById('kop_2').value || "";
+        const k3 = document.getElementById('kop_3').value || "";
+        const k4 = document.getElementById('kop_4').value || "";
+
+        if(!petugas) { alert("Nama Petugas wajib diisi!"); return; }
+
+        doc.setFont("times", "bold"); doc.setFontSize(14);
+        doc.text(k1.toUpperCase(), cx, 15, { align: "center" });
+        doc.text(k2.toUpperCase(), cx, 22, { align: "center" });
+        doc.setFontSize(16);
+        doc.text(k3.toUpperCase(), cx, 30, { align: "center" });
+        doc.setFontSize(11); doc.setFont("times", "normal");
+        doc.text(k4, cx, 37, { align: "center" });
+        doc.setLineWidth(0.5); doc.line(20, 42, 277, 42); 
+
+        doc.setFont("helvetica", "bold"); doc.setFontSize(12);
+        doc.text(title.toUpperCase(), cx, 52, { align: "center" });
+        doc.setFontSize(10); doc.setFont("helvetica", "normal");
+        doc.text("Dicetak: " + new Date().toLocaleString('id-ID'), cx, 58, { align: "center" });
+
+        // --- MANUAL DATA EXTRACTION ---
+        const rows = [];
+        const trs = document.querySelectorAll(`#${tbodyId} tr`);
+        
+        trs.forEach(tr => {
+            const tds = tr.querySelectorAll('td');
+            if(tds.length > 1) { // Skip empty/loading rows
+                rows.push([
+                    tds[0].innerText, // Antrian
+                    tds[1].innerText, // Waktu
+                    tds[2].innerText, // Nama
+                    tds[3].innerText, // NIK
+                    tds[4].innerText, // Alamat
+                    tds[5].innerText, // Tujuan
+                    tds[6].innerText  // Status
+                ]);
+            }
+        });
+
+        doc.autoTable({ 
+            head: [['ANTRIAN', 'WAKTU', 'PENGUNJUNG', 'NIK', 'ALAMAT', 'TUJUAN', 'STATUS']],
+            body: rows,
+            startY: 65, 
+            theme: 'plain', 
+            headStyles: { fillColor: [230,230,230], textColor: 0, lineWidth:0.1, lineColor: 150 },
+            bodyStyles: { lineWidth:0.1, lineColor: 200 },
+            styles: { fontSize: 9, font: 'times', cellPadding: 2, valign: 'middle' },
+            columnStyles: { 4: { cellWidth: 50 } } // Alamat lebih lebar
+        });
+
+        let fy = doc.lastAutoTable.finalY + 20;
+        if(fy > 170) { doc.addPage(); fy=20; }
+        const dateStr = new Date().toLocaleDateString('id-ID', { year: 'numeric', month: 'long', day: 'numeric' });
+        doc.setFont("times", "normal");
+        doc.text(`Arga Makmur, ${dateStr}`, 220, fy);
+        doc.text("Petugas,", 220, fy + 5);
+        doc.setFont("times", "bold");
+        doc.text(`( ${petugas} )`, 220, fy + 25);
+        doc.setFont("times", "normal");
+        doc.text(`NIP. ${nip}`, 220, fy + 30);
+        doc.save(title.replace(/ /g,"_") + ".pdf");
+    }
 </script>
 </body>
 </html>
-
