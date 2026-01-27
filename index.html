@@ -294,52 +294,66 @@ const firebaseConfig = {
             chatBox.appendChild(div);
         }
 
-        window.submitForm = function(type) {
-            const nama = document.getElementById('f_nama').value;
-            const nik = document.getElementById('f_nik').value;
-            const alamat = document.getElementById('f_alamat').value;
-            const telp = document.getElementById('f_telp').value;
-            const wbp = document.getElementById('f_wbp').value;
-            const tgl = document.getElementById('f_tgl').value;
-            const jam = document.getElementById('f_jam').value;
+        // --- UPDATE LOGIKA NOMOR ANTRIAN (PAGI/SIANG PISAH) ---
+    window.submitForm = function(type) {
+        const nama = document.getElementById('f_nama').value;
+        const nik = document.getElementById('f_nik').value;
+        const alamat = document.getElementById('f_alamat').value;
+        const telp = document.getElementById('f_telp').value;
+        const wbp = document.getElementById('f_wbp').value;
+        const tgl = document.getElementById('f_tgl').value;
+        const jam = document.getElementById('f_jam').value;
 
-            if(!nama || !nik || !alamat || !wbp || !tgl || !telp) return alert("Mohon lengkapi semua data!");
+        if(!nama || !nik || !alamat || !wbp || !tgl || !telp) return alert("Mohon lengkapi semua data!");
 
-            const path = type === 'fisik' ? 'registrations' : 'online_registrations';
-            const prefix = type === 'fisik' ? 'A-' : 'V-';
-            const label = type === 'fisik' ? 'Tatap Muka' : 'Video Call';
-            
-            const btnSubmit = document.querySelector('.submit-btn');
-            btnSubmit.innerHTML = "Memproses..."; btnSubmit.disabled = true;
+        const path = type === 'fisik' ? 'registrations' : 'online_registrations';
+        const prefix = type === 'fisik' ? 'A-' : 'V-'; // A = Antrian Fisik, V = Video Call
+        const label = type === 'fisik' ? 'Tatap Muka' : 'Video Call';
+        
+        // Kode Sesi: P = Pagi, S = Siang
+        const sesiCode = jam === 'Pagi' ? 'P' : 'S';
 
-            const todayStr = tgl;
-            db.ref(`counters/${todayStr}/${type}`).transaction(curr => (curr || 0) + 1, (err, committed, snap) => {
-                if (committed) {
-                    const noAntrian = prefix + String(snap.val()).padStart(3, '0');
-                    db.ref(path).push({
-                        nama, nik, alamat, telp, wbp, tgl, jam, noAntrian,
-                        createdAt: firebase.database.ServerValue.TIMESTAMP
-                    }).then(() => {
-                        chatBox.innerHTML = '';
-                        const tiketHtml = `
-                        <div class="ticket-card">
-                            <div class="ticket-title">ANTRIAN ${label.toUpperCase()}</div>
-                            <div class="ticket-number">${noAntrian}</div>
-                            <div style="font-size:12px; color:#555; line-height:1.5;">
-                                <b>${nama}</b><br>Tujuan: ${wbp}<br>${tgl} (${jam})
-                            </div>
-                            <button onclick="window.print()" style="margin-top:10px; padding:8px; background:#333; color:white; border:none; border-radius:5px; font-size:12px;">Simpan Bukti (PDF)</button>
-                        </div>`;
-                        appendMsg('bot', `✅ **Berhasil!** Simpan nomor antrian ini:`, { customHtml: tiketHtml });
-                        showBtn([{text:"⬅️ Kembali ke Menu Utama", val:"start"}]);
-                    });
-                } else {
-                    btnSubmit.innerHTML = "Coba Lagi"; btnSubmit.disabled = false;
-                    alert("Gagal koneksi, coba lagi.");
-                }
-            });
-        }
-    });
+        const btnSubmit = document.querySelector('.submit-btn');
+        btnSubmit.innerHTML = "Memproses..."; btnSubmit.disabled = true;
+
+        const todayStr = tgl;
+        
+        // Simpan counter di folder terpisah: counters/2023-10-20/fisik/Pagi
+        db.ref(`counters/${todayStr}/${type}/${jam}`).transaction(curr => (curr || 0) + 1, (err, committed, snap) => {
+            if (committed) {
+                const urutan = snap.val();
+                // FORMAT NOMOR BARU: A-P-001 (Antrian - Pagi - 001)
+                const noAntrian = `${prefix}${sesiCode}-${String(urutan).padStart(3, '0')}`;
+
+                db.ref(path).push({
+                    nama, nik, alamat, telp, wbp, tgl, jam, noAntrian,
+                    createdAt: firebase.database.ServerValue.TIMESTAMP,
+                    status: 'waiting' // Default status menunggu
+                }).then(() => {
+                    document.getElementById('chat-box').innerHTML = '';
+                    
+                    const tiketHtml = `
+                    <div class="ticket-card">
+                        <div class="ticket-title">ANTRIAN ${label.toUpperCase()}</div>
+                        <div style="font-size:14px; margin-bottom:5px; color:#555;">Sesi: ${jam.toUpperCase()}</div>
+                        <div class="ticket-number">${noAntrian}</div>
+                        <div style="font-size:12px; color:#555; line-height:1.5; border-top:1px dashed #ccc; padding-top:10px; margin-top:10px;">
+                            <b>${nama}</b><br>
+                            Mengunjungi: <b>${wbp}</b><br>
+                            ${tgl}
+                        </div>
+                        <button onclick="window.print()" style="margin-top:15px; padding:10px; background:#333; color:white; border:none; border-radius:5px; font-size:12px; width:100%;">📸 Screenshot / Cetak Bukti</button>
+                    </div>`;
+                    
+                    appendMsg('bot', `✅ **Pendaftaran Berhasil!**\nNomor antrian Anda untuk sesi **${jam}** adalah:`, { customHtml: tiketHtml });
+                    showBtn([{text:"⬅️ Kembali ke Menu Utama", val:"start"}]);
+                });
+            } else {
+                btnSubmit.innerHTML = "Coba Lagi"; btnSubmit.disabled = false;
+                alert("Gagal koneksi. Silakan coba lagi.");
+            }
+        });
+    }
 
     // --- STRUKTUR MENU (TERPISAH AGAR RAPI) ---
     function getMenu(cfg) {
@@ -401,4 +415,5 @@ const firebaseConfig = {
 </script>
 </body>
 </html>
+
 
