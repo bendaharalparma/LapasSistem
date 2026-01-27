@@ -13,7 +13,7 @@
     
     <style>
         body { font-family: 'Poppins', sans-serif; background: #f0f2f5; padding: 20px; }
-        .container { max-width: 1000px; margin: 0 auto; background: white; padding: 30px; border-radius: 12px; box-shadow: 0 5px 15px rgba(0,0,0,0.05); }
+        .container { max-width: 1100px; margin: 0 auto; background: white; padding: 30px; border-radius: 12px; box-shadow: 0 5px 15px rgba(0,0,0,0.05); }
         .tab-btn { padding: 12px 25px; background: #e0e0e0; border: none; cursor: pointer; font-weight: 600; margin-right: 5px; border-radius: 8px 8px 0 0; color: #555; transition: 0.2s; }
         .tab-btn.active { background: #8B0000; color: white; }
         h3 { border-bottom: 2px solid #8B0000; padding-bottom: 8px; color: #8B0000; margin-top: 30px; font-size: 16px; }
@@ -22,11 +22,22 @@
         
         button { cursor: pointer; transition: 0.2s; }
         .save { background: #28a745; color: white; border: none; padding: 15px; width: 100%; margin-top: 25px; border-radius: 8px; font-weight: bold; font-size: 15px; }
-        .del { background: #dc3545; color: white; border: none; padding: 6px 12px; border-radius: 4px; font-size: 12px; }
         .pdf-btn { background: #FF5722; color: white; border: none; padding: 8px 16px; border-radius: 5px; font-size: 13px; margin-left: 10px; }
         
+        /* TOMBOL AKSI KECIL */
+        .btn-mini { padding: 6px 10px; border: none; border-radius: 4px; color: white; cursor: pointer; font-size: 14px; margin-right: 3px; }
+        .btn-ok { background: #28a745; } /* Hijau */
+        .btn-no { background: #ffc107; color: #333; } /* Kuning */
+        .btn-del { background: #dc3545; } /* Merah */
+
+        /* BADGE STATUS */
+        .badge { padding: 4px 8px; border-radius: 12px; font-size: 11px; font-weight: bold; color: white; display: inline-block; width: 80px; text-align: center; }
+        .bg-wait { background: #6c757d; } /* Abu */
+        .bg-acc { background: #28a745; } /* Hijau */
+        .bg-rej { background: #dc3545; } /* Merah */
+        
         table { width: 100%; border-collapse: collapse; margin-top: 15px; font-size: 12px; }
-        th, td { border: 1px solid #eee; padding: 10px; text-align: left; }
+        th, td { border: 1px solid #eee; padding: 10px; text-align: left; vertical-align: middle; }
         th { background: #8B0000; color: white; }
         tr:nth-child(even) { background: #f9f9f9; }
         
@@ -96,17 +107,17 @@
     <div id="tab-data_fisik" style="display:none;">
         <div class="print-controls">
             <div style="flex:1">
-                <label style="margin-top:0">Nama Petugas (Untuk Tanda Tangan):</label>
-                <input id="petugas_fisik" placeholder="Contoh: JAKA SURYADINATA" style="margin-top:5px;">
+                <label style="margin-top:0">Nama Petugas:</label>
+                <input id="petugas_fisik" placeholder="Contoh: Budi Santoso, S.H." style="margin-top:5px;">
             </div>
             <div style="flex:1">
-                <label style="margin-top:0">NIP:</label>
-                <input id="nip_fisik" placeholder="Contoh: 199805252017121001" style="margin-top:5px;">
+                <label style="margin-top:0">NIP / Jabatan:</label>
+                <input id="nip_fisik" placeholder="Contoh: Staff KPLP" style="margin-top:5px;">
             </div>
             <button class="pdf-btn" onclick="printPDF('tb_fisik', 'Laporan_Tatap_Muka', 'petugas_fisik', 'nip_fisik')">🖨️ Cetak PDF</button>
         </div>
         <table id="table_fisik">
-            <thead><tr><th>Antrian</th><th>Tgl/Jam</th><th>Nama</th><th>Alamat</th><th>NIK</th><th>No. HP</th><th>WBP (Bin)</th><th>Aksi</th></tr></thead>
+            <thead><tr><th>Antrian</th><th>Tgl/Jam</th><th>Nama</th><th>WBP (Bin)</th><th>Status</th><th>Aksi</th></tr></thead>
             <tbody id="tb_fisik"></tbody>
         </table>
     </div>
@@ -114,17 +125,17 @@
     <div id="tab-data_online" style="display:none;">
         <div class="print-controls">
             <div style="flex:1">
-                <label style="margin-top:0">Nama Petugas (Untuk Tanda Tangan):</label>
-                <input id="petugas_online" placeholder="Contoh: JAKA SURYADINATA" style="margin-top:5px;">
+                <label style="margin-top:0">Nama Petugas:</label>
+                <input id="petugas_online" placeholder="Contoh: Siti Aminah" style="margin-top:5px;">
             </div>
             <div style="flex:1">
-                <label style="margin-top:0">NIP:</label>
-                <input id="nip_online" placeholder="Contoh: 199805252017121001" style="margin-top:5px;">
+                <label style="margin-top:0">NIP / Jabatan:</label>
+                <input id="nip_online" placeholder="Contoh: Staff Registrasi" style="margin-top:5px;">
             </div>
             <button class="pdf-btn" onclick="printPDF('tb_online', 'Laporan_Online_VC', 'petugas_online', 'nip_online')">🖨️ Cetak PDF</button>
         </div>
         <table id="table_online">
-            <thead><tr><th>Antrian</th><th>Tgl/Jam</th><th>Nama</th><th>Alamat</th><th>NIK</th><th>No. HP</th><th>WBP (Bin)</th><th>Aksi</th></tr></thead>
+            <thead><tr><th>Antrian</th><th>Tgl/Jam</th><th>Nama</th><th>WBP (Bin)</th><th>Status</th><th>Aksi</th></tr></thead>
             <tbody id="tb_online"></tbody>
         </table>
     </div>
@@ -170,7 +181,7 @@
         if(t=='data_online') document.getElementById('t3').className += ' active';
     }
 
-    const fields = ['app_name','logo_url','header_bg','announcement','welcome_msg', // Added header_bg
+    const fields = ['app_name','logo_url','header_bg','announcement','welcome_msg',
                     'sch_pidum', 'sch_narkoba', 
                     'sch_mon_am','sch_mon_pm','sch_fri','sch_sat','sch_sun',
                     'txt_doc','txt_item','toko_announce','toko_link',
@@ -192,32 +203,49 @@
         db.ref('app_config').set(data).then(() => alert("Tersimpan!"));
     }
 
+    // --- LOAD DATA DENGAN TOMBOL AKSI ---
     function loadData(path, tableId) {
-        // Ambil data, urutkan berdasarkan createdAt
         db.ref(path).limitToLast(100).on('value', s => {
             const tb = document.getElementById(tableId);
             tb.innerHTML = "";
             if(s.exists()) {
-                // Konversi ke Array dan Reverse agar yang baru di atas
                 const arr = [];
                 s.forEach(child => arr.push({key: child.key, ...child.val()}));
                 arr.reverse().forEach(v => {
+                    // Logika Status Badge
+                    let statusBadge = '<span class="badge bg-wait">Menunggu</span>';
+                    if(v.status === 'accepted') statusBadge = '<span class="badge bg-acc">Diterima</span>';
+                    else if(v.status === 'rejected') statusBadge = '<span class="badge bg-rej">Ditolak</span>';
+
                     tb.innerHTML += `<tr>
                         <td><b>${v.noAntrian || '-'}</b></td>
                         <td>${v.tgl} <br> <small>${v.jam || '-'}</small></td>
-                        <td>${v.nama}</td>
-                        <td>${v.alamat || '-'}</td>
-                        <td>${v.nik}</td>
-                        <td>${v.telp}</td>
+                        <td>
+                            <b>${v.nama}</b><br>
+                            <small>NIK: ${v.nik}</small><br>
+                            <small>HP: ${v.telp}</small>
+                        </td>
                         <td>${v.wbp}</td>
-                        <td><button class="del" onclick="del('${path}','${v.key}')">Hapus</button></td>
+                        <td>${statusBadge}</td>
+                        <td>
+                            <div style="display:flex;">
+                                <button class="btn-mini btn-ok" title="Terima / Masuk" onclick="updateStatus('${path}','${v.key}','accepted')">✅</button>
+                                <button class="btn-mini btn-no" title="Tolak" onclick="updateStatus('${path}','${v.key}','rejected')">❌</button>
+                                <button class="btn-mini btn-del" title="Hapus Data" onclick="del('${path}','${v.key}')">🗑️</button>
+                            </div>
+                        </td>
                     </tr>`;
                 });
-            } else tb.innerHTML = "<tr><td colspan='8'>Belum ada data.</td></tr>";
+            } else tb.innerHTML = "<tr><td colspan='6'>Belum ada data.</td></tr>";
         });
     }
 
-    function del(path, key) { if(confirm("Hapus data ini?")) db.ref(path+'/'+key).remove(); }
+    // --- FUNGSI UPDATE STATUS ---
+    function updateStatus(path, key, newStatus) {
+        db.ref(path + '/' + key).update({ status: newStatus });
+    }
+
+    function del(path, key) { if(confirm("Hapus data ini permanen?")) db.ref(path+'/'+key).remove(); }
 
     function cleanData() {
         if(confirm("Hapus data > 30 hari?")) {
@@ -231,46 +259,32 @@
         }
     }
 
-    // --- CETAK PDF DENGAN NAMA PETUGAS ---
     function printPDF(tbodyId, filename, inputNamaId, inputNipId) {
         const { jsPDF } = window.jspdf;
-        const doc = new jsPDF('l', 'mm', 'a4'); // Landscape
+        const doc = new jsPDF('l', 'mm', 'a4');
 
-        // Ambil Nama Petugas
         const petugas = document.getElementById(inputNamaId).value;
         const nip = document.getElementById(inputNipId).value;
 
-        if(!petugas) {
-            alert("Harap isi Nama Petugas terlebih dahulu sebelum mencetak!");
-            return;
-        }
+        if(!petugas) { alert("Harap isi Nama Petugas!"); return; }
 
-        // Header PDF
         doc.setFontSize(14);
         doc.text("LAPORAN " + filename.replace(/_/g, " ").toUpperCase(), 14, 15);
         doc.setFontSize(10);
         doc.text("Dicetak pada: " + new Date().toLocaleString('id-ID'), 14, 22);
 
-        // Tabel Data
         let tableId = tbodyId === 'tb_fisik' ? '#table_fisik' : '#table_online';
         doc.autoTable({ 
-            html: tableId, 
-            startY: 30, 
-            columns: [0, 1, 2, 3, 4, 5, 6], // Exclude tombol aksi
-            theme: 'grid', 
-            styles: { fontSize: 8 }
+            html: tableId, startY: 30, columns: [0, 1, 2, 3, 4], 
+            theme: 'grid', styles: { fontSize: 9 }
         });
 
-        // Area Tanda Tangan (Di bawah tabel)
         let finalY = doc.lastAutoTable.finalY + 20; 
-        
-        // Cek jika halaman tidak cukup
         if (finalY > 180) { doc.addPage(); finalY = 20; }
 
         doc.setFontSize(10);
         doc.text("Arga Makmur, " + new Date().toLocaleDateString('id-ID', { year: 'numeric', month: 'long', day: 'numeric' }), 200, finalY);
         doc.text("Petugas,", 200, finalY + 6);
-        
         doc.text(`( ${petugas} )`, 200, finalY + 25);
         doc.text(`${nip}`, 200, finalY + 30);
 
@@ -279,5 +293,3 @@
 </script>
 </body>
 </html>
-
-
