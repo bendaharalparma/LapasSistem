@@ -14,7 +14,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
     <style>
         body { font-family: 'Poppins', sans-serif; background: #eee; padding: 20px; }
-        .container { max-width: 1000px; margin: 0 auto; background: white; padding: 30px; border-radius: 10px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
+        .container { max-width: 1100px; margin: 0 auto; background: white; padding: 30px; border-radius: 10px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
         .tab-btn { padding: 12px 20px; background: #ddd; border: none; cursor: pointer; font-weight: bold; margin-right: 5px; border-radius: 5px 5px 0 0; }
         .tab-btn.active { background: #8B0000; color: white; }
         h3 { border-bottom: 2px solid #8B0000; padding-bottom: 5px; color: #8B0000; margin-top: 30px; }
@@ -22,12 +22,10 @@
         input, textarea { width: 100%; padding: 10px; margin-top: 5px; border: 1px solid #ccc; border-radius: 5px; box-sizing: border-box; }
         button.save { background: #28a745; color: white; border: none; padding: 15px; width: 100%; margin-top: 20px; font-size: 16px; cursor: pointer; border-radius: 5px; font-weight: bold; }
         button.del { background: #dc3545; color: white; border: none; padding: 5px 10px; border-radius: 4px; cursor: pointer; font-size: 12px; }
-        
         button.pdf-btn { background: #FF5722; color: white; border: none; padding: 8px 15px; border-radius: 5px; cursor: pointer; font-size: 13px; margin-left: 10px; }
-        button.clean-btn { background: #555; color: white; border: none; padding: 8px 15px; border-radius: 5px; cursor: pointer; font-size: 13px; float: right; }
-
-        table { width: 100%; border-collapse: collapse; margin-top: 10px; font-size: 13px; }
-        th, td { border: 1px solid #ddd; padding: 10px; text-align: left; }
+        
+        table { width: 100%; border-collapse: collapse; margin-top: 10px; font-size: 12px; }
+        th, td { border: 1px solid #ddd; padding: 8px; text-align: left; }
         th { background: #8B0000; color: white; }
         tr:nth-child(even) { background: #f9f9f9; }
         #login-box { max-width: 400px; margin: 80px auto; text-align: center; background: white; padding: 40px; border-radius: 10px; }
@@ -46,8 +44,8 @@
     <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px;">
         <h2 style="margin:0; color:#8B0000;">Panel Kontrol</h2>
         <div>
-            <button onclick="cleanData()" class="clean-btn">🧹 Bersihkan Data Lama</button>
-            <button onclick="logout()" style="background:#333; color:white; border:none; padding:8px 20px; border-radius:5px; cursor:pointer; margin-left:10px;">Logout</button>
+            <button onclick="cleanData()" style="background:#555; color:white; border:none; padding:8px 15px; border-radius:5px; cursor:pointer;">🧹 Bersihkan Data</button>
+            <button onclick="logout()" style="background:#333; color:white; border:none; padding:8px 15px; border-radius:5px; cursor:pointer; margin-left:10px;">Logout</button>
         </div>
     </div>
 
@@ -65,6 +63,8 @@
         <label>Ucapan Selamat Datang:</label> <textarea id="welcome_msg"></textarea>
 
         <h3>2. Jadwal Kunjungan</h3>
+        <label>Jadwal PIDUM (Hari):</label> <input id="sch_pidum" placeholder="Contoh: Senin & Rabu">
+        <label>Jadwal NARKOBA (Hari):</label> <input id="sch_narkoba" placeholder="Contoh: Selasa & Kamis">
         <label>Senin - Kamis (Pagi):</label> <input id="sch_mon_am">
         <label>Senin - Kamis (Siang):</label> <input id="sch_mon_pm">
         <label>Jumat (Pagi):</label> <input id="sch_fri">
@@ -76,8 +76,11 @@
         <label>Teks Barang & Makanan:</label> <textarea id="txt_item"></textarea>
         <label>Pengumuman Toko:</label> <textarea id="toko_announce"></textarea>
         <label>Link Toko:</label> <input id="toko_link">
-        <label>Link Sosmed (IG/FB/TW/YT):</label> 
-        <input id="soc_ig" placeholder="Instagram"><input id="soc_fb" placeholder="Facebook"><input id="soc_tw" placeholder="Twitter"><input id="soc_yt" placeholder="Youtube">
+        
+        <h3>4. Kontak & Sosial Media</h3>
+        <label>Teks Pengaduan:</label> <textarea id="txt_contact"></textarea>
+        <label>No WA Pengaduan (628xxx):</label> <input id="wa_pengaduan">
+        <label>Link Saluran WA Lapas:</label> <input id="wa_channel">
 
         <button class="save" onclick="saveData()">💾 SIMPAN PERUBAHAN</button>
     </div>
@@ -88,7 +91,7 @@
             <button class="pdf-btn" onclick="printPDF('tb_fisik', 'Laporan_Tatap_Muka')">📄 Cetak PDF</button>
         </div>
         <table id="table_fisik">
-            <thead><tr><th>Tgl Kunjungan</th><th>Nama Pengunjung</th><th>NIK</th><th>No. HP</th><th>WBP Tujuan</th><th>Aksi</th></tr></thead>
+            <thead><tr><th>Antrian</th><th>Tgl/Jam</th><th>Nama</th><th>Alamat</th><th>NIK</th><th>No. HP</th><th>WBP (Bin)</th><th>Aksi</th></tr></thead>
             <tbody id="tb_fisik"></tbody>
         </table>
     </div>
@@ -99,7 +102,7 @@
             <button class="pdf-btn" onclick="printPDF('tb_online', 'Laporan_Online_VC')">📄 Cetak PDF</button>
         </div>
         <table id="table_online">
-            <thead><tr><th>Tgl Kunjungan</th><th>Nama Pengunjung</th><th>NIK</th><th>No. HP</th><th>WBP Tujuan</th><th>Aksi</th></tr></thead>
+            <thead><tr><th>Antrian</th><th>Tgl/Jam</th><th>Nama</th><th>Alamat</th><th>NIK</th><th>No. HP</th><th>WBP (Bin)</th><th>Aksi</th></tr></thead>
             <tbody id="tb_online"></tbody>
         </table>
     </div>
@@ -133,9 +136,7 @@
         }
     });
 
-    function login() {
-        auth.signInWithEmailAndPassword(document.getElementById('email').value, document.getElementById('pass').value).catch(e => alert(e.message));
-    }
+    function login() { auth.signInWithEmailAndPassword(document.getElementById('email').value, document.getElementById('pass').value).catch(e => alert(e.message)); }
     function logout() { auth.signOut(); }
 
     function showTab(t) {
@@ -148,9 +149,10 @@
     }
 
     const fields = ['app_name','logo_url','announcement','welcome_msg',
+                    'sch_pidum', 'sch_narkoba', // New fields
                     'sch_mon_am','sch_mon_pm','sch_fri','sch_sat','sch_sun',
                     'txt_doc','txt_item','toko_announce','toko_link','txt_contact',
-                    'soc_ig','soc_fb','soc_tw','soc_yt'];
+                    'wa_pengaduan', 'wa_channel']; // New fields
 
     function loadSettings() {
         db.ref('app_config').once('value', s => {
@@ -168,59 +170,48 @@
     }
 
     function loadData(path, tableId) {
-        db.ref(path).limitToLast(100).on('value', s => { // Ambil 100 data terakhir agar ringan
+        db.ref(path).limitToLast(100).on('value', s => {
             const tb = document.getElementById(tableId);
             tb.innerHTML = "";
             if(s.exists()) {
                 Object.entries(s.val()).reverse().forEach(([k, v]) => {
                     tb.innerHTML += `<tr>
-                        <td>${v.tgl}</td><td>${v.nama}</td><td>${v.nik}</td><td>${v.telp}</td><td>${v.wbp}</td>
+                        <td><b>${v.noAntrian || '-'}</b></td>
+                        <td>${v.tgl} <br> <small>${v.jam || '-'}</small></td>
+                        <td>${v.nama}</td>
+                        <td>${v.alamat || '-'}</td>
+                        <td>${v.nik}</td>
+                        <td>${v.telp}</td>
+                        <td>${v.wbp}</td>
                         <td><button class="del" onclick="del('${path}','${k}')">Hapus</button></td>
                     </tr>`;
                 });
-            } else tb.innerHTML = "<tr><td colspan='6'>Belum ada data.</td></tr>";
+            } else tb.innerHTML = "<tr><td colspan='8'>Belum ada data.</td></tr>";
         });
     }
 
-    function del(path, key) {
-        if(confirm("Hapus data ini?")) db.ref(path+'/'+key).remove();
-    }
+    function del(path, key) { if(confirm("Hapus data ini?")) db.ref(path+'/'+key).remove(); }
 
-    // --- FITUR CETAK PDF ---
     function printPDF(tbodyId, filename) {
         const { jsPDF } = window.jspdf;
-        const doc = new jsPDF();
-        
-        // Ambil data dari tabel
+        const doc = new jsPDF('l', 'mm', 'a4'); // Landscape
         doc.text(filename.replace(/_/g, " "), 14, 15);
-        
         let tableId = tbodyId === 'tb_fisik' ? '#table_fisik' : '#table_online';
-        
         doc.autoTable({ 
-            html: tableId,
-            startY: 20,
-            columns: [0, 1, 2, 3, 4], // Jangan cetak kolom aksi (tombol hapus)
-            theme: 'grid',
-            styles: { fontSize: 8 }
+            html: tableId, startY: 20, columns: [0, 1, 2, 3, 4, 5, 6], theme: 'grid', styles: { fontSize: 8 }
         });
-
         doc.save(filename + '.pdf');
     }
 
-    // --- FITUR BERSIH DATA (HEMAT DATABASE) ---
     function cleanData() {
-        if(confirm("PERINGATAN: Ini akan menghapus data kunjungan yang lebih lama dari 30 hari untuk menghemat ruang penyimpanan. Lanjutkan?")) {
-            const now = Date.now();
-            const cutoff = now - (30 * 24 * 60 * 60 * 1000); // 30 Hari yang lalu
-            
+        if(confirm("Hapus data kunjungan > 30 hari?")) {
+            const cutoff = Date.now() - (30 * 24 * 60 * 60 * 1000);
             ['registrations', 'online_registrations'].forEach(path => {
                 db.ref(path).orderByChild('createdAt').endAt(cutoff).once('value', (snap) => {
-                    if(snap.exists()) {
-                        snap.forEach(child => child.ref.remove());
-                    }
+                    if(snap.exists()) snap.forEach(child => child.ref.remove());
                 });
             });
-            alert("Pembersihan selesai! Data lama telah dihapus.");
+            alert("Selesai.");
         }
     }
 </script>
