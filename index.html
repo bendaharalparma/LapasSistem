@@ -3,43 +3,75 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <meta name="theme-color" content="#8B0000">
     <title>Layanan Lapas Digital</title>
     <link rel="manifest" href="manifest.json">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    
     <script defer src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
     <script defer src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
+
     <style>
         * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
-        body { font-family: 'Poppins', sans-serif; background: #eef2f5; margin: 0; min-height: 100vh; display: flex; justify-content: center; }
-        .app-container { width: 100%; max-width: 480px; background: #fff; min-height: 100vh; display: flex; flex-direction: column; }
-        .header { background: #8B0000; color: white; padding: 30px 20px; text-align: center; border-bottom-left-radius: 30px; border-bottom-right-radius: 30px; }
-        .app-name { font-size: 18px; font-weight: bold; margin: 10px 0 0; }
-        #chat-box { flex: 1; padding: 20px; overflow-y: auto; display: flex; flex-direction: column; gap: 10px; }
-        .msg { padding: 12px 16px; border-radius: 16px; font-size: 13px; max-width: 90%; line-height: 1.5; }
-        .bot { background: #f0f2f5; align-self: flex-start; border-top-left-radius: 4px; }
-        .user { background: #ffebee; align-self: flex-end; border-top-right-radius: 4px; border: 1px solid #ffcdd2; color: #8B0000; }
-        .btn { background: white; border: 1px solid #eee; padding: 14px; width: 100%; border-radius: 12px; font-weight: 600; font-size: 13px; color: #444; display: flex; justify-content: space-between; margin-bottom: 8px; cursor: pointer; }
-        .btn:active { background: #f9f9f9; transform: scale(0.98); }
-        .form-box { background: white; padding: 10px; border-radius: 10px; display: flex; flex-direction: column; gap: 10px; border: 1px solid #eee; margin-top: 5px; }
-        .inp { padding: 12px; border: 1px solid #ddd; border-radius: 8px; width: 100%; font-size: 14px; }
-        .submit-btn { background: #28a745; color: white; border: none; padding: 14px; border-radius: 8px; font-weight: bold; width: 100%; margin-top: 5px; cursor: pointer; }
+        body { font-family: 'Poppins', sans-serif; background: #eef2f5; margin: 0; display: flex; justify-content: center; min-height: 100vh; }
+        .app-container { width: 100%; max-width: 480px; background: #fff; min-height: 100vh; display: flex; flex-direction: column; position: relative; box-shadow: 0 0 20px rgba(0,0,0,0.05); }
+        
+        /* HEADER */
+        .header { background: #8B0000; padding: 25px 20px 40px; border-bottom-left-radius: 30px; border-bottom-right-radius: 30px; text-align: center; color: white; position: relative; z-index: 10; }
+        .logo-area { width: 70px; height: 70px; background: white; border-radius: 50%; margin: 0 auto 10px; padding: 5px; box-shadow: 0 4px 10px rgba(0,0,0,0.2); }
+        .logo-area img { width: 100%; height: 100%; object-fit: contain; }
+        .app-title { font-size: 18px; font-weight: 700; margin: 0; }
+        .app-subtitle { font-size: 12px; opacity: 0.9; }
+
+        /* CHAT AREA */
+        #chat-box { flex: 1; padding: 20px; overflow-y: auto; display: flex; flex-direction: column; gap: 12px; margin-top: -20px; padding-top: 30px; }
+        .msg { padding: 12px 16px; border-radius: 16px; font-size: 13.5px; line-height: 1.5; max-width: 88%; animation: popUp 0.3s ease; position: relative; box-shadow: 0 2px 5px rgba(0,0,0,0.05); }
+        .bot { background: #fff; align-self: flex-start; border-top-left-radius: 4px; color: #333; border: 1px solid #eee; }
+        .user { background: #ffebee; align-self: flex-end; border-top-right-radius: 4px; color: #8B0000; border: 1px solid #ffcdd2; }
+
+        /* TOMBOL MENU */
+        .btn { background: white; padding: 14px; width: 100%; border-radius: 12px; font-weight: 600; font-size: 13px; color: #444; display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; cursor: pointer; border: 1px solid #eee; transition: 0.2s; box-shadow: 0 2px 4px rgba(0,0,0,0.02); }
+        .btn:active { transform: scale(0.98); background: #f9f9f9; }
+        .btn i { color: #8B0000; font-size: 16px; }
+        .btn-back { background: #f5f5f5; justify-content: center; color: #666; border: 1px dashed #ccc; margin-top: 10px; }
+
+        /* FORMULIR */
+        .form-box { background: white; padding: 5px; border-radius: 10px; display: flex; flex-direction: column; gap: 10px; }
+        .inp { padding: 12px; border: 1px solid #ddd; border-radius: 8px; width: 100%; font-size: 14px; outline: none; transition: 0.3s; }
+        .inp:focus { border-color: #8B0000; }
+        .submit-btn { background: #28a745; color: white; border: none; padding: 14px; border-radius: 8px; font-weight: bold; width: 100%; margin-top: 5px; cursor: pointer; box-shadow: 0 4px 10px rgba(40,167,69,0.3); }
+
+        /* TICKET & TABLES */
         .ticket-card { border: 2px dashed #8B0000; padding: 20px; text-align: center; border-radius: 12px; margin-top: 10px; background: #fffcfc; }
+        .ticket-num { font-size: 36px; font-weight: 800; color: #333; margin: 10px 0; }
+        
+        .info-table { width: 100%; font-size: 12px; border-collapse: collapse; margin-bottom: 10px; }
+        .info-table th { background: #8B0000; color: white; padding: 8px; text-align: left; border-radius: 4px; }
+        .info-table td { padding: 8px; border-bottom: 1px solid #eee; }
+
+        @keyframes popUp { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        #loader { position: absolute; inset: 0; background: white; display: flex; flex-direction: column; justify-content: center; align-items: center; z-index: 99; }
     </style>
 </head>
 <body>
+
 <div class="app-container">
+    <div id="loader"><i class="fas fa-circle-notch fa-spin fa-2x" style="color:#8B0000;"></i></div>
+    
     <div class="header">
-        <div style="background:white; width:60px; height:60px; border-radius:50%; margin:0 auto; padding:5px;"><img id="logo_img" src="" style="width:100%; height:100%; object-fit:contain;"></div>
-        <div class="app-name" id="app_title">Loading...</div>
-        <div style="font-size:11px; opacity:0.8;">Melayani Sepenuh Hati</div>
+        <div class="logo-area"><img id="logo_img" src="" alt="Logo"></div>
+        <h1 class="app-title" id="app_title">Loading...</h1>
+        <div class="app-subtitle">Melayani dengan Sepenuh Hati</div>
     </div>
+
+    <div id="announcement" style="background:#fff3cd; color:#856404; padding:10px 20px; font-size:11px; text-align:center; display:none; border-bottom:1px solid #ffeeba;"></div>
+
     <div id="chat-box"></div>
+    <div style="text-align:center; padding:15px; font-size:10px; color:#aaa;">&copy; 2026 Lapas Kelas IIB Arga Makmur</div>
 </div>
 
 <script>
-    // --- ISI CONFIG FIREBASE ANDA ---
+    // --- CONFIG FIREBASE ---
     const firebaseConfig = {
         apiKey: "AIzaSyDvpFZtiG_fXLOf8okjafNm7gqbJZr2pSY",
         authDomain: "lapassistem.firebaseapp.com",
@@ -56,31 +88,64 @@
         const db = firebase.database();
         let config = {};
 
-        db.ref('app_config').on('value', snap => {
+        // Load Config dari Admin
+        db.ref('app_config').on('value', (snap) => {
             if(snap.exists()) config = snap.val();
-            document.getElementById('app_title').innerText = config.app_name || "Lapas App";
-            document.getElementById('logo_img').src = config.logo_url || "";
-            startChat();
+            updateUI(config);
         });
 
+        function updateUI(cfg) {
+            document.getElementById('app_title').innerText = cfg.app_name || "Lapas App";
+            document.getElementById('logo_img').src = cfg.logo_url || "";
+            
+            const ann = document.getElementById('announcement');
+            if(cfg.announcement) { ann.style.display = 'block'; ann.innerText = "📢 " + cfg.announcement; }
+            else ann.style.display = 'none';
+            
+            document.getElementById('loader').style.display = 'none';
+            startChat(); // Mulai Chat
+        }
+
         const chatBox = document.getElementById('chat-box');
-        window.startChat = function() { chatBox.innerHTML=''; appendMsg('bot', config.welcome_msg || "Halo, silakan pilih layanan:", {options: getMenu()}); }
+        
+        window.startChat = function() { respond('start'); }
+
+        window.respond = function(key) {
+            if (key === 'start') chatBox.innerHTML = ''; // Reset chat kalau ke menu utama
+            
+            const menuData = getMenuData(config);
+            const item = menuData[key];
+            if (!item) return;
+
+            // Tambahkan tombol Back jika perlu
+            let opts = item.options || [];
+            if(item.back) opts.push({text:"⬅️ KEMBALI KE MENU UTAMA", val:"start"});
+            if(item.backTo) opts.push({text:"⬅️ KEMBALI", val: item.backTo});
+
+            if (item.isForm) {
+                appendMsg('bot', item.text, { isForm: true, formType: item.formType });
+            } else {
+                appendMsg('bot', item.text, { customHtml: item.customHtml, options: opts });
+            }
+        }
 
         function appendMsg(sender, text, extra = {}) {
             const div = document.createElement('div');
             div.className = `msg ${sender}`;
-            div.innerHTML = text.replace(/\n/g, '<br>');
-            if(extra.customHtml) div.innerHTML += `<br>${extra.customHtml}`;
+            let content = text.replace(/\n/g, '<br>').replace(/\*\*(.*?)\*\*/g, '<b>$1</b>');
+            
+            if(extra.customHtml) content += `<br>${extra.customHtml}`;
             
             if(extra.isForm) {
-                div.innerHTML += `
+                content += `
                 <div class="form-box">
-                    <input id="f_nama" class="inp" placeholder="Nama Anda (Sesuai KTP)">
+                    <input id="f_nama" class="inp" placeholder="Nama Pengunjung (Sesuai KTP)">
                     <input id="f_nik" class="inp" type="number" placeholder="NIK (Wajib Diisi)">
-                    <input id="f_alamat" class="inp" placeholder="Alamat Lengkap">
-                    <input id="f_telp" class="inp" type="tel" placeholder="Nomor HP / WA">
-                    <input id="f_wbp" class="inp" placeholder="Nama WBP (Tujuan)">
-                    <label style="font-size:12px; font-weight:bold;">Pilih Tanggal & Sesi:</label>
+                    <input id="f_alamat" class="inp" placeholder="Alamat Lengkap (Sesuai KTP)">
+                    <input id="f_telp" class="inp" type="tel" placeholder="Nomor HP / WA Aktif">
+                    <input id="f_wbp" class="inp" placeholder="Nama WBP yang Dikunjungi">
+                    
+                    <label style="font-size:12px; font-weight:bold; margin-top:5px; color:#555;">Pilih Jadwal:</label>
                     <div style="display:flex; gap:5px;">
                         <input id="f_tgl" class="inp" type="date" style="flex:2">
                         <select id="f_jam" class="inp" style="flex:1">
@@ -88,34 +153,104 @@
                             <option value="Siang">Siang</option>
                         </select>
                     </div>
-                    <button onclick="submitForm('${extra.type}')" class="submit-btn">AMBIL ANTRIAN</button>
-                    <button onclick="startChat()" style="background:#eee; color:#333; padding:10px; border:none; width:100%; border-radius:8px; margin-top:5px;">Batal</button>
+                    <button onclick="submitForm('${extra.formType}')" class="submit-btn">AMBIL NOMOR ANTRIAN</button>
+                    <button onclick="respond('start')" style="background:#f0f0f0; border:1px solid #ccc; padding:12px; width:100%; border-radius:8px; margin-top:5px; cursor:pointer;">Batal</button>
                 </div>`;
             }
+            
+            div.innerHTML = content;
             chatBox.appendChild(div);
-            if(extra.options) showBtn(extra.options);
+            
+            if(!extra.isForm && extra.options) showBtn(extra.options);
             chatBox.scrollTop = chatBox.scrollHeight;
         }
 
         function showBtn(opts) {
             const div = document.createElement('div');
             opts.forEach(o => {
+                if(!o.text) return;
                 const btn = document.createElement('div');
-                btn.className = 'btn';
-                btn.innerHTML = `<span>${o.text}</span> <i class="fas fa-chevron-right"></i>`;
+                btn.className = o.text.includes("KEMBALI") ? 'btn btn-back' : 'btn';
+                btn.innerHTML = `<span>${o.text}</span> ${!o.text.includes("KEMBALI") ? '<i class="fas fa-chevron-right"></i>' : ''}`;
+                
                 btn.onclick = () => {
                     div.remove();
                     appendMsg('user', o.text);
-                    if(o.val === 'form_fisik') appendMsg('bot', "📝 **FORMULIR TATAP MUKA**", {isForm:true, type:'tatap_muka'});
-                    else if(o.val === 'form_online') appendMsg('bot', "💻 **FORMULIR VIDEO CALL**", {isForm:true, type:'video_call'});
-                    else if(o.val === 'jadwal') appendMsg('bot', "📅 **JADWAL:**\nPIDUM: Senin & Rabu\nNARKOBA: Selasa & Kamis", {options:[{text:"⬅️ KEMBALI", val:"start"}]});
-                    else startChat();
+                    if(o.type === 'link') window.open(o.url);
+                    else setTimeout(() => respond(o.val), 300);
                 };
                 div.appendChild(btn);
             });
             chatBox.appendChild(div);
         }
 
+        // --- DATA MENU LENGKAP ---
+        function getMenuData(cfg) {
+            const htmlJadwal = `
+                <table class="info-table">
+                    <tr><th>Kategori</th><th>Hari Layanan</th></tr>
+                    <tr><td><b>PIDUM</b></td><td>${cfg.sch_pidum || 'Senin & Rabu'}</td></tr>
+                    <tr><td><b>NARKOBA</b></td><td>${cfg.sch_narkoba || 'Selasa & Kamis'}</td></tr>
+                </table>
+                <div style="font-size:12px; background:#f9f9f9; padding:10px; border-radius:8px;">
+                    <b>🕒 Jam Layanan:</b><br>
+                    Pagi: ${cfg.sch_mon_am || '09.00 - 11.30'}<br>
+                    Siang: ${cfg.sch_mon_pm || '13.00 - 14.30'}<br>
+                    Jumat: ${cfg.sch_fri || 'Khusus Pagi'}<br>
+                    Sabtu: ${cfg.sch_sat || 'Layanan Barang'}<br>
+                    Minggu: ${cfg.sch_sun || 'TUTUP'}
+                </div>`;
+
+            return {
+                'start': {
+                    text: cfg.welcome_msg || "Halo, selamat datang di Layanan Lapas Digital. Silakan pilih menu di bawah ini:",
+                    options: [
+                        { text: "📝 DAFTAR KUNJUNGAN (TATAP MUKA)", val: "form_fisik" },
+                        { text: "💻 DAFTAR VIDEO CALL", val: "form_online" },
+                        { text: "📅 JADWAL KUNJUNGAN", val: "jadwal" },
+                        { text: "📋 SYARAT & KETENTUAN", val: "syarat" },
+                        { text: "🛒 TOKO LAPAS", val: "toko" },
+                        { text: "📞 KONTAK & PENGADUAN", val: "kontak" }
+                    ]
+                },
+                'jadwal': { text: "📅 **INFORMASI JADWAL:**", customHtml: htmlJadwal, back: true },
+                
+                'syarat': { 
+                    text: "📋 **PILIH KATEGORI SYARAT:**", 
+                    options: [
+                        { text: "📄 Dokumen & Pakaian", val: "syarat_doc" },
+                        { text: "📦 Barang Boleh/Dilarang", val: "syarat_item" },
+                        { text: "⬅️ KEMBALI", val: "start" }
+                    ]
+                },
+                'syarat_doc': { text: "📄 **SYARAT DOKUMEN & PAKAIAN:**\n\n" + (cfg.txt_doc || "-"), backTo: "syarat" },
+                'syarat_item': { text: "📦 **ATURAN BARANG:**\n\n" + (cfg.txt_item || "-"), backTo: "syarat" },
+
+                'toko': {
+                    text: "🛒 **TOKO LAPAS (KOPERASI):**\n\n" + (cfg.toko_announce || "Silakan pesan kebutuhan WBP melalui aplikasi toko kami."),
+                    options: [
+                        { text: "🌐 BUKA APLIKASI TOKO", type: "link", url: cfg.toko_link },
+                        { text: "⬅️ KEMBALI", val: "start" }
+                    ]
+                },
+
+                'kontak': {
+                    text: "📞 **PUSAT PENGADUAN:**\nSilakan hubungi kami jika ada kendala.",
+                    options: [
+                        { text: "💬 WhatsApp Pengaduan", type: "link", url: `https://wa.me/${cfg.wa_pengaduan}` },
+                        { text: "📢 Saluran Informasi WA", type: "link", url: cfg.wa_channel },
+                        { text: "📷 Instagram", type: "link", url: cfg.soc_ig },
+                        { text: "📘 Facebook", type: "link", url: cfg.soc_fb },
+                        { text: "⬅️ KEMBALI", val: "start" }
+                    ]
+                },
+
+                'form_fisik': { text: "📝 **FORMULIR TATAP MUKA**\nIsi data berikut untuk mengambil antrian.", isForm: true, formType: "tatap_muka" },
+                'form_online': { text: "💻 **FORMULIR VIDEO CALL**\nIsi data untuk jadwal VC.", isForm: true, formType: "video_call" }
+            };
+        }
+
+        // --- SUBMIT FORM (JALUR BARU) ---
         window.submitForm = function(type) {
             const nama = document.getElementById('f_nama').value;
             const nik = document.getElementById('f_nik').value;
@@ -125,41 +260,44 @@
             const tgl = document.getElementById('f_tgl').value;
             const jam = document.getElementById('f_jam').value;
 
-            if(!nama || !nik || !tgl) return alert("Nama, NIK, dan Tanggal Wajib Diisi!");
+            if(!nama || !nik || !tgl || !alamat) return alert("Mohon lengkapi Nama, NIK, Alamat, dan Tanggal!");
 
             const btn = document.querySelector('.submit-btn');
-            btn.innerText = "Memproses..."; btn.disabled = true;
+            btn.innerHTML = "Memproses..."; btn.disabled = true;
 
-            // JALUR BARU: counters_v2 & db_utama
-            const counterPath = `counters_v2/${tgl}/${type}/${jam}`;
-            const dbPath = `db_utama/${type}`;
+            const pathDB = `db_utama/${type}`;
+            const pathCounter = `counters_v2/${tgl}/${type}/${jam}`;
             const prefix = type === 'tatap_muka' ? 'A' : 'V';
             const code = jam === 'Pagi' ? 'P' : 'S';
 
-            db.ref(counterPath).transaction(c => (c || 0) + 1, (err, committed, snap) => {
+            db.ref(pathCounter).transaction(curr => (curr || 0) + 1, (err, committed, snap) => {
                 if(committed) {
                     const noAntrian = `${prefix}-${code}-${String(snap.val()).padStart(3, '0')}`;
-                    db.ref(dbPath).push({
+                    
+                    db.ref(pathDB).push({
                         nama, nik, alamat, telp, wbp, tgl, jam, noAntrian,
                         status: 'waiting', createdAt: firebase.database.ServerValue.TIMESTAMP
                     }).then(() => {
                         chatBox.innerHTML = '';
-                        const tiket = `<div class="ticket-card"><h3>ANTRIAN ${type.toUpperCase().replace('_',' ')}</h3><h1>${noAntrian}</h1><p>${nama}<br>${tgl} (${jam})</p><button onclick="window.print()" style="padding:5px 10px;">Simpan Bukti</button></div>`;
-                        appendMsg('bot', "✅ **BERHASIL!**", {customHtml: tiket, options:[{text:"⬅️ MENU UTAMA", val:"start"}]});
+                        const tiket = `
+                        <div class="ticket-card">
+                            <div style="font-size:12px; color:#8B0000; font-weight:bold;">ANTRIAN ANDA</div>
+                            <div class="ticket-num">${noAntrian}</div>
+                            <div style="font-size:12px; color:#555;">
+                                <b>${nama}</b><br>
+                                Tanggal: ${tgl} (${jam})<br>
+                                Tujuan: ${wbp}
+                            </div>
+                            <button onclick="window.print()" style="margin-top:10px; padding:8px 15px; border:none; background:#333; color:white; border-radius:5px; cursor:pointer;">Simpan Bukti</button>
+                        </div>`;
+                        
+                        appendMsg('bot', "✅ **PENDAFTARAN BERHASIL!**\nSimpan nomor antrian Anda.", { customHtml: tiket, options: [{text:"⬅️ KEMBALI KE MENU UTAMA", val:"start"}] });
                     });
                 } else {
-                    btn.innerText = "Coba Lagi"; btn.disabled = false;
-                    alert("Gagal koneksi database.");
+                    btn.innerHTML = "Gagal. Coba Lagi"; btn.disabled = false;
+                    alert("Gagal terhubung ke database. Periksa koneksi atau Hubungi Admin.");
                 }
             });
-        }
-
-        function getMenu() {
-            return [
-                {text:"📝 DAFTAR TATAP MUKA", val:"form_fisik"},
-                {text:"💻 DAFTAR VIDEO CALL", val:"form_online"},
-                {text:"📅 LIHAT JADWAL", val:"jadwal"}
-            ];
         }
     });
 </script>
