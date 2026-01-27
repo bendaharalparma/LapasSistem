@@ -13,10 +13,10 @@
     
     <style>
         body { font-family: 'Poppins', sans-serif; background: #f0f2f5; padding: 20px; }
-        .container { max-width: 1200px; margin: 0 auto; background: white; padding: 30px; border-radius: 12px; box-shadow: 0 5px 15px rgba(0,0,0,0.05); }
+        .container { max-width: 1400px; margin: 0 auto; background: white; padding: 30px; border-radius: 12px; box-shadow: 0 5px 15px rgba(0,0,0,0.05); }
         
-        .tabs { display: flex; border-bottom: 2px solid #ddd; margin-bottom: 20px; }
-        .tab-btn { padding: 12px 25px; background: none; border: none; cursor: pointer; font-weight: 600; color: #666; border-bottom: 4px solid transparent; transition: 0.3s; }
+        .tabs { display: flex; border-bottom: 2px solid #ddd; margin-bottom: 20px; overflow-x: auto; }
+        .tab-btn { padding: 12px 25px; background: none; border: none; cursor: pointer; font-weight: 600; color: #666; border-bottom: 4px solid transparent; transition: 0.3s; white-space: nowrap; }
         .tab-btn:hover { background: #f9f9f9; color: #8B0000; }
         .tab-btn.active { color: #8B0000; border-bottom: 4px solid #8B0000; }
 
@@ -26,16 +26,16 @@
         .save { background: #28a745; color: white; border: none; padding: 15px; width: 100%; margin-top: 25px; border-radius: 8px; font-weight: bold; cursor: pointer; }
         
         /* SEARCH & FILTER */
-        .filter-bar { background: #fff3cd; padding: 15px; border-radius: 8px; border: 1px solid #ffeeba; display: flex; align-items: flex-end; gap: 10px; margin-bottom: 15px; }
+        .filter-bar { background: #fff3cd; padding: 15px; border-radius: 8px; border: 1px solid #ffeeba; display: flex; align-items: flex-end; gap: 10px; margin-bottom: 15px; flex-wrap: wrap; }
         .btn-search { background: #8B0000; color: white; border: none; padding: 10px 15px; border-radius: 5px; cursor: pointer; height: 42px; font-weight: 600; }
         .btn-reset { background: #666; color: white; border: none; padding: 10px 15px; border-radius: 5px; cursor: pointer; height: 42px; }
 
         /* TABEL */
         .data-count { font-size: 12px; color: #666; margin-bottom: 5px; font-style: italic; }
         .table-responsive { overflow-x: auto; }
-        table { width: 100%; border-collapse: collapse; margin-top: 5px; font-size: 13px; min-width: 800px; }
+        table { width: 100%; border-collapse: collapse; margin-top: 5px; font-size: 12px; min-width: 1000px; }
         th, td { border: 1px solid #eee; padding: 12px; text-align: left; vertical-align: middle; }
-        th { background: #8B0000; color: white; text-transform: uppercase; font-size: 12px; }
+        th { background: #8B0000; color: white; text-transform: uppercase; font-size: 12px; white-space: nowrap; }
         tr:nth-child(even) { background: #f8f9fa; }
         
         .badge { padding: 5px 10px; border-radius: 20px; font-size: 11px; font-weight: bold; color: white; display: inline-block; min-width: 80px; text-align: center; }
@@ -45,8 +45,8 @@
         .btn-ok { background: #28a745; } .btn-no { background: #ffc107; color: #333; } .btn-del { background: #dc3545; }
 
         #login-box { max-width: 400px; margin: 80px auto; text-align: center; background: white; padding: 40px; border-radius: 12px; box-shadow: 0 10px 25px rgba(0,0,0,0.1); }
-        .print-area { background:#f9f9f9; padding:20px; border-radius:8px; border:1px solid #ddd; display:flex; gap:15px; align-items:flex-end; margin-bottom: 20px; margin-top: 20px; }
-        .pdf-btn { background:#FF5722; color:white; border:none; padding:0 20px; border-radius:6px; font-weight:600; font-size:13px; height: 42px; cursor: pointer; }
+        .print-area { background:#f9f9f9; padding:20px; border-radius:8px; border:1px solid #ddd; display:flex; gap:15px; align-items:flex-end; margin-bottom: 20px; margin-top: 20px; flex-wrap: wrap; }
+        .pdf-btn { background:#FF5722; color:white; border:none; padding:0 20px; border-radius:6px; font-weight:600; font-size:13px; height: 42px; cursor: pointer; white-space: nowrap; }
     </style>
 </head>
 <body>
@@ -59,7 +59,7 @@
 </div>
 
 <div id="panel-box" class="container" style="display:none;">
-    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px;">
+    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px; flex-wrap: wrap; gap: 10px;">
         <h2 style="margin:0; color:#8B0000;">Panel Kontrol Aplikasi</h2>
         <div>
             <button onclick="cleanData()" style="background:#555; color:white; border:none; padding:10px 20px; border-radius:5px; cursor:pointer; font-size:13px;">🧹 Hapus Data Lama</button>
@@ -129,7 +129,16 @@
         <div id="count_fisik" class="data-count">Menampilkan data...</div>
         <div class="table-responsive">
             <table id="table_fisik">
-                <thead><tr><th>ANTRIAN</th><th>WAKTU</th><th>PENGUNJUNG</th><th>TUJUAN</th><th>STATUS</th><th>AKSI</th></tr></thead>
+                <thead>
+                    <tr>
+                        <th>ANTRIAN</th>
+                        <th>WAKTU</th>
+                        <th>PENGUNJUNG</th>
+                        <th>NIK</th> <th>ALAMAT</th> <th>TUJUAN</th>
+                        <th>STATUS</th>
+                        <th>AKSI</th>
+                    </tr>
+                </thead>
                 <tbody id="tb_fisik"></tbody>
             </table>
         </div>
@@ -154,7 +163,16 @@
         <div id="count_online" class="data-count">Menampilkan data...</div>
         <div class="table-responsive">
             <table id="table_online">
-                <thead><tr><th>ANTRIAN</th><th>WAKTU</th><th>PENGUNJUNG</th><th>TUJUAN</th><th>STATUS</th><th>AKSI</th></tr></thead>
+                <thead>
+                    <tr>
+                        <th>ANTRIAN</th>
+                        <th>WAKTU</th>
+                        <th>PENGUNJUNG</th>
+                        <th>NIK</th> <th>ALAMAT</th> <th>TUJUAN</th>
+                        <th>STATUS</th>
+                        <th>AKSI</th>
+                    </tr>
+                </thead>
                 <tbody id="tb_online"></tbody>
             </table>
         </div>
@@ -162,7 +180,7 @@
 </div>
 
 <script>
-    // --- TEMPEL FIREBASE CONFIG DI SINI (JANGAN SAMPAI SALAH) ---
+    // --- TEMPEL FIREBASE CONFIG DI SINI ---
     const firebaseConfig = {
         apiKey: "AIzaSyDvpFZtiG_fXLOf8okjafNm7gqbJZr2pSY",
         authDomain: "lapassistem.firebaseapp.com",
@@ -177,7 +195,7 @@
     if (!firebase.apps.length) firebase.initializeApp(firebaseConfig);
     const auth = firebase.auth();
     const db = firebase.database();
-    let listeners = {}; // Penyimpan Listener
+    let listeners = {}; 
 
     auth.onAuthStateChanged(u => {
         if(u) {
@@ -204,38 +222,35 @@
         if(t=='data_online') document.getElementById('t3').className += ' active';
     }
 
-    // --- CORE DATA LOGIC (FIXED LOOP) ---
+    // --- CORE DATA LOGIC ---
 
-    // Mode Live (100 Data Terakhir)
     function resetLive(path, tableId, countId) {
-        if (listeners[path]) db.ref(path).off(); // Matikan listener lama
+        if (listeners[path]) db.ref(path).off(); 
         const tb = document.getElementById(tableId);
-        tb.innerHTML = "<tr><td colspan='6' style='text-align:center;'>Memuat data terbaru...</td></tr>";
+        tb.innerHTML = "<tr><td colspan='8' style='text-align:center;'>Memuat data terbaru...</td></tr>";
 
         listeners[path] = db.ref(path).limitToLast(100);
         listeners[path].on('value', s => renderTable(s, tableId, path, countId));
     }
 
-    // Mode Filter Tanggal
     function loadByDate(path, tableId, dateInputId, countId) {
         const dateVal = document.getElementById(dateInputId).value;
         if (!dateVal) return alert("Pilih tanggal dulu!");
         
         if (listeners[path]) db.ref(path).off();
         const tb = document.getElementById(tableId);
-        tb.innerHTML = "<tr><td colspan='6' style='text-align:center;'>Mencari data...</td></tr>";
+        tb.innerHTML = "<tr><td colspan='8' style='text-align:center;'>Mencari data...</td></tr>";
 
         listeners[path] = db.ref(path).orderByChild('tgl').equalTo(dateVal);
         listeners[path].on('value', s => renderTable(s, tableId, path, countId));
     }
 
-    // Fungsi Render Tabel (Anti-Overwrite)
     function renderTable(snapshot, tableId, path, countId) {
         const tb = document.getElementById(tableId);
         const countEl = document.getElementById(countId);
         
         if(!snapshot.exists()) {
-            tb.innerHTML = "<tr><td colspan='6' style='text-align:center; padding:20px; color:#999;'>Tidak ada data.</td></tr>";
+            tb.innerHTML = "<tr><td colspan='8' style='text-align:center; padding:20px; color:#999;'>Tidak ada data.</td></tr>";
             countEl.innerText = "Total: 0 Data";
             return;
         }
@@ -245,25 +260,20 @@
             arr.push({key: child.key, ...child.val()});
         });
         
-        // Update Counter
         countEl.innerText = `Menampilkan ${arr.length} Data Terbaru`;
-
-        // Bersihkan tabel SEBELUM looping
         tb.innerHTML = "";
 
-        // Loop data (Reverse agar terbaru di atas)
         arr.reverse().forEach(v => {
             let stHtml = '<span class="badge bg-wait">Menunggu</span>';
             if(v.status === 'accepted') stHtml = '<span class="badge bg-acc">Diterima</span>';
             else if(v.status === 'rejected') stHtml = '<span class="badge bg-rej">Ditolak</span>';
 
-            // Insert Row (Append)
             tb.insertAdjacentHTML('beforeend', `
                 <tr>
                     <td style="color:#8B0000; font-weight:bold; font-size:14px;">${v.noAntrian || '-'}</td>
                     <td>${v.tgl}<br><small>${v.jam || '-'}</small></td>
                     <td><b>${v.nama}</b><br><small>${v.telp}</small></td>
-                    <td>${v.wbp}</td>
+                    <td>${v.nik || '-'}</td> <td>${v.alamat || '-'}</td> <td>${v.wbp}</td>
                     <td>${stHtml}</td>
                     <td>
                         <div style="display:flex; gap:5px;">
@@ -305,8 +315,10 @@
 
     function printPDF(tbodyId, title, inputNamaId, inputNipId) {
         const { jsPDF } = window.jspdf;
-        const doc = new jsPDF('p', 'mm', 'a4');
-        const cx = 105;
+        // MENGGUNAKAN LANDSCAPE ('l') AGAR NIK DAN ALAMAT MUAT
+        const doc = new jsPDF('l', 'mm', 'a4');
+        const cx = 148.5; // Titik tengah A4 Landscape
+
         const petugas = document.getElementById(inputNamaId).value;
         const nip = document.getElementById(inputNipId).value;
         const k1 = document.getElementById('kop_1').value || "";
@@ -316,37 +328,44 @@
 
         if(!petugas) { alert("Nama Petugas wajib diisi!"); return; }
 
-        doc.setFont("times", "bold"); doc.setFontSize(12);
+        doc.setFont("times", "bold"); doc.setFontSize(14);
         doc.text(k1.toUpperCase(), cx, 15, { align: "center" });
-        doc.text(k2.toUpperCase(), cx, 20, { align: "center" });
-        doc.setFontSize(14);
-        doc.text(k3.toUpperCase(), cx, 26, { align: "center" });
-        doc.setFontSize(10); doc.setFont("times", "normal");
-        doc.text(k4, cx, 31, { align: "center" });
-        doc.setLineWidth(0.5); doc.line(20, 34, 190, 34);
+        doc.text(k2.toUpperCase(), cx, 22, { align: "center" });
+        doc.setFontSize(16);
+        doc.text(k3.toUpperCase(), cx, 30, { align: "center" });
+        doc.setFontSize(11); doc.setFont("times", "normal");
+        doc.text(k4, cx, 37, { align: "center" });
+        doc.setLineWidth(0.5); doc.line(20, 42, 277, 42);
 
-        doc.setFont("helvetica", "bold"); doc.setFontSize(11);
-        doc.text(title.toUpperCase(), cx, 45, { align: "center" });
-        doc.setFontSize(9); doc.setFont("helvetica", "normal");
-        doc.text("Dicetak: " + new Date().toLocaleString('id-ID'), cx, 50, { align: "center" });
+        doc.setFont("helvetica", "bold"); doc.setFontSize(12);
+        doc.text(title.toUpperCase(), cx, 52, { align: "center" });
+        doc.setFontSize(10); doc.setFont("helvetica", "normal");
+        doc.text("Dicetak: " + new Date().toLocaleString('id-ID'), cx, 58, { align: "center" });
 
         let tableId = tbodyId === 'tb_fisik' ? '#table_fisik' : '#table_online';
+        
         doc.autoTable({ 
-            html: tableId, startY: 55, columns: [0, 1, 2, 3, 4],
-            theme: 'plain', headStyles: { fillColor: [230,230,230], textColor: 0 },
-            styles: { fontSize: 9, font: 'times', cellPadding: 3 }
+            html: tableId, 
+            startY: 65, 
+            // Kolom: Antrian, Waktu, Pengunjung, NIK, Alamat, Tujuan, Status
+            columns: [0, 1, 2, 3, 4, 5, 6], 
+            theme: 'plain', 
+            headStyles: { fillColor: [230,230,230], textColor: 0, lineWidth:0.1, lineColor: 150 },
+            bodyStyles: { lineWidth:0.1, lineColor: 200 },
+            styles: { fontSize: 9, font: 'times', cellPadding: 2 }
         });
 
         let fy = doc.lastAutoTable.finalY + 20;
-        if(fy > 240) { doc.addPage(); fy=20; }
+        if(fy > 170) { doc.addPage(); fy=20; }
         const dateStr = new Date().toLocaleDateString('id-ID', { year: 'numeric', month: 'long', day: 'numeric' });
+        
         doc.setFont("times", "normal");
-        doc.text(`Arga Makmur, ${dateStr}`, 140, fy);
-        doc.text("Petugas,", 140, fy + 5);
+        doc.text(`Arga Makmur, ${dateStr}`, 220, fy);
+        doc.text("Petugas,", 220, fy + 5);
         doc.setFont("times", "bold");
-        doc.text(`( ${petugas} )`, 140, fy + 25);
+        doc.text(`( ${petugas} )`, 220, fy + 25);
         doc.setFont("times", "normal");
-        doc.text(`NIP. ${nip}`, 140, fy + 30);
+        doc.text(`NIP. ${nip}`, 220, fy + 30);
         doc.save("Laporan.pdf");
     }
 </script>
