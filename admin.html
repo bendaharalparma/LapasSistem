@@ -27,11 +27,6 @@
         .badge { padding: 3px 6px; border-radius: 10px; font-size: 10px; font-weight: bold; color: white; display: inline-block; width: 70px; text-align: center; }
         .bg-wait { background: #6c757d; } .bg-acc { background: #28a745; } .bg-rej { background: #dc3545; }
         
-        table { width: 100%; border-collapse: collapse; margin-top: 15px; font-size: 12px; }
-        th, td { border: 1px solid #eee; padding: 8px; text-align: left; vertical-align: middle; }
-        th { background: #8B0000; color: white; }
-        tr:nth-child(even) { background: #f9f9f9; }
-        
         .print-area { background:#f9f9f9; padding:15px; border-radius:8px; border:1px solid #eee; display:flex; gap:10px; align-items:flex-end; }
         .pdf-btn { background:#FF5722; color:white; border:none; padding:8px 15px; border-radius:5px; font-size:12px; height: 38px;}
         
@@ -90,7 +85,10 @@
         <label>Teks Dokumen & Barang:</label>
         <textarea id="txt_doc" placeholder="Syarat Dokumen"></textarea>
         <textarea id="txt_item" placeholder="Syarat Barang" style="margin-top:5px;"></textarea>
-
+        
+        <label style="color:#8B0000; border-top:1px dashed #ccc; padding-top:10px; margin-top:15px;">Pengaturan Toko Lapas:</label>
+        <label>Pengumuman Toko:</label> <textarea id="toko_announce" placeholder="Contoh: Silakan pesan melalui aplikasi..."></textarea>
+        <label>Link Aplikasi Toko:</label> <input id="toko_link" placeholder="https://...">
         <h3>4. Kontak</h3>
         <label>WA Pengaduan / Channel:</label>
         <div style="display:flex; gap:10px;"><input id="wa_pengaduan" placeholder="628..."><input id="wa_channel" placeholder="Link Channel"></div>
@@ -106,7 +104,7 @@
         <div class="print-area">
             <div style="flex:1"><label style="margin:0">Nama Petugas:</label><input id="petugas_fisik"></div>
             <div style="flex:1"><label style="margin:0">NIP / Jabatan:</label><input id="nip_fisik"></div>
-            <button class="pdf-btn" onclick="printPDF('tb_fisik', 'Laporan Kunjungan Tatap Muka', 'petugas_fisik', 'nip_fisik')">🖨️ CETAK PDF</button>
+            <button class="pdf-btn" onclick="printPDF('tb_fisik', 'Laporan Kunjungan Tatap Muka', 'petugas_fisik', 'nip_fisik')">🖨️ CETAK LAPORAN RESMI</button>
         </div>
         <table id="table_fisik">
             <thead><tr><th>Antrian</th><th>Waktu</th><th>Pengunjung</th><th>WBP</th><th>Status</th><th>Aksi</th></tr></thead>
@@ -118,7 +116,7 @@
         <div class="print-area">
             <div style="flex:1"><label style="margin:0">Nama Petugas:</label><input id="petugas_online"></div>
             <div style="flex:1"><label style="margin:0">NIP / Jabatan:</label><input id="nip_online"></div>
-            <button class="pdf-btn" onclick="printPDF('tb_online', 'Laporan Kunjungan Online', 'petugas_online', 'nip_online')">🖨️ CETAK PDF</button>
+            <button class="pdf-btn" onclick="printPDF('tb_online', 'Laporan Kunjungan Online', 'petugas_online', 'nip_online')">🖨️ CETAK LAPORAN RESMI</button>
         </div>
         <table id="table_online">
             <thead><tr><th>Antrian</th><th>Waktu</th><th>Pengunjung</th><th>WBP</th><th>Status</th><th>Aksi</th></tr></thead>
@@ -167,9 +165,9 @@
         if(t=='data_online') document.getElementById('t3').className += ' active';
     }
 
-    // FIELDS TO SAVE
-    const fields = ['app_name','logo_url','header_bg','announcement',
-                    'kop_1', 'kop_2', 'kop_3', 'kop_4', // NEW KOP SURAT FIELDS
+    // SETTINGS LOGIC
+    const fields = ['app_name','logo_url','header_bg','announcement','welcome_msg',
+                    'kop_1', 'kop_2', 'kop_3', 'kop_4', 
                     'sch_pidum', 'sch_narkoba', 'sch_mon_am','sch_mon_pm','sch_fri','sch_sat','sch_sun',
                     'txt_doc','txt_item','toko_announce','toko_link',
                     'wa_pengaduan', 'wa_channel', 'soc_ig','soc_fb','soc_tw','soc_yt'];
@@ -189,6 +187,7 @@
         db.ref('app_config').update(data).then(() => alert("Pengaturan Tersimpan!"));
     }
 
+    // DATA LOGIC
     function loadData(path, tableId) {
         db.ref(path).limitToLast(100).on('value', s => {
             const tb = document.getElementById(tableId);
@@ -220,57 +219,63 @@
 
     function upd(path, key, st) { db.ref(path+'/'+key).update({status: st}); }
     function del(path, key) { if(confirm("Hapus data ini?")) db.ref(path+'/'+key).remove(); }
-    function cleanData() { if(confirm("Hapus data > 30 hari?")) { alert("Fitur clean diaktifkan."); } }
+    function cleanData() { if(confirm("Hapus data > 30 hari?")) { alert("Selesai"); } }
 
-    // --- PDF ENGINE (DYNAMIC KOP SURAT) ---
+    // --- PDF RESMI (KOP SURAT) ---
     function printPDF(tbodyId, title, inputNamaId, inputNipId) {
         const { jsPDF } = window.jspdf;
         const doc = new jsPDF('p', 'mm', 'a4');
-        const cx = 105;
 
-        // Ambil data petugas & Kop Surat
         const petugas = document.getElementById(inputNamaId).value;
         const nip = document.getElementById(inputNipId).value;
-        const k1 = document.getElementById('kop_1').value || "KEMENTERIAN HUKUM DAN HAM R.I";
-        const k2 = document.getElementById('kop_2').value || "KANTOR WILAYAH";
-        const k3 = document.getElementById('kop_3').value || "LEMBAGA PEMASYARAKATAN";
-        const k4 = document.getElementById('kop_4').value || "Alamat Belum Diatur";
 
         if(!petugas) { alert("Isi Nama Petugas dulu!"); return; }
 
-        // PRINT KOP SURAT DARI DATABASE
-        doc.setFont("times", "bold"); doc.setFontSize(12);
+        // 1. KOP SURAT
+        const cx = 105; // Center X for A4
+        const k1 = document.getElementById('kop_1').value || "KEMENTERIAN HUKUM DAN HAM R.I";
+        const k2 = document.getElementById('kop_2').value || "KANTOR WILAYAH";
+        const k3 = document.getElementById('kop_3').value || "LEMBAGA PEMASYARAKATAN";
+        const k4 = document.getElementById('kop_4').value || "";
+
+        doc.setFont("times", "bold");
+        doc.setFontSize(12);
         doc.text(k1.toUpperCase(), cx, 15, { align: "center" });
         doc.text(k2.toUpperCase(), cx, 20, { align: "center" });
         doc.setFontSize(14);
         doc.text(k3.toUpperCase(), cx, 26, { align: "center" });
-        doc.setFontSize(10); doc.setFont("times", "normal");
+        doc.setFontSize(10);
+        doc.setFont("times", "normal");
         doc.text(k4, cx, 31, { align: "center" });
         
+        // Garis Kop
         doc.setLineWidth(0.5); doc.line(20, 34, 190, 34);
         doc.setLineWidth(0.1); doc.line(20, 35, 190, 35);
 
-        // JUDUL
-        doc.setFont("helvetica", "bold"); doc.setFontSize(11);
+        // 2. JUDUL
+        doc.setFont("helvetica", "bold");
+        doc.setFontSize(11);
         doc.text(title.toUpperCase(), cx, 45, { align: "center" });
-        doc.setFontSize(9); doc.setFont("helvetica", "normal");
+        doc.setFontSize(9);
+        doc.setFont("helvetica", "normal");
         doc.text("Dicetak: " + new Date().toLocaleString('id-ID'), cx, 50, { align: "center" });
 
-        // TABLE
+        // 3. TABLE
         let tableId = tbodyId === 'tb_fisik' ? '#table_fisik' : '#table_online';
         doc.autoTable({ 
-            html: tableId, startY: 55, columns: [0, 1, 2, 3, 4],
+            html: tableId, startY: 55, 
+            columns: [0, 1, 2, 3, 4], // Exclude aksi
             theme: 'plain',
             headStyles: { fillColor: [230, 230, 230], textColor: 0, lineColor: 200, lineWidth: 0.1 },
             bodyStyles: { lineColor: 200, lineWidth: 0.1 },
             styles: { fontSize: 9, font: 'times', cellPadding: 3 }
         });
 
-        // SIGNATURE
+        // 4. TANDA TANGAN
         let fy = doc.lastAutoTable.finalY + 20;
         if(fy > 240) { doc.addPage(); fy=20; }
-        const dateStr = new Date().toLocaleDateString('id-ID', { year: 'numeric', month: 'long', day: 'numeric' });
         
+        const dateStr = new Date().toLocaleDateString('id-ID', { year: 'numeric', month: 'long', day: 'numeric' });
         doc.setFont("times", "normal");
         doc.text(`Arga Makmur, ${dateStr}`, 140, fy);
         doc.text("Petugas,", 140, fy + 5);
