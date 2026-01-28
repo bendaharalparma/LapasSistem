@@ -147,7 +147,7 @@
         window.respond = function(key) {
             if (key === 'start') chatBox.innerHTML = '';
             
-            // Handle Cek Status (Custom Logic)
+            // Handle Cek Status
             if (key.startsWith('cek_status_')) {
                 const type = key.split('_')[2]; // fisik or online
                 askNikForStatus(type);
@@ -247,7 +247,7 @@
                     const dataPayload = {
                         nama, nik, alamat, telp, wbp, tgl, jam, noAntrian,
                         status: 'waiting', 
-                        note: '', // Kolom catatan kosong awal
+                        note: '', 
                         createdAt: firebase.database.ServerValue.TIMESTAMP
                     };
                     
@@ -259,7 +259,7 @@
             });
         }
 
-        // --- CEK STATUS LOGIC ---
+        // --- CEK STATUS LOGIC (DIPERBAIKI: CLIENT-SIDE FILTER) ---
         window.askNikForStatus = function(type) {
             const div = document.createElement('div');
             div.className = 'msg bot';
@@ -275,35 +275,60 @@
         }
 
         window.doCheckStatus = function(type) {
-            const nik = document.getElementById('cek_nik').value;
-            if(!nik) return alert("Masukkan NIK!");
+            const inputNik = document.getElementById('cek_nik').value.trim();
+            if(!inputNik) return alert("Masukkan NIK!");
             
             const path = type === 'fisik' ? 'registrations' : 'online_registrations';
             const label = type === 'fisik' ? 'TATAP MUKA' : 'VIDEO CALL';
             const btn = document.querySelector('.submit-btn');
-            btn.innerHTML = "Mencari...";
+            const originalText = btn.innerHTML;
+            btn.innerHTML = "Mencari..."; btn.disabled = true;
             
-            db.ref(path).orderByChild('nik').equalTo(nik).limitToLast(1).once('value', s => {
-                if(s.exists()) {
-                    let data;
-                    s.forEach(c => data = c.val());
-                    chatBox.innerHTML = '';
-                    renderTicket(data, label);
-                } else {
-                    btn.innerHTML = "CARI DATA";
-                    alert("Data tidak ditemukan untuk NIK tersebut pada layanan ini.");
+            // Mengambil 100 data terakhir, lalu cari manual di sini (menghindari masalah index Firebase)
+            db.ref(path).limitToLast(100).once('value')
+            .then(snapshot => {
+                let foundData = null;
+                
+                if(snapshot.exists()) {
+                    // Loop semua data yang didapat
+                    snapshot.forEach(child => {
+                        const val = child.val();
+                        // Bandingkan NIK (pastikan tipe data sama-sama string)
+                        if(String(val.nik) === String(inputNik)) {
+                            foundData = val;
+                        }
+                    });
                 }
+
+                if(foundData) {
+                    chatBox.innerHTML = '';
+                    renderTicket(foundData, label);
+                } else {
+                    btn.innerHTML = originalText; btn.disabled = false;
+                    alert("Data tidak ditemukan! Pastikan NIK benar atau anda belum mendaftar.");
+                }
+            })
+            .catch(err => {
+                btn.innerHTML = originalText; btn.disabled = false;
+                alert("Terjadi kesalahan koneksi.");
             });
         }
 
         // --- RENDER & DOWNLOAD TICKET ---
         function renderTicket(data, label) {
-            // Tentukan Badge Status
             let stBadge = '<span class="badge bg-gray">MENUNGGU VERIFIKASI</span>';
-            if(data.status === 'accepted') stBadge = '<span class="badge bg-green">✅ DISETUJUI</span>';
-            if(data.status === 'rejected') stBadge = '<span class="badge bg-red">❌ DITOLAK</span>';
+            let msgStatus = "Menunggu konfirmasi petugas.";
+            
+            if(data.status === 'accepted') {
+                stBadge = '<span class="badge bg-green">✅ DISETUJUI</span>';
+                msgStatus = "Silakan datang sesuai jadwal.";
+            } else if(data.status === 'rejected') {
+                stBadge = '<span class="badge bg-red">❌ DITOLAK</span>';
+                msgStatus = "Maaf, pendaftaran ditolak.";
+            }
 
-            const noteHtml = data.note ? `<div class="ticket-note"><b>Catatan Petugas:</b><br>${data.note}</div>` : '';
+            // Tampilkan Catatan Jika Ada
+            const noteHtml = data.note ? `<div class="ticket-note"><b>✉️ Pesan Petugas:</b><br>"${data.note}"</div>` : '';
 
             const ticketHtml = `
             <div id="ticket-node" class="ticket-card">
@@ -314,22 +339,22 @@
                     <table style="width:100%">
                         <tr><td width="30%">Nama</td><td>: <b>${data.nama}</b></td></tr>
                         <tr><td>Tujuan</td><td>: ${data.wbp}</td></tr>
-                        <tr><td>Tanggal</td><td>: ${data.tgl} (${data.jam})</td></tr>
+                        <tr><td>Waktu</td><td>: ${data.tgl} (${data.jam})</td></tr>
                     </table>
                 </div>
                 ${noteHtml}
-                <div style="font-size:10px; margin-top:10px; color:#999;">*Simpan tiket ini dan tunjukkan ke petugas.</div>
+                <div style="font-size:10px; margin-top:10px; color:#999;">${msgStatus}</div>
             </div>
-            <button onclick="downloadJpg()" style="margin-top:10px; padding:12px; background:#000; color:white; border:none; border-radius:8px; font-size:13px; width:100%; cursor:pointer; font-weight:bold;">📸 DOWNLOAD GAMBAR (JPG)</button>
+            <button onclick="downloadJpg()" style="margin-top:10px; padding:12px; background:#000; color:white; border:none; border-radius:8px; font-size:13px; width:100%; cursor:pointer; font-weight:bold;">📸 DOWNLOAD TIKET (JPG)</button>
             `;
             
-            appendMsg('bot', `✅ **DATA DITEMUKAN!** Berikut detail antrian anda:`, { customHtml: ticketHtml });
+            appendMsg('bot', `✅ **HASIL PENCARIAN:**`, { customHtml: ticketHtml });
             showBtn([{text:"⬅️ KEMBALI KE MENU UTAMA", val:"start"}]);
         }
 
         window.downloadJpg = function() {
             const node = document.getElementById('ticket-node');
-            html2canvas(node, { scale: 2 }).then(canvas => {
+            html2canvas(node, { scale: 2, backgroundColor: "#fffcfc" }).then(canvas => {
                 const link = document.createElement('a');
                 link.download = 'Tiket_Lapas.jpg';
                 link.href = canvas.toDataURL("image/jpeg");
@@ -367,8 +392,6 @@
                 ]
             },
             'jadwal': { text: "🕒 **INFORMASI JADWAL:**", customHtml: htmlJadwal, back: true },
-            
-            // Perubahan Menu Syarat
             'syarat': { 
                 text: "📋 **PILIH INFORMASI SYARAT:**", 
                 options: [
@@ -412,7 +435,6 @@
                     { text: "⬅️ KEMBALI", val: "kontak" }
                 ]
             },
-            // Perubahan Menu Daftar (Ada Cek Status)
             'daftar_fisik': { 
                 text: "📝 **PENDAFTARAN TATAP MUKA**\nSilakan isi formulir atau cek status jika sudah mendaftar.", 
                 options: [
@@ -437,3 +459,4 @@
 </script>
 </body>
 </html>
+
