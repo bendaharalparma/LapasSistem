@@ -411,7 +411,7 @@
                 ]
             },
             'syarat_urus': {
-                text: "ℹ️ **INFO PENGURUSAN:**\n\nUntuk informasi pengurusan PB, CB, CMB, dan Asimilasi, silakan hubungi bagian registrasi atau cek papan pengumuman di lobby lapas. Semua layanan **GRATIS**.",
+                text: "ℹ️ **INFO PENGURUSAN:**\n\n" + (cfg.txt_urus || "Untuk informasi pengurusan PB, CB, CMB, dan Asimilasi, silakan hubungi bagian registrasi."),
                 backTo: "syarat"
             },
             'syarat_doc': { text: "📄 **ATURAN DOKUMEN:**\n\n" + (cfg.txt_doc || "-"), backTo: "syarat_kunjungan" },
@@ -461,5 +461,6 @@
 </script>
 </body>
 </html>
+
 
 
