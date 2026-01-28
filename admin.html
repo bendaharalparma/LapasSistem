@@ -3,134 +3,180 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Admin Panel v3.1</title>
+    <title>Admin Panel Lapas</title>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.25/jspdf.plugin.autotable.min.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
     
     <style>
-        body { font-family: sans-serif; background: #f4f6f9; padding: 20px; }
-        .container { background: white; max-width: 1400px; margin: 0 auto; padding: 25px; border-radius: 10px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); }
-        .tab-btn { padding: 12px 20px; cursor: pointer; border: none; background: none; font-weight: bold; border-bottom: 3px solid transparent; color: #666; font-size: 14px; }
-        .tab-btn.active { border-color: #8B0000; color: #8B0000; }
-        .tab-content { display: none; margin-top: 20px; }
+        body { font-family: 'Poppins', sans-serif; background: #f0f2f5; padding: 20px; }
+        .container { max-width: 1400px; margin: 0 auto; background: white; padding: 30px; border-radius: 12px; box-shadow: 0 5px 15px rgba(0,0,0,0.05); }
         
-        table { width: 100%; border-collapse: collapse; font-size: 12px; margin-top: 15px; }
-        th { background: #8B0000; color: white; padding: 12px; text-align: left; }
-        td { border: 1px solid #ddd; padding: 10px; vertical-align: top; }
+        .tabs { display: flex; border-bottom: 2px solid #ddd; margin-bottom: 20px; overflow-x: auto; }
+        .tab-btn { padding: 12px 25px; background: none; border: none; cursor: pointer; font-weight: 600; color: #666; border-bottom: 4px solid transparent; transition: 0.3s; white-space: nowrap; }
+        .tab-btn:hover { background: #f9f9f9; color: #8B0000; }
+        .tab-btn.active { color: #8B0000; border-bottom: 4px solid #8B0000; }
+
+        h3 { color: #8B0000; border-bottom: 1px solid #eee; padding-bottom: 10px; margin-top: 25px; }
+        label { display: block; margin-top: 15px; font-weight: 600; font-size: 13px; color: #444; }
+        input, textarea { width: 100%; padding: 10px; margin-top: 5px; border: 1px solid #ccc; border-radius: 6px; box-sizing: border-box; }
+        .save { background: #28a745; color: white; border: none; padding: 15px; width: 100%; margin-top: 25px; border-radius: 8px; font-weight: bold; cursor: pointer; }
         
-        .btn-live { background: #2196F3; color: white; padding: 10px 20px; border: none; border-radius: 5px; cursor: pointer; font-weight: bold; }
-        .btn-search { background: #4CAF50; color: white; padding: 10px 20px; border: none; border-radius: 5px; cursor: pointer; margin-left: 5px; }
+        /* SEARCH & FILTER */
+        .filter-bar { background: #fff3cd; padding: 15px; border-radius: 8px; border: 1px solid #ffeeba; display: flex; align-items: flex-end; gap: 10px; margin-bottom: 15px; flex-wrap: wrap; }
+        .btn-search { background: #8B0000; color: white; border: none; padding: 10px 15px; border-radius: 5px; cursor: pointer; height: 42px; font-weight: 600; }
+        .btn-reset { background: #666; color: white; border: none; padding: 10px 15px; border-radius: 5px; cursor: pointer; height: 42px; }
+
+        /* TABEL */
+        .data-count { font-size: 12px; color: #666; margin-bottom: 5px; font-style: italic; }
+        .table-responsive { overflow-x: auto; }
+        table { width: 100%; border-collapse: collapse; margin-top: 5px; font-size: 12px; min-width: 1100px; }
+        th, td { border: 1px solid #eee; padding: 12px; text-align: left; vertical-align: middle; }
+        th { background: #8B0000; color: white; text-transform: uppercase; font-size: 12px; white-space: nowrap; }
+        tr:nth-child(even) { background: #f8f9fa; }
         
-        input, textarea { padding: 8px; border: 1px solid #ccc; border-radius: 4px; width: 100%; box-sizing: border-box; margin-bottom: 5px; }
-        label { font-weight: bold; font-size: 12px; color: #555; margin-top: 10px; display: block; }
+        .badge { padding: 5px 10px; border-radius: 20px; font-size: 11px; font-weight: bold; color: white; display: inline-block; min-width: 80px; text-align: center; }
+        .bg-wait { background: #6c757d; } .bg-acc { background: #28a745; } .bg-rej { background: #dc3545; }
+
+        .btn-mini { border: none; border-radius: 4px; color: white; cursor: pointer; width: 32px; height: 32px; display: flex; align-items: center; justify-content: center; margin-right: 3px; }
+        .btn-ok { background: #28a745; } .btn-no { background: #ffc107; color: #333; } .btn-del { background: #dc3545; }
+
+        .note-input { padding: 5px; font-size: 11px; border: 1px solid #ddd; width: 100%; min-width: 150px; }
+
+        #login-box { max-width: 400px; margin: 80px auto; text-align: center; background: white; padding: 40px; border-radius: 12px; box-shadow: 0 10px 25px rgba(0,0,0,0.1); }
+        .print-area { background:#f9f9f9; padding:20px; border-radius:8px; border:1px solid #ddd; display:flex; gap:15px; align-items:flex-end; margin-bottom: 20px; margin-top: 20px; flex-wrap: wrap; }
+        .pdf-btn { background:#FF5722; color:white; border:none; padding:0 20px; border-radius:6px; font-weight:600; font-size:13px; height: 42px; cursor: pointer; white-space: nowrap; }
     </style>
 </head>
 <body>
 
-<div id="login-box" style="text-align:center; padding:80px; max-width:400px; margin:0 auto;">
-    <h2 style="color:#8B0000;">LOGIN ADMIN</h2>
-    <input id="email" placeholder="Email" style="margin-bottom:10px;">
-    <input id="pass" type="password" placeholder="Password" style="margin-bottom:20px;">
-    <button onclick="login()" style="padding:12px 30px; background:#8B0000; color:white; border:none; border-radius:5px; cursor:pointer;">MASUK</button>
+<div id="login-box">
+    <h2 style="color:#8B0000;">Admin Login</h2>
+    <input id="email" type="email" placeholder="Email Admin">
+    <input id="pass" type="password" placeholder="Password">
+    <button class="save" onclick="login()" style="background:#8B0000">MASUK DASHBOARD</button>
 </div>
 
 <div id="panel-box" class="container" style="display:none;">
-    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px;">
-        <h2 style="margin:0; color:#8B0000;">PANEL ADMIN LAPAS</h2>
+    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px; flex-wrap: wrap; gap: 10px;">
+        <h2 style="margin:0; color:#8B0000;">Panel Kontrol Aplikasi</h2>
         <div>
-            <button onclick="cleanData()" style="padding:8px 15px; background:#666; color:white; border:none; border-radius:4px; cursor:pointer;">🧹 Bersihkan Data</button>
-            <button onclick="logout()" style="padding:8px 15px; background:#333; color:white; border:none; border-radius:4px; cursor:pointer; margin-left:5px;">Logout</button>
-        </div>
-    </div>
-    
-    <div style="border-bottom: 2px solid #eee;">
-        <button class="tab-btn active" onclick="show('tatap')" id="btn-tatap">📥 TATAP MUKA</button>
-        <button class="tab-btn" onclick="show('online')" id="btn-online">💻 VIDEO CALL</button>
-        <button class="tab-btn" onclick="show('set')" id="btn-set">⚙️ PENGATURAN</button>
-    </div>
-
-    <div id="tab-tatap" class="tab-content" style="display:block;">
-        <div style="background:#f8f9fa; padding:15px; border-radius:8px; display:flex; align-items:flex-end; gap:10px; border:1px solid #ddd;">
-            <div style="flex:1"><label>Filter Tanggal:</label><input type="date" id="date_tatap"></div>
-            <button class="btn-search" onclick="loadData('db_utama/tatap_muka', 'tb_tatap', 'date_tatap')">🔍 Cari</button>
-            <button class="btn-live" onclick="loadLive('db_utama/tatap_muka', 'tb_tatap')">🔄 RESET LIVE</button>
-        </div>
-        <div style="margin-top:15px; display:flex; gap:10px; align-items:flex-end; background:#fff3cd; padding:15px; border-radius:8px; border:1px solid #ffeeba;">
-            <div style="flex:1"><label>Nama Petugas:</label><input id="ptg_tatap"></div>
-            <div style="flex:1"><label>NIP:</label><input id="nip_tatap"></div>
-            <button onclick="printPDF('tb_tatap', 'Laporan Kunjungan Tatap Muka', 'ptg_tatap', 'nip_tatap')" style="height:35px; background:#ff5722; color:white; border:none; border-radius:4px; cursor:pointer;">🖨️ Cetak PDF</button>
-        </div>
-        <div class="table-responsive">
-            <table id="tb_tatap"></table>
+            <button onclick="cleanData()" style="background:#555; color:white; border:none; padding:10px 20px; border-radius:5px; cursor:pointer; font-size:13px;">🧹 Hapus Data Lama</button>
+            <button onclick="logout()" style="background:#333; color:white; border:none; padding:10px 20px; border-radius:5px; cursor:pointer; font-size:13px; margin-left: 5px;">Logout</button>
         </div>
     </div>
 
-    <div id="tab-online" class="tab-content">
-        <div style="background:#f8f9fa; padding:15px; border-radius:8px; display:flex; align-items:flex-end; gap:10px; border:1px solid #ddd;">
-            <div style="flex:1"><label>Filter Tanggal:</label><input type="date" id="date_online"></div>
-            <button class="btn-search" onclick="loadData('db_utama/video_call', 'tb_online', 'date_online')">🔍 Cari</button>
-            <button class="btn-live" onclick="loadLive('db_utama/video_call', 'tb_online')">🔄 RESET LIVE</button>
-        </div>
-        <div style="margin-top:15px; display:flex; gap:10px; align-items:flex-end; background:#fff3cd; padding:15px; border-radius:8px; border:1px solid #ffeeba;">
-            <div style="flex:1"><label>Nama Petugas:</label><input id="ptg_online"></div>
-            <div style="flex:1"><label>NIP:</label><input id="nip_online"></div>
-            <button onclick="printPDF('tb_online', 'Laporan Kunjungan Video Call', 'ptg_online', 'nip_online')" style="height:35px; background:#ff5722; color:white; border:none; border-radius:4px; cursor:pointer;">🖨️ Cetak PDF</button>
-        </div>
-        <div class="table-responsive">
-            <table id="tb_online"></table>
-        </div>
+    <div class="tabs">
+        <button class="tab-btn active" onclick="showTab('settings')" id="t1">⚙️ PENGATURAN</button>
+        <button class="tab-btn" onclick="showTab('data_fisik')" id="t2">📥 TATAP MUKA</button>
+        <button class="tab-btn" onclick="showTab('data_online')" id="t3">💻 VIDEO CALL</button>
     </div>
 
-    <div id="tab-set" class="tab-content">
-        <div style="display:grid; grid-template-columns: 1fr 1fr; gap:20px;">
-            <div>
-                <h3>1. Tampilan & Kop Surat</h3>
-                <label>Nama Aplikasi:</label><input id="app_name">
-                <label>Logo URL:</label><input id="logo_url">
-                <label>Background URL:</label><input id="header_bg">
-                <label>Pengumuman (Running Text):</label><textarea id="announcement"></textarea>
-                <label>Pesan Sambutan:</label><textarea id="welcome_msg"></textarea>
-                
-                <label style="color:#8B0000; margin-top:10px;">Kop Surat (Untuk PDF):</label>
-                <input id="kop_1" placeholder="Baris 1 (Kementerian)">
-                <input id="kop_2" placeholder="Baris 2 (Wilayah)">
-                <input id="kop_3" placeholder="Baris 3 (Nama Lapas)">
-                <input id="kop_4" placeholder="Baris 4 (Alamat)">
+    <div id="tab-settings">
+        <h3>1. Kop Surat & Tampilan</h3>
+        <label>Baris 1 (Kementerian):</label> <input id="kop_1">
+        <label>Baris 2 (Wilayah):</label> <input id="kop_2">
+        <label>Baris 3 (Nama Lapas):</label> <input id="kop_3">
+        <label>Baris 4 (Alamat):</label> <input id="kop_4">
+        <label>Nama Aplikasi:</label> <input id="app_name">
+        <label>Link Logo (URL):</label> <input id="logo_url">
+        <label>Link Background Header (URL):</label> <input id="header_bg">
+        <label>Pengumuman (Info Penting):</label> <textarea id="announcement"></textarea>
+
+        <h3>2. Jadwal & Konten</h3>
+        <label>Jadwal PIDUM & NARKOBA:</label> 
+        <div style="display:flex; gap:10px;"><input id="sch_pidum" placeholder="PIDUM"><input id="sch_narkoba" placeholder="NARKOBA"></div>
+        <label>Jam Sesi (Pagi & Siang):</label> 
+        <div style="display:flex; gap:10px;"><input id="sch_mon_am" placeholder="Jam Pagi"><input id="sch_mon_pm" placeholder="Jam Siang"></div>
+        <label>Hari Lain:</label> 
+        <div style="display:flex; gap:10px;"><input id="sch_fri" placeholder="Jumat"><input id="sch_sat" placeholder="Sabtu"><input id="sch_sun" placeholder="Minggu"></div>
+
+        <label>Syarat & Ketentuan:</label>
+        <textarea id="txt_doc" placeholder="Syarat Dokumen"></textarea>
+        <textarea id="txt_item" placeholder="Syarat Barang" style="margin-top:5px;"></textarea>
+        
+        <label style="color:#8B0000; margin-top:20px;">Toko Lapas:</label>
+        <textarea id="toko_announce" placeholder="Pengumuman Toko"></textarea>
+        <input id="toko_link" placeholder="Link Aplikasi Toko">
+
+        <h3>3. Kontak</h3>
+        <label>Kontak:</label>
+        <div style="display:flex; gap:10px;"><input id="wa_pengaduan" placeholder="No WA"><input id="wa_channel" placeholder="Link Channel"></div>
+        <label>Sosmed:</label>
+        <input id="soc_ig" placeholder="Instagram"><input id="soc_fb" placeholder="Facebook">
+        <input id="soc_tw" placeholder="Twitter"><input id="soc_yt" placeholder="Youtube">
+
+        <button class="save" onclick="saveData()">💾 SIMPAN PENGATURAN</button>
+    </div>
+
+    <div id="tab-data_fisik" style="display:none;">
+        <div class="filter-bar">
+            <div style="flex:1">
+                <label>Cek Tanggal:</label>
+                <input type="date" id="date_fisik">
             </div>
-            <div>
-                <h3>2. Jadwal & Konten</h3>
-                <label>Jadwal PIDUM / NARKOBA:</label> 
-                <div style="display:flex; gap:5px;"><input id="sch_pidum"><input id="sch_narkoba"></div>
-                <label>Jam Pagi / Siang:</label> 
-                <div style="display:flex; gap:5px;"><input id="sch_mon_am"><input id="sch_mon_pm"></div>
-                
-                <label>Jadwal Lain (Jumat/Sabtu/Minggu):</label>
-                <div style="display:flex; gap:5px;"><input id="sch_fri"><input id="sch_sat"><input id="sch_sun"></div>
-                
-                <label>Syarat Dokumen, Barang, & Info Pengurusan:</label>
-                <textarea id="txt_doc" placeholder="Syarat Dokumen"></textarea>
-                <textarea id="txt_info" placeholder="Info Pengurusan (Menu Baru)"></textarea>
-                <textarea id="txt_item" placeholder="Aturan Barang"></textarea>
-
-                <label style="color:#8B0000; margin-top:10px;">Toko Lapas:</label>
-                <textarea id="toko_announce" placeholder="Info Toko"></textarea>
-                <input id="toko_link" placeholder="Link Aplikasi Toko">
-
-                <label>Kontak & Sosmed:</label>
-                <div style="display:flex; gap:5px;"><input id="wa_pengaduan" placeholder="No WA"><input id="wa_channel" placeholder="Link Channel"></div>
-                <input id="soc_ig" placeholder="Instagram">
-                <input id="soc_fb" placeholder="Facebook">
-            </div>
+            <button class="btn-search" onclick="loadByDate('registrations', 'tb_fisik', 'date_fisik', 'count_fisik')">🔍 CARI</button>
+            <button class="btn-reset" onclick="resetLive('registrations', 'tb_fisik', 'count_fisik')">🔄 LIVE</button>
         </div>
-        <button onclick="saveSettings()" style="width:100%; padding:15px; background:green; color:white; font-weight:bold; font-size:16px; border:none; margin-top:20px; cursor:pointer;">💾 SIMPAN SEMUA PENGATURAN</button>
+
+        <div class="print-area">
+            <div style="flex:1"><label style="margin:0">Nama Petugas:</label><input id="petugas_fisik"></div>
+            <div style="flex:1"><label style="margin:0">NIP / Jabatan:</label><input id="nip_fisik"></div>
+            <button class="pdf-btn" onclick="printPDF('tb_fisik', 'Laporan Kunjungan Tatap Muka', 'petugas_fisik', 'nip_fisik')">🖨️ CETAK PDF</button>
+        </div>
+        
+        <div id="count_fisik" class="data-count">Menampilkan data...</div>
+        <div class="table-responsive">
+            <table id="table_fisik">
+                <thead>
+                    <tr>
+                        <th>ANTRIAN</th> <th>WAKTU</th> <th>PENGUNJUNG</th>
+                        <th>NIK</th> <th>ALAMAT</th> <th>TUJUAN</th>
+                        <th>STATUS</th> <th>CATATAN</th> <th>AKSI</th>
+                    </tr>
+                </thead>
+                <tbody id="tb_fisik"></tbody>
+            </table>
+        </div>
+    </div>
+
+    <div id="tab-data_online" style="display:none;">
+        <div class="filter-bar">
+            <div style="flex:1">
+                <label>Cek Tanggal:</label>
+                <input type="date" id="date_online">
+            </div>
+            <button class="btn-search" onclick="loadByDate('online_registrations', 'tb_online', 'date_online', 'count_online')">🔍 CARI</button>
+            <button class="btn-reset" onclick="resetLive('online_registrations', 'tb_online', 'count_online')">🔄 LIVE</button>
+        </div>
+
+        <div class="print-area">
+            <div style="flex:1"><label style="margin:0">Nama Petugas:</label><input id="petugas_online"></div>
+            <div style="flex:1"><label style="margin:0">NIP / Jabatan:</label><input id="nip_online"></div>
+            <button class="pdf-btn" onclick="printPDF('tb_online', 'Laporan Kunjungan Video Call', 'petugas_online', 'nip_online')">🖨️ CETAK PDF</button>
+        </div>
+        
+        <div id="count_online" class="data-count">Menampilkan data...</div>
+        <div class="table-responsive">
+            <table id="table_online">
+                <thead>
+                    <tr>
+                        <th>ANTRIAN</th> <th>WAKTU</th> <th>PENGUNJUNG</th>
+                        <th>NIK</th> <th>ALAMAT</th> <th>TUJUAN</th>
+                        <th>STATUS</th> <th>CATATAN</th> <th>AKSI</th>
+                    </tr>
+                </thead>
+                <tbody id="tb_online"></tbody>
+            </table>
+        </div>
     </div>
 </div>
 
 <script>
-    // --- TEMPEL FIREBASE CONFIG DI SINI ---
+    // --- FIREBASE CONFIG ---
     const firebaseConfig = {
         apiKey: "AIzaSyDvpFZtiG_fXLOf8okjafNm7gqbJZr2pSY",
         authDomain: "lapassistem.firebaseapp.com",
@@ -142,7 +188,7 @@
         measurementId: "G-25HSNZ35ZH"
     };
 
-    if(!firebase.apps.length) firebase.initializeApp(firebaseConfig);
+    if (!firebase.apps.length) firebase.initializeApp(firebaseConfig);
     const auth = firebase.auth();
     const db = firebase.database();
     let listeners = {}; 
@@ -152,8 +198,8 @@
             document.getElementById('login-box').style.display='none';
             document.getElementById('panel-box').style.display='block';
             loadSettings(); 
-            resetLive('db_utama/tatap_muka', 'tb_tatap');
-            resetLive('db_utama/video_call', 'tb_online');
+            resetLive('registrations', 'tb_fisik', 'count_fisik');
+            resetLive('online_registrations', 'tb_online', 'count_online');
         } else {
             document.getElementById('login-box').style.display='block';
             document.getElementById('panel-box').style.display='none';
@@ -163,137 +209,167 @@
     function login() { auth.signInWithEmailAndPassword(document.getElementById('email').value, document.getElementById('pass').value).catch(e => alert(e.message)); }
     function logout() { auth.signOut(); }
     
-    function show(id) {
-        document.querySelectorAll('.tab-content').forEach(d => d.style.display='none');
-        document.querySelectorAll('.tab-btn').forEach(b => b.className='tab-btn');
-        document.getElementById('tab-'+id).style.display='block';
-        document.getElementById('btn-'+id).className='tab-btn active';
+    function showTab(t) {
+        ['settings','data_fisik','data_online'].forEach(x => document.getElementById('tab-'+x).style.display = 'none');
+        document.getElementById('tab-'+t).style.display = 'block';
+        ['t1','t2','t3'].forEach(x => document.getElementById(x).className = 'tab-btn');
+        if(t=='settings') document.getElementById('t1').className += ' active';
+        if(t=='data_fisik') document.getElementById('t2').className += ' active';
+        if(t=='data_online') document.getElementById('t3').className += ' active';
     }
 
     // --- CORE DATA LOGIC ---
-    function resetLive(path, tableId) {
+
+    function resetLive(path, tableId, countId) {
         if (listeners[path]) db.ref(path).off(); 
         const tb = document.getElementById(tableId);
-        tb.innerHTML = "<tr><td colspan='8' style='text-align:center;'>Memuat data terbaru...</td></tr>";
+        tb.innerHTML = "<tr><td colspan='9' style='text-align:center;'>Memuat data terbaru...</td></tr>";
+
         listeners[path] = db.ref(path).limitToLast(100);
-        listeners[path].on('value', s => renderTable(s, tableId, path));
+        listeners[path].on('value', s => renderTable(s, tableId, path, countId));
     }
 
-    function loadData(path, tableId, dateId) {
-        const d = document.getElementById(dateId).value;
-        if (!d) return alert("Pilih tanggal dulu!");
+    function loadByDate(path, tableId, dateInputId, countId) {
+        const dateVal = document.getElementById(dateInputId).value;
+        if (!dateVal) return alert("Pilih tanggal dulu!");
+        
         if (listeners[path]) db.ref(path).off();
-        listeners[path] = db.ref(path).orderByChild('tgl').equalTo(d);
-        listeners[path].on('value', s => renderTable(s, tableId, path));
+        const tb = document.getElementById(tableId);
+        tb.innerHTML = "<tr><td colspan='9' style='text-align:center;'>Mencari data...</td></tr>";
+
+        listeners[path] = db.ref(path).orderByChild('tgl').equalTo(dateVal);
+        listeners[path].on('value', s => renderTable(s, tableId, path, countId));
     }
 
-    function renderTable(snapshot, tableId, path) {
+    function renderTable(snapshot, tableId, path, countId) {
         const tb = document.getElementById(tableId);
-        let html = `<thead><tr>
-            <th>ANTRIAN</th> <th>WAKTU</th> <th>PENGUNJUNG</th> <th>NIK</th> <th>ALAMAT</th> <th>TUJUAN</th> <th>CATATAN</th> <th>STATUS</th> <th>AKSI</th>
-        </tr></thead><tbody>`;
-
-        if(!snapshot.exists()) { tb.innerHTML = html + "<tr><td colspan='9' style='text-align:center; padding:20px;'>Tidak ada data.</td></tr></tbody>"; return; }
+        const countEl = document.getElementById(countId);
+        
+        if(!snapshot.exists()) {
+            tb.innerHTML = "<tr><td colspan='9' style='text-align:center; padding:20px; color:#999;'>Tidak ada data.</td></tr>";
+            countEl.innerText = "Total: 0 Data";
+            return;
+        }
 
         const arr = [];
-        snapshot.forEach(child => arr.push({key: child.key, ...child.val()}));
-        
-        arr.reverse().forEach(v => {
-            let color = v.status==='accepted' ? 'green' : (v.status==='rejected' ? 'red' : 'gray');
-            let txt = v.status==='accepted' ? 'Diterima' : (v.status==='rejected' ? 'Ditolak' : 'Menunggu');
-
-            html += `<tr>
-                <td style="color:#8B0000; font-weight:bold; font-size:14px;">${v.noAntrian || '-'}</td>
-                <td>${v.tgl}<br><small>${v.jam || '-'}</small></td>
-                <td><b>${v.nama}</b><br><small>${v.telp}</small></td>
-                <td>${v.nik || '-'}</td> 
-                <td><div style="font-size:11px; width:150px;">${v.alamat || '-'}</div></td> 
-                <td>${v.wbp}</td>
-                <td><div style="font-size:11px; width:150px; color:#555;">${v.catatan || '-'}</div></td>
-                <td><span style="background:${color}; color:white; padding:3px 8px; border-radius:10px; font-size:10px;">${txt}</span></td>
-                <td>
-                    <button onclick="upd('${path}/${v.key}','accepted')" style="border:none; cursor:pointer;">✅</button>
-                    <button onclick="upd('${path}/${v.key}','rejected')" style="border:none; cursor:pointer;">❌</button>
-                    <button onclick="del('${path}/${v.key}')" style="border:none; cursor:pointer;">🗑️</button>
-                </td>
-            </tr>`;
+        snapshot.forEach(child => {
+            arr.push({key: child.key, ...child.val()});
         });
-        tb.innerHTML = html + "</tbody>";
+        
+        countEl.innerText = `Menampilkan ${arr.length} Data Terbaru`;
+        tb.innerHTML = "";
+
+        arr.reverse().forEach(v => {
+            let stHtml = '<span class="badge bg-wait">Menunggu</span>';
+            if(v.status === 'accepted') stHtml = '<span class="badge bg-acc">Diterima</span>';
+            else if(v.status === 'rejected') stHtml = '<span class="badge bg-rej">Ditolak</span>';
+
+            // Menambahkan Input Catatan
+            const noteVal = v.note || "";
+
+            tb.insertAdjacentHTML('beforeend', `
+                <tr>
+                    <td style="color:#8B0000; font-weight:bold; font-size:14px;">${v.noAntrian || '-'}</td>
+                    <td>${v.tgl}<br><small>${v.jam || '-'}</small></td>
+                    <td><b>${v.nama}</b><br><small>${v.telp}</small></td>
+                    <td>${v.nik || '-'}</td> <td>${v.alamat || '-'}</td> <td>${v.wbp}</td>
+                    <td>${stHtml}</td>
+                    <td><input type="text" id="note-${v.key}" value="${noteVal}" class="note-input" placeholder="Tulis catatan..."></td>
+                    <td>
+                        <div style="display:flex; gap:5px;">
+                            <button class="btn-mini btn-ok" onclick="upd('${path}','${v.key}','accepted')">✅</button>
+                            <button class="btn-mini btn-no" onclick="upd('${path}','${v.key}','rejected')">❌</button>
+                            <button class="btn-mini btn-del" onclick="del('${path}','${v.key}')">🗑️</button>
+                        </div>
+                    </td>
+                </tr>
+            `);
+        });
     }
 
-    function upd(path, st) { db.ref(path).update({status: st}); }
-    function del(path) { if(confirm("Hapus data ini?")) db.ref(path).remove(); }
+    // Update fungsi upd untuk menyimpan Note juga
+    function upd(path, key, st) { 
+        const note = document.getElementById(`note-${key}`).value;
+        db.ref(path+'/'+key).update({status: st, note: note}); 
+    }
+    
+    function del(path, key) { if(confirm("Hapus data ini?")) db.ref(path+'/'+key).remove(); }
     function cleanData() { if(confirm("Hapus data > 30 hari?")) alert("Fitur clean aktif."); }
 
-    // --- SETTINGS ---
-    const ids = [
-        'app_name','logo_url','header_bg','announcement','welcome_msg',
-        'kop_1','kop_2','kop_3','kop_4',
-        'sch_pidum','sch_narkoba','sch_mon_am','sch_mon_pm','sch_fri','sch_sat','sch_sun',
-        'txt_doc','txt_info','txt_item','toko_announce','toko_link',
-        'wa_pengaduan','wa_channel','soc_ig','soc_fb','soc_tw','soc_yt'
-    ];
+    // --- PDF & SETTINGS ---
+    const fields = ['app_name','logo_url','header_bg','announcement','welcome_msg',
+                    'kop_1','kop_2','kop_3','kop_4', 
+                    'sch_pidum', 'sch_narkoba', 'sch_mon_am','sch_mon_pm','sch_fri','sch_sat','sch_sun',
+                    'txt_doc','txt_item','toko_announce','toko_link',
+                    'wa_pengaduan', 'wa_channel', 'soc_ig','soc_fb','soc_tw','soc_yt'];
 
     function loadSettings() {
         db.ref('app_config').once('value', s => {
             if(s.exists()) {
                 const d = s.val();
-                ids.forEach(k => { if(document.getElementById(k)) document.getElementById(k).value = d[k] || ""; });
+                fields.forEach(f => { if(document.getElementById(f)) document.getElementById(f).value = d[f] || ""; });
             }
         });
     }
 
-    function saveSettings() {
-        const d = {};
-        ids.forEach(k => { if(document.getElementById(k)) d[k] = document.getElementById(k).value; });
-        db.ref('app_config').update(d).then(() => alert("✅ Pengaturan Tersimpan!"));
+    function saveData() {
+        const data = {};
+        fields.forEach(f => { if(document.getElementById(f)) data[f] = document.getElementById(f).value; });
+        db.ref('app_config').update(data).then(() => alert("Pengaturan Tersimpan!"));
     }
 
-    function printPDF(tbodyId, title, pId, nId) {
+    function printPDF(tbodyId, title, inputNamaId, inputNipId) {
         const { jsPDF } = window.jspdf;
         const doc = new jsPDF('l', 'mm', 'a4');
-        const cx = 148.5; 
+        const cx = 148.5;
 
-        const ptg = document.getElementById(pId).value;
-        const nip = document.getElementById(nId).value;
-        const k1 = document.getElementById('kop_1').value;
-        const k2 = document.getElementById('kop_2').value;
-        const k3 = document.getElementById('kop_3').value;
-        const k4 = document.getElementById('kop_4').value;
+        const petugas = document.getElementById(inputNamaId).value;
+        const nip = document.getElementById(inputNipId).value;
+        const k1 = document.getElementById('kop_1').value || "";
+        const k2 = document.getElementById('kop_2').value || "";
+        const k3 = document.getElementById('kop_3').value || "";
+        const k4 = document.getElementById('kop_4').value || "";
 
-        if(!ptg) return alert("Nama Petugas wajib diisi!");
+        if(!petugas) { alert("Nama Petugas wajib diisi!"); return; }
 
-        doc.setFont("times", "bold"); doc.setFontSize(14); doc.text(k1, cx, 15, 'center');
-        doc.text(k2, cx, 22, 'center'); doc.setFontSize(16); doc.text(k3, cx, 30, 'center');
-        doc.setFontSize(10); doc.setFont("times", "normal"); doc.text(k4, cx, 37, 'center');
-        doc.line(20, 42, 277, 42);
+        doc.setFont("times", "bold"); doc.setFontSize(14);
+        doc.text(k1.toUpperCase(), cx, 15, { align: "center" });
+        doc.text(k2.toUpperCase(), cx, 22, { align: "center" });
+        doc.setFontSize(16);
+        doc.text(k3.toUpperCase(), cx, 30, { align: "center" });
+        doc.setFontSize(11); doc.setFont("times", "normal");
+        doc.text(k4, cx, 37, { align: "center" });
+        doc.setLineWidth(0.5); doc.line(20, 42, 277, 42);
 
-        doc.setFont("helvetica", "bold"); doc.setFontSize(14); doc.text(title, cx, 55, 'center');
+        doc.setFont("helvetica", "bold"); doc.setFontSize(12);
+        doc.text(title.toUpperCase(), cx, 52, { align: "center" });
+        doc.setFontSize(10); doc.setFont("helvetica", "normal");
+        doc.text("Dicetak: " + new Date().toLocaleString('id-ID'), cx, 58, { align: "center" });
 
-        const rows = [];
-        const trs = document.querySelectorAll(`#${tbodyId} tr`);
-        trs.forEach(tr => {
-            const tds = tr.querySelectorAll('td');
-            if(tds.length > 1) {
-                rows.push([
-                    tds[0].innerText, tds[1].innerText, tds[2].innerText, 
-                    tds[3].innerText, tds[4].innerText, tds[5].innerText, tds[7].innerText
-                ]);
-            }
-        });
-
+        let tableId = tbodyId === 'tb_fisik' ? '#table_fisik' : '#table_online';
+        
         doc.autoTable({ 
-            head: [['ANTRIAN','WAKTU','PENGUNJUNG','NIK','ALAMAT','TUJUAN','STATUS']],
-            body: rows, startY: 65, theme: 'grid',
-            headStyles: { fillColor: [230,230,230], textColor: 0 }
+            html: tableId, 
+            startY: 65, 
+            // Menambahkan Kolom Catatan (index 7)
+            columns: [0, 1, 2, 3, 4, 5, 6, 7], 
+            theme: 'plain', 
+            headStyles: { fillColor: [230,230,230], textColor: 0, lineWidth:0.1, lineColor: 150 },
+            bodyStyles: { lineWidth:0.1, lineColor: 200 },
+            styles: { fontSize: 8, font: 'times', cellPadding: 2 }
         });
 
-        const fy = doc.lastAutoTable.finalY + 20;
+        let fy = doc.lastAutoTable.finalY + 20;
+        if(fy > 170) { doc.addPage(); fy=20; }
         const dateStr = new Date().toLocaleDateString('id-ID', { year: 'numeric', month: 'long', day: 'numeric' });
-        doc.setFontSize(11);
-        doc.text(`Arga Makmur, ${dateStr}`, 220, fy); doc.text("Petugas,", 220, fy + 7);
-        doc.setFont("times", "bold"); doc.text(`( ${ptg} )`, 220, fy + 30);
-        doc.setFont("times", "normal"); doc.text(`NIP. ${nip}`, 220, fy + 35);
+        
+        doc.setFont("times", "normal");
+        doc.text(`Arga Makmur, ${dateStr}`, 220, fy);
+        doc.text("Petugas,", 220, fy + 5);
+        doc.setFont("times", "bold");
+        doc.text(`( ${petugas} )`, 220, fy + 25);
+        doc.setFont("times", "normal");
+        doc.text(`NIP. ${nip}`, 220, fy + 30);
         doc.save("Laporan.pdf");
     }
 </script>
