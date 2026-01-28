@@ -241,7 +241,7 @@
             db.ref(counterPath).transaction(curr => (curr || 0) + 1, (err, committed, snap) => {
                 if (err) {
                     btnSubmit.innerHTML = "Coba Lagi"; btnSubmit.disabled = false;
-                    alert("Gagal terhubung database.");
+                    alert("Error Database: " + err.message);
                 } else if (committed) {
                     const noAntrian = `${prefix}-${sessionCode}-${String(snap.val()).padStart(3, '0')}`;
                     const dataPayload = {
@@ -254,12 +254,15 @@
                     db.ref(path).push(dataPayload).then(() => {
                         chatBox.innerHTML = '';
                         renderTicket(dataPayload, label);
+                    }).catch(e => {
+                         btnSubmit.innerHTML = "Coba Lagi"; btnSubmit.disabled = false;
+                         alert("Gagal Simpan: " + e.message);
                     });
                 }
             });
         }
 
-        // --- CEK STATUS LOGIC (DIPERBAIKI: CLIENT-SIDE FILTER) ---
+        // --- CEK STATUS LOGIC (UPDATE: Error Handling Lebih Jelas) ---
         window.askNikForStatus = function(type) {
             const div = document.createElement('div');
             div.className = 'msg bot';
@@ -284,16 +287,14 @@
             const originalText = btn.innerHTML;
             btn.innerHTML = "Mencari..."; btn.disabled = true;
             
-            // Mengambil 100 data terakhir, lalu cari manual di sini (menghindari masalah index Firebase)
+            // Logika pencarian yang aman tanpa Index
             db.ref(path).limitToLast(100).once('value')
             .then(snapshot => {
                 let foundData = null;
                 
                 if(snapshot.exists()) {
-                    // Loop semua data yang didapat
                     snapshot.forEach(child => {
                         const val = child.val();
-                        // Bandingkan NIK (pastikan tipe data sama-sama string)
                         if(String(val.nik) === String(inputNik)) {
                             foundData = val;
                         }
@@ -305,12 +306,14 @@
                     renderTicket(foundData, label);
                 } else {
                     btn.innerHTML = originalText; btn.disabled = false;
-                    alert("Data tidak ditemukan! Pastikan NIK benar atau anda belum mendaftar.");
+                    alert("Data tidak ditemukan! Pastikan NIK benar atau anda belum mendaftar hari ini.");
                 }
             })
             .catch(err => {
                 btn.innerHTML = originalText; btn.disabled = false;
-                alert("Terjadi kesalahan koneksi.");
+                console.error(err);
+                // Menampilkan pesan error asli dari Firebase
+                alert("Gagal: " + err.message + "\n(Cek 'Rules' di Firebase Console)");
             });
         }
 
@@ -327,7 +330,6 @@
                 msgStatus = "Maaf, pendaftaran ditolak.";
             }
 
-            // Tampilkan Catatan Jika Ada
             const noteHtml = data.note ? `<div class="ticket-note"><b>✉️ Pesan Petugas:</b><br>"${data.note}"</div>` : '';
 
             const ticketHtml = `
@@ -459,4 +461,5 @@
 </script>
 </body>
 </html>
+
 
