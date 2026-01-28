@@ -94,9 +94,12 @@
         <label>Hari Lain:</label> 
         <div style="display:flex; gap:10px;"><input id="sch_fri" placeholder="Jumat"><input id="sch_sat" placeholder="Sabtu"><input id="sch_sun" placeholder="Minggu"></div>
 
-        <label>Syarat & Ketentuan:</label>
+        <label>Syarat & Ketentuan (Dokumen & Barang):</label>
         <textarea id="txt_doc" placeholder="Syarat Dokumen"></textarea>
         <textarea id="txt_item" placeholder="Syarat Barang" style="margin-top:5px;"></textarea>
+
+        <label style="color:#8B0000; margin-top:15px;">Info Pengurusan (PB/CB/Asimilasi):</label>
+        <textarea id="txt_urus" placeholder="Tulis informasi pengurusan di sini..."></textarea>
         
         <label style="color:#8B0000; margin-top:20px;">Toko Lapas:</label>
         <textarea id="toko_announce" placeholder="Pengumuman Toko"></textarea>
@@ -266,7 +269,6 @@
 
             const noteVal = v.note || "";
 
-            // PERBAIKAN: Input Note diberi atribut onchange agar tersimpan otomatis saat user mengetik & pindah kolom
             tb.insertAdjacentHTML('beforeend', `
                 <tr data-key="${v.key}">
                     <td style="color:#8B0000; font-weight:bold; font-size:14px;">${v.noAntrian || '-'}</td>
@@ -291,28 +293,21 @@
         });
     }
 
-    // --- UPDATE DENGAN MENYIMPAN CATATAN ---
+    // --- UPDATE & DELETE ---
     function upd(path, key, st) { 
         const noteInput = document.getElementById(`note-${key}`);
         const note = noteInput ? noteInput.value : "";
-        
-        // Simpan status dan catatan sekaligus
-        db.ref(path+'/'+key).update({status: st, note: note})
-        .then(() => {
-            // Feedback visual kecil (opsional)
-            console.log("Data updated");
-        })
-        .catch(err => alert("Gagal update: " + err.message));
+        db.ref(path+'/'+key).update({status: st, note: note}).then(() => console.log("Updated"));
     }
-    
     function del(path, key) { if(confirm("Hapus data ini?")) db.ref(path+'/'+key).remove(); }
     function cleanData() { if(confirm("Hapus data > 30 hari?")) alert("Fitur clean aktif (Dummy)."); }
 
-    // --- PENGATURAN ---
+    // --- PENGATURAN & PDF ---
+    // Update: Menambahkan 'txt_urus' ke daftar field yang disimpan
     const fields = ['app_name','logo_url','header_bg','announcement','welcome_msg',
                     'kop_1','kop_2','kop_3','kop_4', 
                     'sch_pidum', 'sch_narkoba', 'sch_mon_am','sch_mon_pm','sch_fri','sch_sat','sch_sun',
-                    'txt_doc','txt_item','toko_announce','toko_link',
+                    'txt_doc','txt_item', 'txt_urus', 'toko_announce','toko_link',
                     'wa_pengaduan', 'wa_channel', 'soc_ig','soc_fb','soc_tw','soc_yt'];
 
     function loadSettings() {
@@ -330,7 +325,6 @@
         db.ref('app_config').update(data).then(() => alert("Pengaturan Tersimpan!"));
     }
 
-    // --- PDF GENERATOR (DIPERBAIKI UNTUK MEMBACA INPUT) ---
     function printPDF(tbodyId, title, inputNamaId, inputNipId) {
         const { jsPDF } = window.jspdf;
         const doc = new jsPDF('l', 'mm', 'a4');
@@ -340,7 +334,6 @@
         const nip = document.getElementById(inputNipId).value;
         if(!petugas) { alert("Nama Petugas wajib diisi!"); return; }
 
-        // 1. Kop Surat
         const k1 = document.getElementById('kop_1').value || "";
         const k2 = document.getElementById('kop_2').value || "";
         const k3 = document.getElementById('kop_3').value || "";
@@ -355,37 +348,24 @@
         doc.text(k4, cx, 37, { align: "center" });
         doc.setLineWidth(0.5); doc.line(20, 42, 277, 42);
 
-        // 2. Judul
         doc.setFont("helvetica", "bold"); doc.setFontSize(12);
         doc.text(title.toUpperCase(), cx, 52, { align: "center" });
         doc.setFontSize(10); doc.setFont("helvetica", "normal");
         doc.text("Dicetak: " + new Date().toLocaleString('id-ID'), cx, 58, { align: "center" });
 
-        // 3. AMBIL DATA MANUAL DARI TABEL AGAR INPUT "CATATAN" TERBACA
         const table = document.getElementById(tbodyId);
         const rows = [];
-        
-        // Loop setiap baris tabel
         for (let i = 0; i < table.rows.length; i++) {
             const tr = table.rows[i];
             const rowData = [];
-            
-            // Loop setiap sel (0-7: Antrian s/d Catatan)
             for (let j = 0; j < 8; j++) { 
                 const td = tr.cells[j];
-                
-                // Cek apakah di dalam sel ada INPUT (untuk kolom catatan)
                 const input = td.querySelector('input');
-                if (input) {
-                    rowData.push(input.value); // Ambil nilai ketikan
-                } else {
-                    rowData.push(td.innerText); // Ambil teks biasa
-                }
+                rowData.push(input ? input.value : td.innerText);
             }
             rows.push(rowData);
         }
 
-        // 4. Render Tabel PDF
         doc.autoTable({ 
             head: [['ANTRIAN', 'WAKTU', 'PENGUNJUNG', 'NIK', 'ALAMAT', 'TUJUAN', 'STATUS', 'CATATAN']],
             body: rows,
@@ -395,18 +375,17 @@
             bodyStyles: { lineWidth:0.1, lineColor: 200 },
             styles: { fontSize: 8, font: 'times', cellPadding: 2 },
             columnStyles: {
-                0: { cellWidth: 20 }, // Antrian
-                1: { cellWidth: 25 }, // Waktu
-                2: { cellWidth: 40 }, // Pengunjung
-                3: { cellWidth: 30 }, // NIK
-                4: { cellWidth: 40 }, // Alamat
-                5: { cellWidth: 30 }, // Tujuan
-                6: { cellWidth: 25 }, // Status
-                7: { cellWidth: 'auto' } // Catatan (Sisa ruang)
+                0: { cellWidth: 20 },
+                1: { cellWidth: 25 },
+                2: { cellWidth: 40 },
+                3: { cellWidth: 30 },
+                4: { cellWidth: 40 },
+                5: { cellWidth: 30 },
+                6: { cellWidth: 25 },
+                7: { cellWidth: 'auto' }
             }
         });
 
-        // 5. Tanda Tangan
         let fy = doc.lastAutoTable.finalY + 20;
         if(fy > 170) { doc.addPage(); fy=20; }
         const dateStr = new Date().toLocaleDateString('id-ID', { year: 'numeric', month: 'long', day: 'numeric' });
@@ -424,4 +403,3 @@
 </script>
 </body>
 </html>
-
