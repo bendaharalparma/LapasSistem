@@ -11,7 +11,6 @@
     
     <script defer src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
     <script defer src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
-    
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 
     <style>
@@ -38,12 +37,17 @@
         .bot { background: #f0f2f5; align-self: flex-start; border-top-left-radius: 4px; color: #333; }
         .user { background: #ffebee; align-self: flex-end; border-top-right-radius: 4px; color: #8B0000; border: 1px solid #ffcdd2; }
 
-        /* BUTTONS */
+        /* BUTTONS & FORM */
         .btn { background: white; color: #444; padding: 14px 16px; border-radius: 12px; font-size: 13px; font-weight: 600; cursor: pointer; width: 100%; display: flex; justify-content: space-between; align-items: center; border: 1px solid #eee; margin-bottom: 8px; transition: transform 0.1s; box-shadow: 0 2px 5px rgba(0,0,0,0.05); }
         .btn:active { transform: scale(0.98); background: #f9f9f9; }
         .btn-back { background: #f8f9fa; justify-content: center; color: #666; margin-top: 10px; border-style: dashed; }
+        .form-box { display: flex; flex-direction: column; gap: 10px; margin-top: 5px; background: white; padding: 5px; border-radius: 10px; }
+        .inp { padding: 12px; border: 1px solid #ddd; border-radius: 8px; font-size: 14px; width: 100%; outline: none; transition: 0.3s; }
+        .inp:focus { border-color: var(--primary); }
+        .submit-btn { background: #28a745; color: white; border: none; padding: 14px; border-radius: 8px; font-weight: bold; margin-top: 5px; cursor: pointer;}
+        .submit-btn:disabled { background: #ccc; cursor: not-allowed; }
 
-        /* COMPONENTS */
+        /* TICKET & COMPONENTS */
         .spec-table { width: 100%; border-collapse: collapse; font-size: 12px; margin-bottom: 10px; border-radius: 8px; overflow: hidden; border: 1px solid #eee; }
         .spec-table th { background: var(--primary); color: white; padding: 8px; text-align: left; }
         .spec-table td { padding: 8px; border-bottom: 1px solid #eee; }
@@ -51,15 +55,6 @@
         .sch-row { display: flex; justify-content: space-between; padding: 10px 12px; border-bottom: 1px solid #f9f9f9; font-size: 12px; }
         .badge { padding: 3px 8px; border-radius: 4px; font-weight: bold; font-size: 10px; }
         .bg-green { background: #e8f5e9; color: #2e7d32; } .bg-blue { background: #e3f2fd; color: #1565c0; } .bg-red { background: #ffebee; color: #c62828; } .bg-gray { background: #eee; color: #555; }
-
-        /* FORM */
-        .form-box { display: flex; flex-direction: column; gap: 10px; margin-top: 5px; background: white; padding: 5px; border-radius: 10px; }
-        .inp { padding: 12px; border: 1px solid #ddd; border-radius: 8px; font-size: 14px; width: 100%; outline: none; transition: 0.3s; }
-        .inp:focus { border-color: var(--primary); }
-        .submit-btn { background: #28a745; color: white; border: none; padding: 14px; border-radius: 8px; font-weight: bold; margin-top: 5px; cursor: pointer;}
-        .submit-btn:disabled { background: #ccc; cursor: not-allowed; }
-        
-        /* TICKET */
         .ticket-card { border: 2px dashed var(--primary); padding: 15px; border-radius: 12px; text-align: center; margin-top: 10px; background: #fffcfc; position: relative; }
         .ticket-number { font-size: 32px; font-weight: 800; color: #333; margin: 10px 0; letter-spacing: 2px; }
         .ticket-note { background: #fff3cd; border: 1px solid #ffeeba; color: #856404; padding: 8px; font-size: 11px; margin-top: 10px; border-radius: 6px; text-align: left; }
@@ -89,7 +84,7 @@
 </div>
 
 <script>
-    // --- FIREBASE CONFIG (PASTIKAN INI SESUAI PROJECT ANDA) ---
+    // --- 1. MASUKKAN CONFIG FIREBASE ANDA DI SINI ---
     const firebaseConfig = {
         apiKey: "AIzaSyDvpFZtiG_fXLOf8okjafNm7gqbJZr2pSY",
         authDomain: "lapassistem.firebaseapp.com",
@@ -101,8 +96,8 @@
         measurementId: "G-25HSNZ35ZH"
     };
     
-    // --- GANTI DENGAN API KEY IMGBB ANDA ---
-    const IMGBB_API_KEY = "463fe060b4e50a3fab92f06f7246e019";
+    // --- 2. MASUKKAN API KEY IMGBB DI SINI (Wajib Ganti) ---
+    const IMGBB_API_KEY = "463fe060b4e50a3fab92f06f7246e019"; 
 
     window.addEventListener('load', () => {
         if (!firebase.apps.length) firebase.initializeApp(firebaseConfig);
@@ -114,7 +109,7 @@
             updateUI(config);
         });
 
-        // PWA Install
+        // PWA Install Logic
         let deferredPrompt;
         window.addEventListener('beforeinstallprompt', (e) => {
             e.preventDefault(); deferredPrompt = e;
@@ -220,7 +215,7 @@
             chatBox.appendChild(div);
         }
 
-        // --- SUBMIT LOGIC MENGGUNAKAN IMGBB (SOLUSI GRATIS) ---
+        // --- CORE: SUBMIT FORM -> IMGBB -> FIREBASE ---
         window.submitForm = function(type) {
             const fileInput = document.getElementById('f_ktp');
             const nama = document.getElementById('f_nama').value;
@@ -231,7 +226,6 @@
             const tgl = document.getElementById('f_tgl').value;
             const jam = document.getElementById('f_jam').value;
 
-            // VALIDASI
             if(fileInput.files.length === 0) return alert("❌ Wajib melampirkan Foto KTP!");
             if(!nama || !nik || !alamat || !wbp || !tgl || !telp) return alert("❌ Mohon lengkapi semua data!");
 
@@ -245,7 +239,7 @@
             const label = type === 'fisik' ? 'TATAP MUKA' : 'VIDEO CALL';
             const counterPath = `counters/${tgl}/${type}/${jam}`;
 
-            // 1. UPLOAD KE IMGBB (Bukan Firebase Storage)
+            // 1. Upload ke ImgBB
             const file = fileInput.files[0];
             const formData = new FormData();
             formData.append("image", file);
@@ -257,9 +251,10 @@
             .then(response => response.json())
             .then(result => {
                 if (result.success) {
-                    const downloadURL = result.data.url; // URL Gambar dari ImgBB
+                    // PENTING: Gunakan display_url agar link langsung ke gambar (Direct Link)
+                    const downloadURL = result.data.display_url; 
                     
-                    // 2. SIMPAN DATA KE FIREBASE DATABASE
+                    // 2. Simpan ke Firebase Database
                     btnSubmit.innerHTML = "Menyimpan Data...";
                     
                     db.ref(counterPath).transaction(curr => (curr || 0) + 1, (err, committed, snap) => {
@@ -270,7 +265,7 @@
                             const noAntrian = `${prefix}-${sessionCode}-${String(snap.val()).padStart(3, '0')}`;
                             const dataPayload = {
                                 nama, nik, alamat, telp, wbp, tgl, jam, noAntrian,
-                                ktpUrl: downloadURL, // Link Foto ImgBB
+                                ktpUrl: downloadURL, 
                                 status: 'waiting', 
                                 note: '', 
                                 createdAt: firebase.database.ServerValue.TIMESTAMP
@@ -287,13 +282,13 @@
                     });
 
                 } else {
-                    throw new Error("Gagal upload gambar ke ImgBB");
+                    throw new Error("Gagal upload gambar ke ImgBB (Cek API Key)");
                 }
             })
             .catch(error => {
                 btnSubmit.innerHTML = "Coba Lagi"; btnSubmit.disabled = false;
                 console.error(error);
-                alert("Gagal Upload Foto: " + error.message + "\n(Cek Koneksi Internet)");
+                alert("Gagal Upload Foto: " + error.message);
             });
         }
 
@@ -346,7 +341,6 @@
             });
         }
 
-        // --- RENDER TICKET ---
         function renderTicket(data, label) {
             let stBadge = '<span class="badge bg-gray">MENUNGGU VERIFIKASI</span>';
             let msgStatus = "Menunggu konfirmasi petugas.";
