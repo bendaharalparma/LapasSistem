@@ -14,37 +14,29 @@
     <style>
         body { font-family: 'Poppins', sans-serif; background: #f0f2f5; padding: 20px; }
         .container { max-width: 1400px; margin: 0 auto; background: white; padding: 30px; border-radius: 12px; box-shadow: 0 5px 15px rgba(0,0,0,0.05); }
-        
         .tabs { display: flex; border-bottom: 2px solid #ddd; margin-bottom: 20px; overflow-x: auto; }
         .tab-btn { padding: 12px 25px; background: none; border: none; cursor: pointer; font-weight: 600; color: #666; border-bottom: 4px solid transparent; transition: 0.3s; white-space: nowrap; }
         .tab-btn:hover { background: #f9f9f9; color: #8B0000; }
         .tab-btn.active { color: #8B0000; border-bottom: 4px solid #8B0000; }
-
         h3 { color: #8B0000; border-bottom: 1px solid #eee; padding-bottom: 10px; margin-top: 25px; }
         label { display: block; margin-top: 15px; font-weight: 600; font-size: 13px; color: #444; }
         input, textarea { width: 100%; padding: 10px; margin-top: 5px; border: 1px solid #ccc; border-radius: 6px; box-sizing: border-box; }
         .save { background: #28a745; color: white; border: none; padding: 15px; width: 100%; margin-top: 25px; border-radius: 8px; font-weight: bold; cursor: pointer; }
         
-        /* SEARCH & FILTER */
         .filter-bar { background: #fff3cd; padding: 15px; border-radius: 8px; border: 1px solid #ffeeba; display: flex; align-items: flex-end; gap: 10px; margin-bottom: 15px; flex-wrap: wrap; }
         .btn-search { background: #8B0000; color: white; border: none; padding: 10px 15px; border-radius: 5px; cursor: pointer; height: 42px; font-weight: 600; }
         .btn-reset { background: #666; color: white; border: none; padding: 10px 15px; border-radius: 5px; cursor: pointer; height: 42px; }
 
-        /* TABEL */
         .data-count { font-size: 12px; color: #666; margin-bottom: 5px; font-style: italic; }
         .table-responsive { overflow-x: auto; }
         table { width: 100%; border-collapse: collapse; margin-top: 5px; font-size: 12px; min-width: 1100px; }
         th, td { border: 1px solid #eee; padding: 12px; text-align: left; vertical-align: middle; }
         th { background: #8B0000; color: white; text-transform: uppercase; font-size: 12px; white-space: nowrap; }
         tr:nth-child(even) { background: #f8f9fa; }
-        
         .badge { padding: 5px 10px; border-radius: 20px; font-size: 11px; font-weight: bold; color: white; display: inline-block; min-width: 80px; text-align: center; }
         .bg-wait { background: #6c757d; } .bg-acc { background: #28a745; } .bg-rej { background: #dc3545; }
-
         .btn-mini { border: none; border-radius: 4px; color: white; cursor: pointer; width: 32px; height: 32px; display: flex; align-items: center; justify-content: center; margin-right: 3px; }
         .btn-ok { background: #28a745; } .btn-no { background: #ffc107; color: #333; } .btn-del { background: #dc3545; }
-        .btn-ktp { background: #17a2b8; text-decoration: none; color: white; padding: 5px 10px; border-radius: 5px; font-size: 11px; display: inline-block; }
-
         .note-input { padding: 5px; font-size: 11px; border: 1px solid #ddd; width: 100%; min-width: 150px; }
 
         #login-box { max-width: 400px; margin: 80px auto; text-align: center; background: white; padding: 40px; border-radius: 12px; box-shadow: 0 10px 25px rgba(0,0,0,0.1); }
@@ -139,7 +131,8 @@
                     <tr>
                         <th>ANTRIAN</th> <th>WAKTU</th> <th>PENGUNJUNG</th>
                         <th>NIK</th> <th>ALAMAT</th> <th>TUJUAN</th>
-                        <th>FOTO KTP</th> <th>STATUS</th> <th>CATATAN</th> <th>AKSI</th>
+                        <th>FOTO KTP</th> 
+                        <th>STATUS</th> <th>CATATAN</th> <th>AKSI</th>
                     </tr>
                 </thead>
                 <tbody id="tb_fisik"></tbody>
@@ -170,7 +163,8 @@
                     <tr>
                         <th>ANTRIAN</th> <th>WAKTU</th> <th>PENGUNJUNG</th>
                         <th>NIK</th> <th>ALAMAT</th> <th>TUJUAN</th>
-                        <th>FOTO KTP</th> <th>STATUS</th> <th>CATATAN</th> <th>AKSI</th>
+                        <th>FOTO KTP</th> 
+                        <th>STATUS</th> <th>CATATAN</th> <th>AKSI</th>
                     </tr>
                 </thead>
                 <tbody id="tb_online"></tbody>
@@ -180,7 +174,7 @@
 </div>
 
 <script>
-    // --- KONFIGURASI FIREBASE ---
+    // --- 1. CONFIG FIREBASE HARUS SAMA DENGAN INDEX.HTML ---
     const firebaseConfig = {
         apiKey: "AIzaSyDvpFZtiG_fXLOf8okjafNm7gqbJZr2pSY",
         authDomain: "lapassistem.firebaseapp.com",
@@ -269,10 +263,14 @@
             else if(v.status === 'rejected') stHtml = '<span class="badge bg-rej">Ditolak</span>';
 
             const noteVal = v.note || "";
-            // TOMBOL LIHAT KTP
+            // MENAMPILKAN THUMBNAIL FOTO
             let ktpBtn = '-';
             if(v.ktpUrl) {
-                ktpBtn = `<a href="${v.ktpUrl}" target="_blank" class="btn-ktp">📷 Lihat Foto</a>`;
+                ktpBtn = `
+                <a href="${v.ktpUrl}" target="_blank" title="Klik untuk memperbesar">
+                    <img src="${v.ktpUrl}" style="width: 60px; height: 40px; object-fit: cover; border-radius: 4px; border: 1px solid #ccc; box-shadow: 0 2px 4px rgba(0,0,0,0.1);" 
+                    onerror="this.onerror=null; this.parentNode.innerHTML='📄 Buka Link';">
+                </a>`;
             }
 
             tb.insertAdjacentHTML('beforeend', `
@@ -309,7 +307,7 @@
     function del(path, key) { if(confirm("Hapus data ini?")) db.ref(path+'/'+key).remove(); }
     function cleanData() { if(confirm("Hapus data > 30 hari?")) alert("Fitur clean aktif (Dummy)."); }
 
-    // --- PENGATURAN & PDF ---
+    // --- SETTINGS & PDF ---
     const fields = ['app_name','logo_url','header_bg','announcement','welcome_msg',
                    'kop_1','kop_2','kop_3','kop_4', 
                    'sch_pidum', 'sch_narkoba', 'sch_mon_am','sch_mon_pm','sch_fri','sch_sat','sch_sun',
@@ -364,14 +362,14 @@
         for (let i = 0; i < table.rows.length; i++) {
             const tr = table.rows[i];
             const rowData = [];
-            // Loop kolom (0 sampai 8, kolom aksi diabaikan)
             for (let j = 0; j < 9; j++) { 
                 const td = tr.cells[j];
                 const input = td.querySelector('input');
-                const link = td.querySelector('a'); // Cek link Foto
+                const link = td.querySelector('a'); 
                 
-                if(j === 6 && link) { // Kolom Foto
-                    rowData.push("Lihat di App");
+                // Menangani Kolom Foto di PDF
+                if(j === 6) { 
+                    rowData.push(link ? "Lihat di App" : "-");
                 } else {
                     rowData.push(input ? input.value : td.innerText);
                 }
@@ -394,7 +392,7 @@
                 3: { cellWidth: 25 },
                 4: { cellWidth: 35 },
                 5: { cellWidth: 25 },
-                6: { cellWidth: 15 }, 
+                6: { cellWidth: 20 }, 
                 7: { cellWidth: 20 },
                 8: { cellWidth: 'auto' }
             }
