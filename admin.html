@@ -40,29 +40,29 @@
         .print-area { background:#f9f9f9; padding:20px; border-radius:8px; border:1px solid #ddd; display:flex; gap:15px; align-items:flex-end; margin-bottom: 20px; margin-top: 20px; flex-wrap: wrap; }
         .pdf-btn { background:#FF5722; color:white; border:none; padding:0 20px; border-radius:6px; font-weight:600; font-size:13px; height: 42px; cursor: pointer; white-space: nowrap; }
         
-        /* MODAL POPUP */
+        /* MODAL POPUP FIX */
         #imgModal { display: none; position: fixed; z-index: 1000; padding-top: 50px; left: 0; top: 0; width: 100%; height: 100%; overflow: auto; background-color: rgba(0,0,0,0.9); }
-        .modal-content { margin: auto; display: block; max-width: 90%; max-height: 80vh; border: 2px solid white; border-radius: 8px; }
-        #caption { margin: auto; display: block; width: 80%; text-align: center; color: #ccc; padding: 10px 0; height: 150px; }
+        .modal-content { margin: auto; display: block; max-width: 90%; max-height: 85vh; border: 2px solid white; border-radius: 8px; object-fit: contain; }
+        #caption { margin: auto; display: block; width: 80%; text-align: center; color: #ccc; padding: 10px 0; height: 150px; font-size: 14px; }
         .close { position: absolute; top: 15px; right: 35px; color: #f1f1f1; font-size: 40px; font-weight: bold; transition: 0.3s; cursor: pointer; }
         .close:hover, .close:focus { color: #bbb; text-decoration: none; cursor: pointer; }
     </style>
 </head>
 <body>
-
+ 
 <div id="imgModal">
   <span class="close" onclick="closeModal()">&times;</span>
   <img class="modal-content" id="img01">
   <div id="caption"></div>
 </div>
-
+ 
 <div id="login-box">
     <h2 style="color:#8B0000;">Admin Login</h2>
     <input id="email" type="email" placeholder="Email Admin">
     <input id="pass" type="password" placeholder="Password">
     <button class="save" onclick="login()" style="background:#8B0000">MASUK DASHBOARD</button>
 </div>
-
+ 
 <div id="panel-box" class="container" style="display:none;">
     <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px; flex-wrap: wrap; gap: 10px;">
         <h2 style="margin:0; color:#8B0000;">Panel Kontrol Aplikasi</h2>
@@ -71,13 +71,13 @@
             <button onclick="logout()" style="background:#333; color:white; border:none; padding:10px 20px; border-radius:5px; cursor:pointer; font-size:13px; margin-left: 5px;">Logout</button>
         </div>
     </div>
-
+ 
     <div class="tabs">
         <button class="tab-btn active" onclick="showTab('settings')" id="t1">⚙️ PENGATURAN</button>
         <button class="tab-btn" onclick="showTab('data_fisik')" id="t2">📥 TATAP MUKA</button>
         <button class="tab-btn" onclick="showTab('data_online')" id="t3">💻 VIDEO CALL</button>
     </div>
-
+ 
     <div id="tab-settings">
         <h3>1. Kop Surat & Tampilan</h3>
         <label>Baris 1 (Kementerian):</label> <input id="kop_1">
@@ -88,7 +88,7 @@
         <label>Link Logo (URL):</label> <input id="logo_url">
         <label>Link Background Header (URL):</label> <input id="header_bg">
         <label>Pengumuman (Info Penting):</label> <textarea id="announcement"></textarea>
-
+ 
         <h3>2. Jadwal & Konten</h3>
         <label>Jadwal PIDUM & NARKOBA:</label> 
         <div style="display:flex; gap:10px;"><input id="sch_pidum" placeholder="PIDUM"><input id="sch_narkoba" placeholder="NARKOBA"></div>
@@ -96,7 +96,7 @@
         <div style="display:flex; gap:10px;"><input id="sch_mon_am" placeholder="Jam Pagi"><input id="sch_mon_pm" placeholder="Jam Siang"></div>
         <label>Hari Lain:</label> 
         <div style="display:flex; gap:10px;"><input id="sch_fri" placeholder="Jumat"><input id="sch_sat" placeholder="Sabtu"><input id="sch_sun" placeholder="Minggu"></div>
-
+ 
         <label>Syarat & Ketentuan (Dokumen & Barang):</label>
         <textarea id="txt_doc" placeholder="Syarat Dokumen"></textarea>
         <textarea id="txt_item" placeholder="Syarat Barang" style="margin-top:5px;"></textarea>
@@ -105,7 +105,7 @@
         <label style="color:#8B0000; margin-top:20px;">Toko Lapas:</label>
         <textarea id="toko_announce" placeholder="Pengumuman Toko"></textarea>
         <input id="toko_link" placeholder="Link Aplikasi Toko">
-
+ 
         <h3>3. Kontak</h3>
         <label>Kontak:</label>
         <div style="display:flex; gap:10px;"><input id="wa_pengaduan" placeholder="No WA"><input id="wa_channel" placeholder="Link Channel"></div>
@@ -114,7 +114,7 @@
         <input id="soc_tw" placeholder="Twitter"><input id="soc_yt" placeholder="Youtube">
         <button class="save" onclick="saveData()">💾 SIMPAN PENGATURAN</button>
     </div>
-
+ 
     <div id="tab-data_fisik" style="display:none;">
         <div class="filter-bar">
             <div style="flex:1"><label>Cek Tanggal:</label><input type="date" id="date_fisik"></div>
@@ -134,7 +134,7 @@
             </table>
         </div>
     </div>
-
+ 
     <div id="tab-data_online" style="display:none;">
         <div class="filter-bar">
             <div style="flex:1"><label>Cek Tanggal:</label><input type="date" id="date_online"></div>
@@ -155,9 +155,8 @@
         </div>
     </div>
 </div>
-
+ 
 <script>
-    // --- FIREBASE CONFIG (HARUS SAMA) ---
     const firebaseConfig = {
         apiKey: "AIzaSyDvpFZtiG_fXLOf8okjafNm7gqbJZr2pSY",
         authDomain: "lapassistem.firebaseapp.com",
@@ -168,13 +167,12 @@
         appId: "1:951059663532:web:716bc3010eecc741a4ed09",
         measurementId: "G-25HSNZ35ZH"
     };
-
+ 
     if (!firebase.apps.length) firebase.initializeApp(firebaseConfig);
     const auth = firebase.auth();
     const db = firebase.database();
     let listeners = {}; 
-
-    // --- AUTH & TABS ---
+ 
     auth.onAuthStateChanged(u => {
         if(u) {
             document.getElementById('login-box').style.display='none';
@@ -187,7 +185,7 @@
             document.getElementById('panel-box').style.display='none';
         }
     });
-
+ 
     function login() { auth.signInWithEmailAndPassword(document.getElementById('email').value, document.getElementById('pass').value).catch(e => alert(e.message)); }
     function logout() { auth.signOut(); }
     
@@ -199,8 +197,7 @@
         if(t=='data_fisik') document.getElementById('t2').className += ' active';
         if(t=='data_online') document.getElementById('t3').className += ' active';
     }
-
-    // --- MODAL IMAGE VIEWER ---
+ 
     window.showModal = function(src, caption) {
         const modal = document.getElementById("imgModal");
         const modalImg = document.getElementById("img01");
@@ -212,17 +209,16 @@
     window.closeModal = function() {
         document.getElementById("imgModal").style.display = "none";
     }
-
-    // --- DATA LOGIC ---
+ 
     function resetLive(path, tableId, countId) {
         if (listeners[path]) db.ref(path).off(); 
         const tb = document.getElementById(tableId);
         tb.innerHTML = "<tr><td colspan='10' style='text-align:center;'>Memuat data terbaru...</td></tr>";
-
+ 
         listeners[path] = db.ref(path).limitToLast(100);
         listeners[path].on('value', s => renderTable(s, tableId, path, countId));
     }
-
+ 
     function loadByDate(path, tableId, dateInputId, countId) {
         const dateVal = document.getElementById(dateInputId).value;
         if (!dateVal) return alert("Pilih tanggal dulu!");
@@ -232,7 +228,7 @@
         listeners[path] = db.ref(path).orderByChild('tgl').equalTo(dateVal);
         listeners[path].on('value', s => renderTable(s, tableId, path, countId));
     }
-
+ 
     function renderTable(snapshot, tableId, path, countId) {
         const tb = document.getElementById(tableId);
         const countEl = document.getElementById(countId);
@@ -242,27 +238,25 @@
             countEl.innerText = "Total: 0 Data";
             return;
         }
-
+ 
         const arr = [];
         snapshot.forEach(child => { arr.push({key: child.key, ...child.val()}); });
         
         countEl.innerText = `Menampilkan ${arr.length} Data Terbaru`;
         tb.innerHTML = "";
-
+ 
         arr.reverse().forEach(v => {
             let stHtml = '<span class="badge bg-wait">Menunggu</span>';
             if(v.status === 'accepted') stHtml = '<span class="badge bg-acc">Diterima</span>';
             else if(v.status === 'rejected') stHtml = '<span class="badge bg-rej">Ditolak</span>';
-
+ 
             const noteVal = v.note || "";
-            // MENAMPILKAN THUMBNAIL FOTO (BASE64)
             let ktpBtn = '-';
             if(v.ktpUrl) {
-                // Langsung render Base64 image
                 ktpBtn = `<img src="${v.ktpUrl}" style="width:60px; height:40px; object-fit:cover; border-radius:4px; border:1px solid #ccc; cursor:pointer;" 
-                onclick="showModal('${v.ktpUrl}', 'KTP: ${v.nama}')" title="Klik untuk memperbesar">`;
+                onclick="showModal('${v.ktpUrl}', 'KTP: ${v.nama} (${v.nik})')" title="Klik untuk memperbesar">`;
             }
-
+ 
             tb.insertAdjacentHTML('beforeend', `
                 <tr data-key="${v.key}">
                     <td style="color:#8B0000; font-weight:bold; font-size:14px;">${v.noAntrian || '-'}</td>
@@ -285,8 +279,7 @@
             `);
         });
     }
-
-    // --- UPDATE & DELETE ---
+ 
     function upd(path, key, st) { 
         const noteInput = document.getElementById(`note-${key}`);
         const note = noteInput ? noteInput.value : "";
@@ -294,10 +287,9 @@
     }
     function del(path, key) { if(confirm("Hapus data ini?")) db.ref(path+'/'+key).remove(); }
     function cleanData() { if(confirm("Hapus data > 30 hari?")) alert("Fitur clean aktif (Dummy)."); }
-
-    // --- SETTINGS & PDF ---
+ 
     const fields = ['app_name','logo_url','header_bg','announcement','welcome_msg','kop_1','kop_2','kop_3','kop_4', 'sch_pidum', 'sch_narkoba', 'sch_mon_am','sch_mon_pm','sch_fri','sch_sat','sch_sun','txt_doc','txt_item', 'txt_urus', 'toko_announce','toko_link','wa_pengaduan', 'wa_channel', 'soc_ig','soc_fb','soc_tw','soc_yt'];
-
+ 
     function loadSettings() {
         db.ref('app_config').once('value', s => {
             if(s.exists()) {
@@ -306,27 +298,27 @@
             }
         });
     }
-
+ 
     function saveData() {
         const data = {};
         fields.forEach(f => { if(document.getElementById(f)) data[f] = document.getElementById(f).value; });
         db.ref('app_config').update(data).then(() => alert("Pengaturan Tersimpan!"));
     }
-
+ 
     function printPDF(tbodyId, title, inputNamaId, inputNipId) {
         const { jsPDF } = window.jspdf;
         const doc = new jsPDF('l', 'mm', 'a4');
         const cx = 148.5;
-
+ 
         const petugas = document.getElementById(inputNamaId).value;
         const nip = document.getElementById(inputNipId).value;
         if(!petugas) { alert("Nama Petugas wajib diisi!"); return; }
-
+ 
         const k1 = document.getElementById('kop_1').value || "";
         const k2 = document.getElementById('kop_2').value || "";
         const k3 = document.getElementById('kop_3').value || "";
         const k4 = document.getElementById('kop_4').value || "";
-
+ 
         doc.setFont("times", "bold"); doc.setFontSize(14);
         doc.text(k1.toUpperCase(), cx, 15, { align: "center" });
         doc.text(k2.toUpperCase(), cx, 22, { align: "center" });
@@ -335,12 +327,12 @@
         doc.setFontSize(11); doc.setFont("times", "normal");
         doc.text(k4, cx, 37, { align: "center" });
         doc.setLineWidth(0.5); doc.line(20, 42, 277, 42);
-
+ 
         doc.setFont("helvetica", "bold"); doc.setFontSize(12);
         doc.text(title.toUpperCase(), cx, 52, { align: "center" });
         doc.setFontSize(10); doc.setFont("helvetica", "normal");
         doc.text("Dicetak: " + new Date().toLocaleString('id-ID'), cx, 58, { align: "center" });
-
+ 
         const table = document.getElementById(tbodyId);
         const rows = [];
         for (let i = 0; i < table.rows.length; i++) {
@@ -351,7 +343,6 @@
                 const input = td.querySelector('input');
                 const img = td.querySelector('img'); 
                 
-                // Menangani Kolom Foto di PDF
                 if(j === 6) { 
                     rowData.push(img ? "Ada Foto (Cek App)" : "-");
                 } else {
@@ -360,7 +351,7 @@
             }
             rows.push(rowData);
         }
-
+ 
         doc.autoTable({ 
             head: [['ANTRIAN', 'WAKTU', 'PENGUNJUNG', 'NIK', 'ALAMAT', 'TUJUAN', 'FOTO', 'STATUS', 'CATATAN']],
             body: rows,
@@ -371,7 +362,7 @@
             styles: { fontSize: 8, font: 'times', cellPadding: 2 },
             columnStyles: { 0: { cellWidth: 20 }, 1: { cellWidth: 20 }, 2: { cellWidth: 35 }, 3: { cellWidth: 25 }, 4: { cellWidth: 35 }, 5: { cellWidth: 25 }, 6: { cellWidth: 20 }, 7: { cellWidth: 20 }, 8: { cellWidth: 'auto' } }
         });
-
+ 
         let fy = doc.lastAutoTable.finalY + 20;
         if(fy > 170) { doc.addPage(); fy=20; }
         const dateStr = new Date().toLocaleDateString('id-ID', { year: 'numeric', month: 'long', day: 'numeric' });
