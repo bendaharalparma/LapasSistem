@@ -43,6 +43,7 @@
 
         .btn-mini { border: none; border-radius: 4px; color: white; cursor: pointer; width: 32px; height: 32px; display: flex; align-items: center; justify-content: center; margin-right: 3px; }
         .btn-ok { background: #28a745; } .btn-no { background: #ffc107; color: #333; } .btn-del { background: #dc3545; }
+        .btn-ktp { background: #17a2b8; text-decoration: none; color: white; padding: 5px 10px; border-radius: 5px; font-size: 11px; display: inline-block; }
 
         .note-input { padding: 5px; font-size: 11px; border: 1px solid #ddd; width: 100%; min-width: 150px; }
 
@@ -138,7 +139,7 @@
                     <tr>
                         <th>ANTRIAN</th> <th>WAKTU</th> <th>PENGUNJUNG</th>
                         <th>NIK</th> <th>ALAMAT</th> <th>TUJUAN</th>
-                        <th>STATUS</th> <th>CATATAN</th> <th>AKSI</th>
+                        <th>FOTO KTP</th> <th>STATUS</th> <th>CATATAN</th> <th>AKSI</th>
                     </tr>
                 </thead>
                 <tbody id="tb_fisik"></tbody>
@@ -169,7 +170,7 @@
                     <tr>
                         <th>ANTRIAN</th> <th>WAKTU</th> <th>PENGUNJUNG</th>
                         <th>NIK</th> <th>ALAMAT</th> <th>TUJUAN</th>
-                        <th>STATUS</th> <th>CATATAN</th> <th>AKSI</th>
+                        <th>FOTO KTP</th> <th>STATUS</th> <th>CATATAN</th> <th>AKSI</th>
                     </tr>
                 </thead>
                 <tbody id="tb_online"></tbody>
@@ -226,7 +227,7 @@
     function resetLive(path, tableId, countId) {
         if (listeners[path]) db.ref(path).off(); 
         const tb = document.getElementById(tableId);
-        tb.innerHTML = "<tr><td colspan='9' style='text-align:center;'>Memuat data terbaru...</td></tr>";
+        tb.innerHTML = "<tr><td colspan='10' style='text-align:center;'>Memuat data terbaru...</td></tr>";
 
         listeners[path] = db.ref(path).limitToLast(100);
         listeners[path].on('value', s => renderTable(s, tableId, path, countId));
@@ -238,7 +239,7 @@
         
         if (listeners[path]) db.ref(path).off();
         const tb = document.getElementById(tableId);
-        tb.innerHTML = "<tr><td colspan='9' style='text-align:center;'>Mencari data...</td></tr>";
+        tb.innerHTML = "<tr><td colspan='10' style='text-align:center;'>Mencari data...</td></tr>";
 
         listeners[path] = db.ref(path).orderByChild('tgl').equalTo(dateVal);
         listeners[path].on('value', s => renderTable(s, tableId, path, countId));
@@ -249,7 +250,7 @@
         const countEl = document.getElementById(countId);
         
         if(!snapshot.exists()) {
-            tb.innerHTML = "<tr><td colspan='9' style='text-align:center; padding:20px; color:#999;'>Tidak ada data.</td></tr>";
+            tb.innerHTML = "<tr><td colspan='10' style='text-align:center; padding:20px; color:#999;'>Tidak ada data.</td></tr>";
             countEl.innerText = "Total: 0 Data";
             return;
         }
@@ -268,6 +269,11 @@
             else if(v.status === 'rejected') stHtml = '<span class="badge bg-rej">Ditolak</span>';
 
             const noteVal = v.note || "";
+            // TOMBOL LIHAT KTP
+            let ktpBtn = '-';
+            if(v.ktpUrl) {
+                ktpBtn = `<a href="${v.ktpUrl}" target="_blank" class="btn-ktp">📷 Lihat Foto</a>`;
+            }
 
             tb.insertAdjacentHTML('beforeend', `
                 <tr data-key="${v.key}">
@@ -277,6 +283,7 @@
                     <td>${v.nik || '-'}</td> 
                     <td>${v.alamat || '-'}</td> 
                     <td>${v.wbp}</td>
+                    <td style="text-align:center;">${ktpBtn}</td>
                     <td>${stHtml}</td>
                     <td>
                         <input type="text" id="note-${v.key}" value="${noteVal}" class="note-input" placeholder="Isi catatan..." style="width:100%;">
@@ -303,12 +310,11 @@
     function cleanData() { if(confirm("Hapus data > 30 hari?")) alert("Fitur clean aktif (Dummy)."); }
 
     // --- PENGATURAN & PDF ---
-    // Update: Menambahkan 'txt_urus' ke daftar field yang disimpan
     const fields = ['app_name','logo_url','header_bg','announcement','welcome_msg',
-                    'kop_1','kop_2','kop_3','kop_4', 
-                    'sch_pidum', 'sch_narkoba', 'sch_mon_am','sch_mon_pm','sch_fri','sch_sat','sch_sun',
-                    'txt_doc','txt_item', 'txt_urus', 'toko_announce','toko_link',
-                    'wa_pengaduan', 'wa_channel', 'soc_ig','soc_fb','soc_tw','soc_yt'];
+                   'kop_1','kop_2','kop_3','kop_4', 
+                   'sch_pidum', 'sch_narkoba', 'sch_mon_am','sch_mon_pm','sch_fri','sch_sat','sch_sun',
+                   'txt_doc','txt_item', 'txt_urus', 'toko_announce','toko_link',
+                   'wa_pengaduan', 'wa_channel', 'soc_ig','soc_fb','soc_tw','soc_yt'];
 
     function loadSettings() {
         db.ref('app_config').once('value', s => {
@@ -358,16 +364,23 @@
         for (let i = 0; i < table.rows.length; i++) {
             const tr = table.rows[i];
             const rowData = [];
-            for (let j = 0; j < 8; j++) { 
+            // Loop kolom (0 sampai 8, kolom aksi diabaikan)
+            for (let j = 0; j < 9; j++) { 
                 const td = tr.cells[j];
                 const input = td.querySelector('input');
-                rowData.push(input ? input.value : td.innerText);
+                const link = td.querySelector('a'); // Cek link Foto
+                
+                if(j === 6 && link) { // Kolom Foto
+                    rowData.push("Lihat di App");
+                } else {
+                    rowData.push(input ? input.value : td.innerText);
+                }
             }
             rows.push(rowData);
         }
 
         doc.autoTable({ 
-            head: [['ANTRIAN', 'WAKTU', 'PENGUNJUNG', 'NIK', 'ALAMAT', 'TUJUAN', 'STATUS', 'CATATAN']],
+            head: [['ANTRIAN', 'WAKTU', 'PENGUNJUNG', 'NIK', 'ALAMAT', 'TUJUAN', 'FOTO', 'STATUS', 'CATATAN']],
             body: rows,
             startY: 65, 
             theme: 'plain', 
@@ -376,13 +389,14 @@
             styles: { fontSize: 8, font: 'times', cellPadding: 2 },
             columnStyles: {
                 0: { cellWidth: 20 },
-                1: { cellWidth: 25 },
-                2: { cellWidth: 40 },
-                3: { cellWidth: 30 },
-                4: { cellWidth: 40 },
-                5: { cellWidth: 30 },
-                6: { cellWidth: 25 },
-                7: { cellWidth: 'auto' }
+                1: { cellWidth: 20 },
+                2: { cellWidth: 35 },
+                3: { cellWidth: 25 },
+                4: { cellWidth: 35 },
+                5: { cellWidth: 25 },
+                6: { cellWidth: 15 }, 
+                7: { cellWidth: 20 },
+                8: { cellWidth: 'auto' }
             }
         });
 
