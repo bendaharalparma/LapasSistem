@@ -11,7 +11,7 @@
     
     <script defer src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
     <script defer src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <script defer src="https://www.gstatic.com/firebasejs/8.10.1/firebase-storage.js"></script> <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 
     <style>
         * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
@@ -27,12 +27,8 @@
         .logo-area img { width: 100%; height: 100%; object-fit: contain; }
         .app-name { font-weight: 700; font-size: 18px; margin: 0; text-shadow: 0 2px 4px rgba(0,0,0,0.5); }
 
-        /* PENGUMUMAN LEBIH MENCOLOK */
-        #announcement {
-            background: #fff3cd; color: #856404; padding: 12px 15px; font-size: 12px;
-            text-align: center; display: none; border-bottom: 2px solid #ffeeba;
-            font-weight: 600; animation: pulse 2s infinite;
-        }
+        /* PENGUMUMAN */
+        #announcement { background: #fff3cd; color: #856404; padding: 12px 15px; font-size: 12px; text-align: center; display: none; border-bottom: 2px solid #ffeeba; font-weight: 600; animation: pulse 2s infinite; }
         @keyframes pulse { 0% { background-color: #fff3cd; } 50% { background-color: #fff8e1; } 100% { background-color: #fff3cd; } }
 
         /* CHAT */
@@ -59,7 +55,8 @@
         .form-box { display: flex; flex-direction: column; gap: 10px; margin-top: 5px; background: white; padding: 5px; border-radius: 10px; }
         .inp { padding: 12px; border: 1px solid #ddd; border-radius: 8px; font-size: 14px; width: 100%; outline: none; transition: 0.3s; }
         .inp:focus { border-color: var(--primary); }
-        .submit-btn { background: #28a745; color: white; border: none; padding: 14px; border-radius: 8px; font-weight: bold; margin-top: 5px; }
+        .submit-btn { background: #28a745; color: white; border: none; padding: 14px; border-radius: 8px; font-weight: bold; margin-top: 5px; cursor: pointer;}
+        .submit-btn:disabled { background: #ccc; cursor: not-allowed; }
         
         /* TICKET */
         .ticket-card { border: 2px dashed var(--primary); padding: 15px; border-radius: 12px; text-align: center; margin-top: 10px; background: #fffcfc; position: relative; }
@@ -172,14 +169,19 @@
             let content = text.replace(/\n/g, '<br>').replace(/\*\*(.*?)\*\*/g, '<b>$1</b>');
             if(extra.customHtml) content += `<br>${extra.customHtml}`;
             
+            // --- FORMULIR DENGAN UPLOAD FOTO ---
             if(extra.isForm) {
                 content += `
                 <div class="form-box">
+                    <label style="font-size:12px; font-weight:600; margin-left:2px; color:#8B0000;">📸 Upload Foto KTP/Identitas:</label>
+                    <input id="f_ktp" class="inp" type="file" accept="image/*" capture="environment" style="padding:8px; margin-bottom:5px;">
+                    
                     <input id="f_nama" class="inp" placeholder="Nama Pengunjung (Sesuai KTP)">
                     <input id="f_nik" class="inp" type="number" placeholder="NIK / No. KTP">
                     <input id="f_alamat" class="inp" placeholder="Alamat Lengkap">
                     <input id="f_telp" class="inp" type="tel" placeholder="No. HP / WA">
                     <input id="f_wbp" class="inp" placeholder="Nama WBP (Bin/Binti)">
+                    
                     <label style="font-size:12px; font-weight:600; margin-left:2px; margin-top:5px;">Jadwal Kunjungan:</label>
                     <div style="display:flex; gap:5px;">
                         <input id="f_tgl" class="inp" type="date" style="flex:2">
@@ -216,8 +218,9 @@
             chatBox.appendChild(div);
         }
 
-        // --- SUBMIT LOGIC ---
+        // --- SUBMIT LOGIC (UPLOAD KTP + DATA) ---
         window.submitForm = function(type) {
+            const fileInput = document.getElementById('f_ktp');
             const nama = document.getElementById('f_nama').value;
             const nik = document.getElementById('f_nik').value;
             const alamat = document.getElementById('f_alamat').value;
@@ -226,43 +229,63 @@
             const tgl = document.getElementById('f_tgl').value;
             const jam = document.getElementById('f_jam').value;
 
-            if(!nama || !nik || !alamat || !wbp || !tgl || !telp) return alert("Mohon lengkapi semua data!");
+            // VALIDASI
+            if(fileInput.files.length === 0) return alert("❌ Wajib melampirkan Foto KTP!");
+            if(!nama || !nik || !alamat || !wbp || !tgl || !telp) return alert("❌ Mohon lengkapi semua data!");
+
+            const btnSubmit = document.querySelector('.submit-btn');
+            btnSubmit.innerHTML = `<i class="fas fa-spinner fa-spin"></i> Mengupload Foto...`; 
+            btnSubmit.disabled = true;
 
             const path = type === 'fisik' ? 'registrations' : 'online_registrations';
             const prefix = type === 'fisik' ? 'A' : 'V'; 
             const sessionCode = jam === 'Pagi' ? 'P' : 'S'; 
             const label = type === 'fisik' ? 'TATAP MUKA' : 'VIDEO CALL';
-            
-            const btnSubmit = document.querySelector('.submit-btn');
-            btnSubmit.innerHTML = "Memproses..."; btnSubmit.disabled = true;
-
             const counterPath = `counters/${tgl}/${type}/${jam}`;
 
-            db.ref(counterPath).transaction(curr => (curr || 0) + 1, (err, committed, snap) => {
-                if (err) {
-                    btnSubmit.innerHTML = "Coba Lagi"; btnSubmit.disabled = false;
-                    alert("Error Database: " + err.message);
-                } else if (committed) {
-                    const noAntrian = `${prefix}-${sessionCode}-${String(snap.val()).padStart(3, '0')}`;
-                    const dataPayload = {
-                        nama, nik, alamat, telp, wbp, tgl, jam, noAntrian,
-                        status: 'waiting', 
-                        note: '', 
-                        createdAt: firebase.database.ServerValue.TIMESTAMP
-                    };
-                    
-                    db.ref(path).push(dataPayload).then(() => {
-                        chatBox.innerHTML = '';
-                        renderTicket(dataPayload, label);
-                    }).catch(e => {
-                         btnSubmit.innerHTML = "Coba Lagi"; btnSubmit.disabled = false;
-                         alert("Gagal Simpan: " + e.message);
-                    });
-                }
+            // 1. PROSES UPLOAD KTP KE STORAGE
+            const file = fileInput.files[0];
+            const storageRef = firebase.storage().ref('ktp_uploads/' + Date.now() + '_' + file.name.replace(/[^a-zA-Z0-9.]/g, ''));
+
+            storageRef.put(file).then(snapshot => {
+                return snapshot.ref.getDownloadURL();
+            }).then(downloadURL => {
+                
+                // 2. SETELAH FOTO TERUPLOAD, SIMPAN KE DATABASE
+                btnSubmit.innerHTML = "Menyimpan Data...";
+                
+                db.ref(counterPath).transaction(curr => (curr || 0) + 1, (err, committed, snap) => {
+                    if (err) {
+                        btnSubmit.innerHTML = "Coba Lagi"; btnSubmit.disabled = false;
+                        alert("Error Database: " + err.message);
+                    } else if (committed) {
+                        const noAntrian = `${prefix}-${sessionCode}-${String(snap.val()).padStart(3, '0')}`;
+                        const dataPayload = {
+                            nama, nik, alamat, telp, wbp, tgl, jam, noAntrian,
+                            ktpUrl: downloadURL, // Link Foto disimpan di sini
+                            status: 'waiting', 
+                            note: '', 
+                            createdAt: firebase.database.ServerValue.TIMESTAMP
+                        };
+                        
+                        db.ref(path).push(dataPayload).then(() => {
+                            chatBox.innerHTML = '';
+                            renderTicket(dataPayload, label);
+                        }).catch(e => {
+                             btnSubmit.innerHTML = "Coba Lagi"; btnSubmit.disabled = false;
+                             alert("Gagal Simpan Database: " + e.message);
+                        });
+                    }
+                });
+
+            }).catch(error => {
+                btnSubmit.innerHTML = "Coba Lagi"; btnSubmit.disabled = false;
+                console.error(error);
+                alert("Gagal Upload Foto: " + error.message + "\n(Pastikan Rules Storage sudah diatur)");
             });
         }
 
-        // --- CEK STATUS LOGIC (UPDATE: Error Handling Lebih Jelas) ---
+        // --- CEK STATUS LOGIC ---
         window.askNikForStatus = function(type) {
             const div = document.createElement('div');
             div.className = 'msg bot';
@@ -287,17 +310,13 @@
             const originalText = btn.innerHTML;
             btn.innerHTML = "Mencari..."; btn.disabled = true;
             
-            // Logika pencarian yang aman tanpa Index
             db.ref(path).limitToLast(100).once('value')
             .then(snapshot => {
                 let foundData = null;
-                
                 if(snapshot.exists()) {
                     snapshot.forEach(child => {
                         const val = child.val();
-                        if(String(val.nik) === String(inputNik)) {
-                            foundData = val;
-                        }
+                        if(String(val.nik) === String(inputNik)) { foundData = val; }
                     });
                 }
 
@@ -311,9 +330,7 @@
             })
             .catch(err => {
                 btn.innerHTML = originalText; btn.disabled = false;
-                console.error(err);
-                // Menampilkan pesan error asli dari Firebase
-                alert("Gagal: " + err.message + "\n(Cek 'Rules' di Firebase Console)");
+                alert("Gagal: " + err.message);
             });
         }
 
@@ -331,6 +348,7 @@
             }
 
             const noteHtml = data.note ? `<div class="ticket-note"><b>✉️ Pesan Petugas:</b><br>"${data.note}"</div>` : '';
+            const ktpHtml = data.ktpUrl ? `<div style="margin-top:5px; font-size:10px; color:#555;">📸 Foto KTP Terlampir</div>` : '';
 
             const ticketHtml = `
             <div id="ticket-node" class="ticket-card">
@@ -345,6 +363,7 @@
                     </table>
                 </div>
                 ${noteHtml}
+                ${ktpHtml}
                 <div style="font-size:10px; margin-top:10px; color:#999;">${msgStatus}</div>
             </div>
             <button onclick="downloadJpg()" style="margin-top:10px; padding:12px; background:#000; color:white; border:none; border-radius:8px; font-size:13px; width:100%; cursor:pointer; font-weight:bold;">📸 DOWNLOAD TIKET (JPG)</button>
@@ -365,6 +384,7 @@
         }
     });
 
+    // --- MENU CONFIG ---
     function getMenu(cfg) {
         const htmlJadwal = `
             <div style="margin-bottom:8px; font-weight:600; font-size:12px; color:#8B0000;">KATEGORI LAYANAN:</div>
@@ -410,13 +430,9 @@
                     { text: "⬅️ KEMBALI", val: "syarat" }
                 ]
             },
-            'syarat_urus': {
-                text: "ℹ️ **INFO PENGURUSAN:**\n\n" + (cfg.txt_urus || "Untuk informasi pengurusan PB, CB, CMB, dan Asimilasi, silakan hubungi bagian registrasi."),
-                backTo: "syarat"
-            },
+            'syarat_urus': { text: "ℹ️ **INFO PENGURUSAN:**\n\n" + (cfg.txt_urus || "Hubungi bagian registrasi."), backTo: "syarat" },
             'syarat_doc': { text: "📄 **ATURAN DOKUMEN:**\n\n" + (cfg.txt_doc || "-"), backTo: "syarat_kunjungan" },
             'syarat_item': { text: "📦 **ATURAN BARANG:**\n\n" + (cfg.txt_item || "-"), backTo: "syarat_kunjungan" },
-
             'toko': { text: "🛒 **TOKO LAPAS:**\n\n" + (cfg.toko_announce || "-"), options: [{ text: "🌐 BUKA APLIKASI TOKO", type: "link", url: cfg.toko_link }, { text: "⬅️ KEMBALI KE MENU UTAMA", val: "start" }] },
             'kontak': { 
                 text: "📞 **PUSAT KONTAK:**", 
@@ -446,7 +462,6 @@
                 ]
             },
             'form_fisik': { text: "📝 **ISI DATA DIRI:**", isForm: true, formType: "fisik" },
-
             'daftar_online': { 
                 text: "💻 **PENDAFTARAN VIDEO CALL**\nSilakan isi formulir atau cek status jika sudah mendaftar.", 
                 options: [
@@ -461,6 +476,3 @@
 </script>
 </body>
 </html>
-
-
-
