@@ -84,7 +84,7 @@
 </div>
 
 <script>
-    // --- 1. MASUKKAN CONFIG FIREBASE ANDA DI SINI ---
+    // --- 1. CONFIG FIREBASE (TIDAK BERUBAH) ---
     const firebaseConfig = {
         apiKey: "AIzaSyDvpFZtiG_fXLOf8okjafNm7gqbJZr2pSY",
         authDomain: "lapassistem.firebaseapp.com",
@@ -96,8 +96,7 @@
         measurementId: "G-25HSNZ35ZH"
     };
     
-    // --- 2. MASUKKAN API KEY IMGBB DI SINI (Wajib Ganti) ---
-    const IMGBB_API_KEY = "463fe060b4e50a3fab92f06f7246e019"; 
+    // KITA TIDAK BUTUH API KEY IMGBB LAGI
 
     window.addEventListener('load', () => {
         if (!firebase.apps.length) firebase.initializeApp(firebaseConfig);
@@ -215,7 +214,33 @@
             chatBox.appendChild(div);
         }
 
-        // --- CORE: SUBMIT FORM -> IMGBB -> FIREBASE ---
+        // --- FUNGSI KOMPRESI GAMBAR (PENTING AGAR DATABASE TIDAK BERAT) ---
+        function compressImage(file, callback) {
+            const reader = new FileReader();
+            reader.readAsDataURL(file);
+            reader.onload = function(event) {
+                const img = new Image();
+                img.src = event.target.result;
+                img.onload = function() {
+                    const canvas = document.createElement('canvas');
+                    const ctx = canvas.getContext('2d');
+                    
+                    // Resize agar tidak terlalu besar (Max width 800px)
+                    const maxWidth = 800;
+                    const scaleSize = maxWidth / img.width;
+                    canvas.width = maxWidth;
+                    canvas.height = img.height * scaleSize;
+
+                    ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+                    
+                    // Kompresi ke JPEG kualitas 0.6 (60%)
+                    const dataUrl = canvas.toDataURL('image/jpeg', 0.6);
+                    callback(dataUrl);
+                }
+            }
+        }
+
+        // --- SUBMIT FORM : SIMPAN BASE64 KE DATABASE ---
         window.submitForm = function(type) {
             const fileInput = document.getElementById('f_ktp');
             const nama = document.getElementById('f_nama').value;
@@ -230,7 +255,7 @@
             if(!nama || !nik || !alamat || !wbp || !tgl || !telp) return alert("❌ Mohon lengkapi semua data!");
 
             const btnSubmit = document.querySelector('.submit-btn');
-            btnSubmit.innerHTML = `<i class="fas fa-spinner fa-spin"></i> Mengupload Foto...`; 
+            btnSubmit.innerHTML = `<i class="fas fa-spinner fa-spin"></i> Memproses Foto...`; 
             btnSubmit.disabled = true;
 
             const path = type === 'fisik' ? 'registrations' : 'online_registrations';
@@ -239,56 +264,37 @@
             const label = type === 'fisik' ? 'TATAP MUKA' : 'VIDEO CALL';
             const counterPath = `counters/${tgl}/${type}/${jam}`;
 
-            // 1. Upload ke ImgBB
+            // 1. Kompres dulu fotonya
             const file = fileInput.files[0];
-            const formData = new FormData();
-            formData.append("image", file);
-
-            fetch(`https://api.imgbb.com/1/upload?key=${IMGBB_API_KEY}`, {
-                method: "POST",
-                body: formData
-            })
-            .then(response => response.json())
-            .then(result => {
-                if (result.success) {
-                    // PENTING: Gunakan display_url agar link langsung ke gambar (Direct Link)
-                    const downloadURL = result.data.display_url; 
-                    
-                    // 2. Simpan ke Firebase Database
-                    btnSubmit.innerHTML = "Menyimpan Data...";
-                    
-                    db.ref(counterPath).transaction(curr => (curr || 0) + 1, (err, committed, snap) => {
-                        if (err) {
-                            btnSubmit.innerHTML = "Coba Lagi"; btnSubmit.disabled = false;
-                            alert("Error Database: " + err.message);
-                        } else if (committed) {
-                            const noAntrian = `${prefix}-${sessionCode}-${String(snap.val()).padStart(3, '0')}`;
-                            const dataPayload = {
-                                nama, nik, alamat, telp, wbp, tgl, jam, noAntrian,
-                                ktpUrl: downloadURL, 
-                                status: 'waiting', 
-                                note: '', 
-                                createdAt: firebase.database.ServerValue.TIMESTAMP
-                            };
-                            
-                            db.ref(path).push(dataPayload).then(() => {
-                                chatBox.innerHTML = '';
-                                renderTicket(dataPayload, label);
-                            }).catch(e => {
-                                 btnSubmit.innerHTML = "Coba Lagi"; btnSubmit.disabled = false;
-                                 alert("Gagal Simpan Database: " + e.message);
-                            });
-                        }
-                    });
-
-                } else {
-                    throw new Error("Gagal upload gambar ke ImgBB (Cek API Key)");
-                }
-            })
-            .catch(error => {
-                btnSubmit.innerHTML = "Coba Lagi"; btnSubmit.disabled = false;
-                console.error(error);
-                alert("Gagal Upload Foto: " + error.message);
+            
+            compressImage(file, function(base64Image) {
+                
+                // 2. Simpan string Base64 langsung ke Database
+                btnSubmit.innerHTML = "Menyimpan Data...";
+                
+                db.ref(counterPath).transaction(curr => (curr || 0) + 1, (err, committed, snap) => {
+                    if (err) {
+                        btnSubmit.innerHTML = "Coba Lagi"; btnSubmit.disabled = false;
+                        alert("Error Database: " + err.message);
+                    } else if (committed) {
+                        const noAntrian = `${prefix}-${sessionCode}-${String(snap.val()).padStart(3, '0')}`;
+                        const dataPayload = {
+                            nama, nik, alamat, telp, wbp, tgl, jam, noAntrian,
+                            ktpUrl: base64Image, // INI SEKARANG BERISI KODE GAMBAR PANJANG
+                            status: 'waiting', 
+                            note: '', 
+                            createdAt: firebase.database.ServerValue.TIMESTAMP
+                        };
+                        
+                        db.ref(path).push(dataPayload).then(() => {
+                            chatBox.innerHTML = '';
+                            renderTicket(dataPayload, label);
+                        }).catch(e => {
+                             btnSubmit.innerHTML = "Coba Lagi"; btnSubmit.disabled = false;
+                             alert("Gagal Simpan Database: " + e.message);
+                        });
+                    }
+                });
             });
         }
 
@@ -354,7 +360,8 @@
             }
 
             const noteHtml = data.note ? `<div class="ticket-note"><b>✉️ Pesan Petugas:</b><br>"${data.note}"</div>` : '';
-            const ktpHtml = data.ktpUrl ? `<div style="margin-top:5px; font-size:10px; color:#555;">📸 Foto KTP Terlampir</div>` : '';
+            // Tampilkan foto kecil di tiket
+            const ktpHtml = data.ktpUrl ? `<div style="margin-top:5px; text-align:center;"><img src="${data.ktpUrl}" style="max-height:80px; border-radius:5px; border:1px solid #ccc;"></div>` : '';
 
             const ticketHtml = `
             <div id="ticket-node" class="ticket-card">
@@ -480,4 +487,5 @@
     }
 </script>
 </body>
+
 </html>
