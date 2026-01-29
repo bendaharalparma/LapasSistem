@@ -11,7 +11,8 @@
     
     <script defer src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
     <script defer src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
-    <script defer src="https://www.gstatic.com/firebasejs/8.10.1/firebase-storage.js"></script> <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 
     <style>
         * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
@@ -88,7 +89,7 @@
 </div>
 
 <script>
-    // --- FIREBASE CONFIG ---
+    // --- FIREBASE CONFIG (PASTIKAN INI SESUAI PROJECT ANDA) ---
     const firebaseConfig = {
         apiKey: "AIzaSyDvpFZtiG_fXLOf8okjafNm7gqbJZr2pSY",
         authDomain: "lapassistem.firebaseapp.com",
@@ -100,6 +101,9 @@
         measurementId: "G-25HSNZ35ZH"
     };
     
+    // --- GANTI DENGAN API KEY IMGBB ANDA ---
+    const IMGBB_API_KEY = "463fe060b4e50a3fab92f06f7246e019";
+
     window.addEventListener('load', () => {
         if (!firebase.apps.length) firebase.initializeApp(firebaseConfig);
         const db = firebase.database();
@@ -144,9 +148,8 @@
         window.respond = function(key) {
             if (key === 'start') chatBox.innerHTML = '';
             
-            // Handle Cek Status
             if (key.startsWith('cek_status_')) {
-                const type = key.split('_')[2]; // fisik or online
+                const type = key.split('_')[2]; 
                 askNikForStatus(type);
                 return;
             }
@@ -169,7 +172,6 @@
             let content = text.replace(/\n/g, '<br>').replace(/\*\*(.*?)\*\*/g, '<b>$1</b>');
             if(extra.customHtml) content += `<br>${extra.customHtml}`;
             
-            // --- FORMULIR DENGAN UPLOAD FOTO ---
             if(extra.isForm) {
                 content += `
                 <div class="form-box">
@@ -218,7 +220,7 @@
             chatBox.appendChild(div);
         }
 
-        // --- SUBMIT LOGIC (UPLOAD KTP + DATA) ---
+        // --- SUBMIT LOGIC MENGGUNAKAN IMGBB (SOLUSI GRATIS) ---
         window.submitForm = function(type) {
             const fileInput = document.getElementById('f_ktp');
             const nama = document.getElementById('f_nama').value;
@@ -243,49 +245,59 @@
             const label = type === 'fisik' ? 'TATAP MUKA' : 'VIDEO CALL';
             const counterPath = `counters/${tgl}/${type}/${jam}`;
 
-            // 1. PROSES UPLOAD KTP KE STORAGE
+            // 1. UPLOAD KE IMGBB (Bukan Firebase Storage)
             const file = fileInput.files[0];
-            const storageRef = firebase.storage().ref('ktp_uploads/' + Date.now() + '_' + file.name.replace(/[^a-zA-Z0-9.]/g, ''));
+            const formData = new FormData();
+            formData.append("image", file);
 
-            storageRef.put(file).then(snapshot => {
-                return snapshot.ref.getDownloadURL();
-            }).then(downloadURL => {
-                
-                // 2. SETELAH FOTO TERUPLOAD, SIMPAN KE DATABASE
-                btnSubmit.innerHTML = "Menyimpan Data...";
-                
-                db.ref(counterPath).transaction(curr => (curr || 0) + 1, (err, committed, snap) => {
-                    if (err) {
-                        btnSubmit.innerHTML = "Coba Lagi"; btnSubmit.disabled = false;
-                        alert("Error Database: " + err.message);
-                    } else if (committed) {
-                        const noAntrian = `${prefix}-${sessionCode}-${String(snap.val()).padStart(3, '0')}`;
-                        const dataPayload = {
-                            nama, nik, alamat, telp, wbp, tgl, jam, noAntrian,
-                            ktpUrl: downloadURL, // Link Foto disimpan di sini
-                            status: 'waiting', 
-                            note: '', 
-                            createdAt: firebase.database.ServerValue.TIMESTAMP
-                        };
-                        
-                        db.ref(path).push(dataPayload).then(() => {
-                            chatBox.innerHTML = '';
-                            renderTicket(dataPayload, label);
-                        }).catch(e => {
-                             btnSubmit.innerHTML = "Coba Lagi"; btnSubmit.disabled = false;
-                             alert("Gagal Simpan Database: " + e.message);
-                        });
-                    }
-                });
+            fetch(`https://api.imgbb.com/1/upload?key=${IMGBB_API_KEY}`, {
+                method: "POST",
+                body: formData
+            })
+            .then(response => response.json())
+            .then(result => {
+                if (result.success) {
+                    const downloadURL = result.data.url; // URL Gambar dari ImgBB
+                    
+                    // 2. SIMPAN DATA KE FIREBASE DATABASE
+                    btnSubmit.innerHTML = "Menyimpan Data...";
+                    
+                    db.ref(counterPath).transaction(curr => (curr || 0) + 1, (err, committed, snap) => {
+                        if (err) {
+                            btnSubmit.innerHTML = "Coba Lagi"; btnSubmit.disabled = false;
+                            alert("Error Database: " + err.message);
+                        } else if (committed) {
+                            const noAntrian = `${prefix}-${sessionCode}-${String(snap.val()).padStart(3, '0')}`;
+                            const dataPayload = {
+                                nama, nik, alamat, telp, wbp, tgl, jam, noAntrian,
+                                ktpUrl: downloadURL, // Link Foto ImgBB
+                                status: 'waiting', 
+                                note: '', 
+                                createdAt: firebase.database.ServerValue.TIMESTAMP
+                            };
+                            
+                            db.ref(path).push(dataPayload).then(() => {
+                                chatBox.innerHTML = '';
+                                renderTicket(dataPayload, label);
+                            }).catch(e => {
+                                 btnSubmit.innerHTML = "Coba Lagi"; btnSubmit.disabled = false;
+                                 alert("Gagal Simpan Database: " + e.message);
+                            });
+                        }
+                    });
 
-            }).catch(error => {
+                } else {
+                    throw new Error("Gagal upload gambar ke ImgBB");
+                }
+            })
+            .catch(error => {
                 btnSubmit.innerHTML = "Coba Lagi"; btnSubmit.disabled = false;
                 console.error(error);
-                alert("Gagal Upload Foto: " + error.message + "\n(Pastikan Rules Storage sudah diatur)");
+                alert("Gagal Upload Foto: " + error.message + "\n(Cek Koneksi Internet)");
             });
         }
 
-        // --- CEK STATUS LOGIC ---
+        // --- CEK STATUS ---
         window.askNikForStatus = function(type) {
             const div = document.createElement('div');
             div.className = 'msg bot';
@@ -334,7 +346,7 @@
             });
         }
 
-        // --- RENDER & DOWNLOAD TICKET ---
+        // --- RENDER TICKET ---
         function renderTicket(data, label) {
             let stBadge = '<span class="badge bg-gray">MENUNGGU VERIFIKASI</span>';
             let msgStatus = "Menunggu konfirmasi petugas.";
@@ -449,7 +461,6 @@
                     { text: "📷 INSTAGRAM", type: "link", url: cfg.soc_ig },
                     { text: "📘 FACEBOOK", type: "link", url: cfg.soc_fb },
                     { text: "🐦 TWITTER / X", type: "link", url: cfg.soc_tw },
-                    { text: "📺 YOUTUBE", type: "link", url: cfg.soc_yt },
                     { text: "⬅️ KEMBALI", val: "kontak" }
                 ]
             },
