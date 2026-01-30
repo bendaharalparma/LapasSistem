@@ -27,7 +27,6 @@
         
         .logo-area { width: auto; height: 70px; margin: 0 auto 10px; padding: 0; display: flex; justify-content: center; align-items: center; }
         .logo-area img { height: 100%; width: auto; max-width: 100%; object-fit: contain; filter: drop-shadow(0 2px 4px rgba(0,0,0,0.3)); }
-
         .app-name { font-weight: 700; font-size: 20px; margin: 0; text-shadow: 0 2px 4px rgba(0,0,0,0.5); line-height: 1.2; }
         
         /* CHAT BOX */
@@ -36,35 +35,31 @@
         .bot { background: #f0f2f5; align-self: flex-start; border-top-left-radius: 4px; color: #333; }
         .user { background: #ffebee; align-self: flex-end; border-top-right-radius: 4px; color: #8B0000; border: 1px solid #ffcdd2; }
         
-        /* BUTTONS */
-        .btn { background: white; color: #444; padding: 15px 16px; border-radius: 12px; font-size: 14px; font-weight: 600; cursor: pointer; width: 100%; display: flex; justify-content: space-between; align-items: center; border: 1px solid #eee; margin-bottom: 8px; transition: transform 0.1s; box-shadow: 0 2px 5px rgba(0,0,0,0.05); touch-action: manipulation; }
-        .btn:active { transform: scale(0.98); background: #f9f9f9; }
+        /* BUTTONS & FORM */
+        .btn { background: white; color: #444; padding: 15px 16px; border-radius: 12px; font-size: 14px; font-weight: 600; cursor: pointer; width: 100%; display: flex; justify-content: space-between; align-items: center; border: 1px solid #eee; margin-bottom: 8px; box-shadow: 0 2px 5px rgba(0,0,0,0.05); }
         .btn-back { background: #f8f9fa; justify-content: center; color: #666; margin-top: 10px; border-style: dashed; }
-        
-        /* FORM */
         .form-box { display: flex; flex-direction: column; gap: 12px; margin-top: 5px; background: white; padding: 5px; border-radius: 10px; }
-        
-        /* Input Font 16px mencegah Zoom otomatis di iOS */
-        .inp { padding: 12px; border: 1px solid #ddd; border-radius: 8px; font-size: 16px; width: 100%; outline: none; transition: 0.3s; background: #fafafa; }
+        .inp { padding: 12px; border: 1px solid #ddd; border-radius: 8px; font-size: 16px; width: 100%; outline: none; background: #fafafa; }
         .inp:focus { border-color: var(--primary); background: #fff; }
         
         /* PREVIEW IMAGE */
-        .img-preview { width: 100%; height: 150px; border: 2px dashed #ccc; border-radius: 8px; display: none; justify-content: center; align-items: center; overflow: hidden; margin-bottom: 5px; background: #f9f9f9; position: relative; }
-        .img-preview img { width: 100%; height: 100%; object-fit: cover; }
+        .img-preview { width: 100%; height: 160px; border: 2px dashed #ccc; border-radius: 8px; display: flex; justify-content: center; align-items: center; overflow: hidden; margin-bottom: 5px; background: #f9f9f9; position: relative; flex-direction: column; }
+        .img-preview img { width: 100%; height: 100%; object-fit: cover; display: none; }
+        .img-preview i { color: #ccc; font-size: 30px; margin-bottom: 5px; }
         .img-preview span { color: #999; font-size: 12px; }
         
         .submit-btn { background: #28a745; color: white; border: none; padding: 15px; border-radius: 8px; font-weight: bold; margin-top: 5px; cursor: pointer; font-size: 14px; box-shadow: 0 4px 6px rgba(40, 167, 69, 0.2); }
-        .submit-btn:disabled { background: #ccc; cursor: not-allowed; box-shadow: none; }
+        .submit-btn:disabled { background: #ccc; cursor: not-allowed; }
         
         /* TICKET */
         .ticket-card { border: 2px dashed var(--primary); padding: 15px; border-radius: 12px; text-align: center; margin-top: 10px; background: #fffcfc; position: relative; }
         .ticket-number { font-size: 32px; font-weight: 800; color: #333; margin: 10px 0; letter-spacing: 2px; }
         .ticket-note { background: #fff3cd; border: 1px solid #ffeeba; color: #856404; padding: 8px; font-size: 11px; margin-top: 10px; border-radius: 6px; text-align: left; }
         
-        /* RESULT MODAL (UNTUK DOWNLOAD MANUAL) */
-        #resultModal { display: none; position: fixed; z-index: 100; inset: 0; background: rgba(0,0,0,0.85); flex-direction: column; justify-content: center; align-items: center; padding: 20px; }
-        #resultImg { max-width: 100%; max-height: 70vh; border-radius: 10px; box-shadow: 0 0 20px rgba(255,255,255,0.2); }
-        .modal-info { color: white; text-align: center; margin-top: 15px; font-size: 13px; }
+        /* RESULT MODAL */
+        #resultModal { display: none; position: fixed; z-index: 999; inset: 0; background: rgba(0,0,0,0.9); flex-direction: column; justify-content: center; align-items: center; padding: 20px; }
+        #resultImg { max-width: 100%; max-height: 65vh; border-radius: 10px; border: 2px solid white; margin-bottom: 15px; }
+        .modal-info { color: white; text-align: center; font-size: 14px; background: #333; padding: 10px; border-radius: 8px; width: 100%; }
         .close-modal { position: absolute; top: 20px; right: 20px; color: white; font-size: 30px; cursor: pointer; background: none; border: none; }
 
         .badge { padding: 3px 8px; border-radius: 4px; font-weight: bold; font-size: 10px; }
@@ -76,12 +71,9 @@
         @keyframes popIn { from { opacity: 0; transform: scale(0.95); } to { opacity: 1; transform: scale(1); } }
         
         #loader { position: absolute; inset: 0; background: white; display: flex; flex-direction: column; justify-content: center; align-items: center; z-index: 99; }
-        #announcement { background: #fff3cd; color: #856404; padding: 12px 15px; font-size: 12px; text-align: center; display: none; border-bottom: 2px solid #ffeeba; font-weight: 600; animation: pulse 2s infinite; }
-        @keyframes pulse { 0% { background-color: #fff3cd; } 50% { background-color: #fff8e1; } 100% { background-color: #fff3cd; } }
-        
+        #announcement { background: #fff3cd; color: #856404; padding: 12px 15px; font-size: 12px; text-align: center; display: none; border-bottom: 2px solid #ffeeba; font-weight: 600; }
         #installBtn { display: none; background: #333; color: white; border: none; padding: 12px; width: 100%; text-align: center; font-size: 13px; cursor: pointer; }
         
-        /* SCHEDULE & TABLE */
         .spec-table { width: 100%; border-collapse: collapse; font-size: 12px; margin-bottom: 10px; border-radius: 8px; overflow: hidden; border: 1px solid #eee; }
         .spec-table th { background: var(--primary); color: white; padding: 8px; text-align: left; }
         .spec-table td { padding: 8px; border-bottom: 1px solid #eee; }
@@ -95,8 +87,8 @@
     <button class="close-modal" onclick="closeResultModal()">&times;</button>
     <img id="resultImg" src="" alt="Tiket">
     <div class="modal-info">
-        <p><b>📸 TIKET BERHASIL DIBUAT!</b></p>
-        <p>Jika download tidak berjalan otomatis:<br>Tekan lama pada gambar di atas lalu pilih <b>"Simpan Gambar"</b></p>
+        <i class="fas fa-arrow-up"></i><br>
+        <b>TEKAN LAMA</b> gambar di atas,<br>lalu pilih <b>"Simpan Gambar"</b> / <b>"Download Image"</b>.
     </div>
 </div>
  
@@ -129,6 +121,9 @@
         measurementId: "G-25HSNZ35ZH"
     };
  
+    // VARIABEL GLOBAL UNTUK MENYIMPAN FOTO
+    let processedPhotoData = null; 
+
     window.addEventListener('load', () => {
         if (!firebase.apps.length) firebase.initializeApp(firebaseConfig);
         const db = firebase.database();
@@ -170,7 +165,10 @@
         window.startChat = function() { respond('start'); }
  
         window.respond = function(key) {
-            if (key === 'start') chatBox.innerHTML = '';
+            if (key === 'start') {
+                chatBox.innerHTML = '';
+                processedPhotoData = null; // Reset foto saat kembali ke awal
+            }
             
             if (key.startsWith('cek_status_')) {
                 const type = key.split('_')[2]; 
@@ -197,21 +195,22 @@
             if(extra.customHtml) content += `<br>${extra.customHtml}`;
             
             if(extra.isForm) {
+                // RESET VARIABLE FOTO SAAT FORM DIBUKA
+                processedPhotoData = null;
+                
                 content += `
                 <div class="form-box">
                     <label style="font-size:12px; font-weight:600; margin-left:2px; color:#8B0000;">📸 Upload Foto KTP/Identitas:</label>
-                    <small style="font-size:10px; color:#666;">Wajib: Klik tombol di bawah untuk ambil foto</small>
+                    <small style="font-size:10px; color:#666;">Klik area di bawah untuk ambil foto:</small>
                     
-                    <input id="f_ktp" type="file" accept="image/*" style="display:none" onchange="previewFile()">
-                    
-                    <button onclick="document.getElementById('f_ktp').click()" style="background:#eee; color:#333; border:1px solid #ccc; padding:10px; border-radius:8px; margin:5px 0; cursor:pointer; font-size:12px; display:flex; align-items:center; justify-content:center; gap:5px;">
-                        <i class="fas fa-camera"></i> Buka Kamera / Galeri
-                    </button>
-
-                    <div id="preview-box" class="img-preview">
-                        <span>Belum ada foto</span>
+                    <div id="preview-box" class="img-preview" onclick="document.getElementById('f_ktp').click()" style="cursor:pointer; border-color:#8B0000;">
+                        <i class="fas fa-camera"></i>
+                        <span>Ambil Foto</span>
+                        <img id="img-result" src="">
                     </div>
-
+                    
+                    <input id="f_ktp" type="file" accept="image/*" style="display:none" onchange="processFile(this)">
+                    
                     <input id="f_nama" class="inp" placeholder="Nama Pengunjung (Sesuai KTP)">
                     <input id="f_nik" class="inp" type="number" placeholder="NIK / No. KTP">
                     <input id="f_alamat" class="inp" placeholder="Alamat Lengkap">
@@ -235,16 +234,46 @@
             chatBox.scrollTop = chatBox.scrollHeight;
         }
 
-        // --- FUNGSI PREVIEW FOTO ---
-        window.previewFile = function() {
-            const input = document.getElementById('f_ktp');
+        // --- FUNGSI PROSES FOTO LANGSUNG SAAT DIPILIH ---
+        window.processFile = function(input) {
             const previewBox = document.getElementById('preview-box');
+            const imgResult = document.getElementById('img-result');
+            const icon = previewBox.querySelector('i');
+            const text = previewBox.querySelector('span');
             
             if (input.files && input.files[0]) {
+                // Tampilkan indikator loading
+                text.innerText = "Memproses...";
+                
                 const reader = new FileReader();
                 reader.onload = function(e) {
-                    previewBox.style.display = 'flex';
-                    previewBox.innerHTML = `<img src="${e.target.result}">`;
+                    const img = new Image();
+                    img.src = e.target.result;
+                    img.onload = function() {
+                        const canvas = document.createElement('canvas');
+                        const ctx = canvas.getContext('2d');
+                        // Resize ke 600px
+                        const maxWidth = 600; 
+                        let width = img.width;
+                        let height = img.height;
+    
+                        if (width > maxWidth) {
+                            height *= maxWidth / width;
+                            width = maxWidth;
+                        }
+                        canvas.width = width;
+                        canvas.height = height;
+                        ctx.drawImage(img, 0, 0, width, height);
+                        
+                        // SIMPAN KE VARIABLE GLOBAL (Quality 0.6)
+                        processedPhotoData = canvas.toDataURL('image/jpeg', 0.6);
+                        
+                        // Tampilkan Preview
+                        imgResult.src = processedPhotoData;
+                        imgResult.style.display = 'block';
+                        icon.style.display = 'none';
+                        text.style.display = 'none';
+                    }
                 }
                 reader.readAsDataURL(input.files[0]);
             }
@@ -268,36 +297,7 @@
             chatBox.appendChild(div);
         }
  
-        function compressImage(file, callback) {
-            const reader = new FileReader();
-            reader.readAsDataURL(file);
-            reader.onload = function(event) {
-                const img = new Image();
-                img.src = event.target.result;
-                img.onload = function() {
-                    const canvas = document.createElement('canvas');
-                    const ctx = canvas.getContext('2d');
-                    // Resize Agresif ke 600px agar ringan di HP
-                    const maxWidth = 600; 
-                    let width = img.width;
-                    let height = img.height;
- 
-                    if (width > maxWidth) {
-                        height *= maxWidth / width;
-                        width = maxWidth;
-                    }
-                    canvas.width = width;
-                    canvas.height = height;
-                    ctx.drawImage(img, 0, 0, width, height);
-                    // Quality 0.5 (Cukup untuk dibaca, kecil ukuran file)
-                    const dataUrl = canvas.toDataURL('image/jpeg', 0.5);
-                    callback(dataUrl);
-                }
-            }
-        }
- 
         window.submitForm = function(type) {
-            const fileInput = document.getElementById('f_ktp');
             const nama = document.getElementById('f_nama').value;
             const nik = document.getElementById('f_nik').value;
             const alamat = document.getElementById('f_alamat').value;
@@ -306,12 +306,13 @@
             const tgl = document.getElementById('f_tgl').value;
             const jam = document.getElementById('f_jam').value;
  
-            if(fileInput.files.length === 0) return alert("❌ Wajib melampirkan Foto KTP!");
+            // CEK APAKAH FOTO SUDAH DIPROSES DI AWAL
+            if(!processedPhotoData) return alert("❌ Foto belum diambil! Silakan klik kotak kamera.");
             if(!nama || !nik || !alamat || !wbp || !tgl || !telp) return alert("❌ Mohon lengkapi semua data!");
  
             const btnSubmit = document.querySelector('.submit-btn');
             const originalText = btnSubmit.innerText;
-            btnSubmit.innerHTML = `<i class="fas fa-spinner fa-spin"></i> Sedang Mengirim...`; 
+            btnSubmit.innerHTML = `<i class="fas fa-spinner fa-spin"></i> Mengirim Data...`; 
             btnSubmit.disabled = true;
  
             const path = type === 'fisik' ? 'registrations' : 'online_registrations';
@@ -320,34 +321,30 @@
             const label = type === 'fisik' ? 'TATAP MUKA' : 'VIDEO CALL';
             const counterPath = `counters/${tgl}/${type}/${jam}`;
  
-            const file = fileInput.files[0];
-            
-            // Proses Kompresi
-            compressImage(file, function(base64Image) {
-                // Simpan ke Database
-                db.ref(counterPath).transaction(curr => (curr || 0) + 1, (err, committed, snap) => {
-                    if (err) {
-                        btnSubmit.innerHTML = "Gagal. Coba Lagi"; btnSubmit.disabled = false;
-                        alert("Error Koneksi Database. Coba refresh.");
-                    } else if (committed) {
-                        const noAntrian = `${prefix}-${sessionCode}-${String(snap.val()).padStart(3, '0')}`;
-                        const dataPayload = {
-                            nama, nik, alamat, telp, wbp, tgl, jam, noAntrian,
-                            ktpUrl: base64Image,
-                            status: 'waiting', 
-                            note: '', 
-                            createdAt: firebase.database.ServerValue.TIMESTAMP
-                        };
-                        
-                        db.ref(path).push(dataPayload).then(() => {
-                            chatBox.innerHTML = '';
-                            renderTicket(dataPayload, label);
-                        }).catch(e => {
-                             btnSubmit.innerHTML = originalText; btnSubmit.disabled = false;
-                             alert("Gagal Simpan Database (Data Penuh/Koneksi Buruk).");
-                        });
-                    }
-                });
+            // LANGSUNG KIRIM KE DATABASE (KARENA FOTO SUDAH SIAP)
+            db.ref(counterPath).transaction(curr => (curr || 0) + 1, (err, committed, snap) => {
+                if (err) {
+                    btnSubmit.innerHTML = "Gagal. Coba Lagi"; btnSubmit.disabled = false;
+                    alert("Error Database: " + err.message);
+                } else if (committed) {
+                    const noAntrian = `${prefix}-${sessionCode}-${String(snap.val()).padStart(3, '0')}`;
+                    const dataPayload = {
+                        nama, nik, alamat, telp, wbp, tgl, jam, noAntrian,
+                        ktpUrl: processedPhotoData, // Menggunakan data yang sudah diproses di awal
+                        status: 'waiting', 
+                        note: '', 
+                        createdAt: firebase.database.ServerValue.TIMESTAMP
+                    };
+                    
+                    db.ref(path).push(dataPayload).then(() => {
+                        chatBox.innerHTML = '';
+                        renderTicket(dataPayload, label);
+                        processedPhotoData = null; // Bersihkan memori
+                    }).catch(e => {
+                         btnSubmit.innerHTML = originalText; btnSubmit.disabled = false;
+                         alert("Gagal Simpan: " + e.message);
+                    });
+                }
             });
         }
  
@@ -389,7 +386,7 @@
             const noteHtml = data.note ? `<div class="ticket-note"><b>✉️ Pesan Petugas:</b><br>"${data.note}"</div>` : '';
             const ktpHtml = data.ktpUrl ? `<div style="margin-top:5px; text-align:center;"><img src="${data.ktpUrl}" style="max-height:80px; border-radius:5px; border:1px solid #ccc;"></div>` : '';
             const ticketHtml = `
-            <div id="ticket-node" class="ticket-card" style="background:white;">
+            <div id="ticket-node" class="ticket-card" style="background:white; padding:20px;">
                 <div class="ticket-title" style="font-weight:bold; color:#8B0000; border-bottom:1px solid #eee; padding-bottom:5px;">TIKET ANTRIAN ${label}</div>
                 <div style="font-size:12px; color:#555; margin-top:5px;">STATUS: ${stBadge}</div>
                 <div class="ticket-number">${data.noAntrian}</div>
@@ -399,41 +396,23 @@
                 ${noteHtml}${ktpHtml}
                 <div style="font-size:10px; margin-top:10px; color:#999;">${msgStatus}</div>
             </div>
-            <button onclick="downloadTicket()" style="margin-top:10px; padding:15px; background:#000; color:white; border:none; border-radius:8px; font-size:14px; width:100%; cursor:pointer; font-weight:bold; display:flex; justify-content:center; align-items:center; gap:8px;"><i class="fas fa-download"></i> SIMPAN TIKET (JPG)</button>`;
+            <button onclick="openSaveModal()" style="margin-top:10px; padding:15px; background:#000; color:white; border:none; border-radius:8px; font-size:14px; width:100%; cursor:pointer; font-weight:bold; display:flex; justify-content:center; align-items:center; gap:8px;"><i class="fas fa-download"></i> SIMPAN TIKET (JPG)</button>`;
             appendMsg('bot', `✅ **HASIL PENCARIAN:**`, { customHtml: ticketHtml });
             showBtn([{text:"⬅️ KEMBALI KE MENU UTAMA", val:"start"}]);
         }
 
-        // --- FUNGSI DOWNLOAD BARU (SUPORT MOBILE) ---
-        window.downloadTicket = function() {
+        // --- FUNGSI BARU: BUKA MODAL SAVE (ANTI GAGAL) ---
+        window.openSaveModal = function() {
             const node = document.getElementById('ticket-node');
             const btn = event.target;
+            const originalText = btn.innerHTML;
             btn.innerHTML = "Memproses Gambar...";
             
-            // Gunakan useCORS agar gambar logo/ktp ikut ter-render
             html2canvas(node, { scale: 2, useCORS: true, backgroundColor: "#fff" }).then(canvas => {
-                // Konversi ke Blob (Lebih stabil di Android)
-                canvas.toBlob(function(blob) {
-                    const url = URL.createObjectURL(blob);
-                    
-                    // Tampilkan Modal Result (Solusi paling aman untuk Mobile)
-                    document.getElementById('resultImg').src = url;
-                    document.getElementById('resultModal').style.display = 'flex';
-                    
-                    // Coba trigger download otomatis juga
-                    try {
-                        const link = document.createElement('a');
-                        link.download = 'Tiket_Lapas.jpg';
-                        link.href = url;
-                        document.body.appendChild(link);
-                        link.click();
-                        document.body.removeChild(link);
-                    } catch(e) {
-                        console.log("Auto download blocked, using modal fallback");
-                    }
-                    
-                    btn.innerHTML = '<i class="fas fa-download"></i> SIMPAN TIKET (JPG)';
-                }, 'image/jpeg', 0.9);
+                const dataUrl = canvas.toDataURL("image/jpeg", 0.9);
+                document.getElementById('resultImg').src = dataUrl;
+                document.getElementById('resultModal').style.display = 'flex';
+                btn.innerHTML = originalText;
             });
         }
         
