@@ -8,7 +8,6 @@
     
     <script defer src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
     <script defer src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
-    
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
@@ -17,17 +16,14 @@
         * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
         :root { --primary: #8B0000; --bg-light: #f4f6f9; }
         body { font-family: 'Poppins', sans-serif; background: #eef2f5; margin: 0; display: flex; justify-content: center; min-height: 100vh; }
-        
         .app-container { width: 100%; max-width: 480px; background: #fff; min-height: 100vh; box-shadow: 0 0 25px rgba(0,0,0,0.1); display: flex; flex-direction: column; position: relative; }
         
         /* HEADER */
         .header { position: relative; height: 180px; background-color: var(--primary); background-size: cover; background-position: center; display: flex; flex-direction: column; align-items: center; justify-content: center; color: white; border-bottom-left-radius: 30px; border-bottom-right-radius: 30px; z-index: 10; padding: 20px; }
         .header::before { content: ''; position: absolute; inset: 0; background: rgba(0,0,0,0.5); border-bottom-left-radius: 30px; border-bottom-right-radius: 30px; }
         .header-content { position: relative; z-index: 2; text-align: center; width: 100%; display: flex; flex-direction: column; align-items: center; }
-        
         .logo-area { width: auto; height: 70px; margin: 0 auto 10px; padding: 0; display: flex; justify-content: center; align-items: center; }
         .logo-area img { height: 100%; width: auto; max-width: 100%; object-fit: contain; filter: drop-shadow(0 2px 4px rgba(0,0,0,0.3)); }
-
         .app-name { font-weight: 700; font-size: 20px; margin: 0; text-shadow: 0 2px 4px rgba(0,0,0,0.5); line-height: 1.2; }
         
         /* CHAT BOX */
@@ -43,28 +39,24 @@
         
         /* FORM */
         .form-box { display: flex; flex-direction: column; gap: 12px; margin-top: 5px; background: white; padding: 5px; border-radius: 10px; }
-        
-        /* Input Font 16px mencegah Zoom otomatis di iOS */
         .inp { padding: 12px; border: 1px solid #ddd; border-radius: 8px; font-size: 16px; width: 100%; outline: none; transition: 0.3s; background: #fafafa; }
         .inp:focus { border-color: var(--primary); background: #fff; }
         
-        /* PREVIEW IMAGE */
-        .img-preview { width: 100%; height: 150px; border: 2px dashed #ccc; border-radius: 8px; display: none; justify-content: center; align-items: center; overflow: hidden; margin-bottom: 5px; background: #f9f9f9; position: relative; }
-        .img-preview img { width: 100%; height: 100%; object-fit: cover; }
-        .img-preview span { color: #999; font-size: 12px; }
+        /* UPLOAD AREA */
+        .upload-group { border: 1px dashed #ccc; padding: 10px; border-radius: 8px; background: #f9f9f9; margin-bottom: 5px; }
+        .upload-label { font-size: 12px; font-weight: 600; color: #555; display: block; margin-bottom: 5px; }
+        .file-status { font-size: 10px; color: #28a745; display: none; margin-top: 2px; }
         
-        .submit-btn { background: #28a745; color: white; border: none; padding: 15px; border-radius: 8px; font-weight: bold; margin-top: 5px; cursor: pointer; font-size: 14px; box-shadow: 0 4px 6px rgba(40, 167, 69, 0.2); }
+        .submit-btn { background: #28a745; color: white; border: none; padding: 15px; border-radius: 8px; font-weight: bold; margin-top: 5px; cursor: pointer; font-size: 14px; box-shadow: 0 4px 6px rgba(40, 167, 69, 0.2); width: 100%; }
         .submit-btn:disabled { background: #ccc; cursor: not-allowed; box-shadow: none; }
         
-        /* TICKET */
+        /* TICKET & MODALS */
         .ticket-card { border: 2px dashed var(--primary); padding: 15px; border-radius: 12px; text-align: center; margin-top: 10px; background: #fffcfc; position: relative; }
         .ticket-number { font-size: 32px; font-weight: 800; color: #333; margin: 10px 0; letter-spacing: 2px; }
         .ticket-note { background: #fff3cd; border: 1px solid #ffeeba; color: #856404; padding: 8px; font-size: 11px; margin-top: 10px; border-radius: 6px; text-align: left; }
         
-        /* RESULT MODAL (UNTUK DOWNLOAD MANUAL) */
         #resultModal { display: none; position: fixed; z-index: 100; inset: 0; background: rgba(0,0,0,0.85); flex-direction: column; justify-content: center; align-items: center; padding: 20px; }
         #resultImg { max-width: 100%; max-height: 70vh; border-radius: 10px; box-shadow: 0 0 20px rgba(255,255,255,0.2); }
-        .modal-info { color: white; text-align: center; margin-top: 15px; font-size: 13px; }
         .close-modal { position: absolute; top: 20px; right: 20px; color: white; font-size: 30px; cursor: pointer; background: none; border: none; }
 
         .badge { padding: 3px 8px; border-radius: 4px; font-weight: bold; font-size: 10px; }
@@ -74,19 +66,14 @@
         .bg-gray { background: #eee; color: #555; }
         
         @keyframes popIn { from { opacity: 0; transform: scale(0.95); } to { opacity: 1; transform: scale(1); } }
-        
         #loader { position: absolute; inset: 0; background: white; display: flex; flex-direction: column; justify-content: center; align-items: center; z-index: 99; }
         #announcement { background: #fff3cd; color: #856404; padding: 12px 15px; font-size: 12px; text-align: center; display: none; border-bottom: 2px solid #ffeeba; font-weight: 600; animation: pulse 2s infinite; }
         @keyframes pulse { 0% { background-color: #fff3cd; } 50% { background-color: #fff8e1; } 100% { background-color: #fff3cd; } }
         
-        #installBtn { display: none; background: #333; color: white; border: none; padding: 12px; width: 100%; text-align: center; font-size: 13px; cursor: pointer; }
-        
-        /* SCHEDULE & TABLE */
+        /* SCHEDULE TABLE */
         .spec-table { width: 100%; border-collapse: collapse; font-size: 12px; margin-bottom: 10px; border-radius: 8px; overflow: hidden; border: 1px solid #eee; }
         .spec-table th { background: var(--primary); color: white; padding: 8px; text-align: left; }
         .spec-table td { padding: 8px; border-bottom: 1px solid #eee; }
-        .schedule-card { border: 1px solid #eee; border-radius: 10px; overflow: hidden; margin-top: 5px; }
-        .sch-row { display: flex; justify-content: space-between; padding: 10px 12px; border-bottom: 1px solid #f9f9f9; font-size: 12px; }
     </style>
 </head>
 <body>
@@ -94,14 +81,10 @@
 <div id="resultModal">
     <button class="close-modal" onclick="closeResultModal()">&times;</button>
     <img id="resultImg" src="" alt="Tiket">
-    <div class="modal-info">
-        <p><b>📸 TIKET BERHASIL DIBUAT!</b></p>
-        <p>Jika download tidak berjalan otomatis:<br>screenshot gambar di atas<b>"tunjukkan ke petugas"</b></p>
-    </div>
+    <div style="color:white; text-align:center; margin-top:10px;">Tekan tahan gambar untuk simpan</div>
 </div>
- 
+
 <div class="app-container">
-    <button id="installBtn" onclick="installApp()">📲 <b>Install Aplikasi</b> (Akses Cepat)</button>
     <div id="loader"><i class="fas fa-circle-notch fa-spin fa-2x" style="color:#8B0000;"></i></div>
     
     <div class="header" id="header_bg">
@@ -114,9 +97,9 @@
     
     <div id="announcement"></div>
     <div id="chat-box"></div>
-    <div style="text-align:center; padding:10px; font-size:10px; color:#aaa; margin-top: auto;">&copy; 2026 Lapas Kelas IIB Arga Makmur</div>
+    <div style="text-align:center; padding:10px; font-size:10px; color:#aaa; margin-top: auto;">&copy; 2026 Sistem Lapas Digital</div>
 </div>
- 
+
 <script>
     const firebaseConfig = {
         apiKey: "AIzaSyDvpFZtiG_fXLOf8okjafNm7gqbJZr2pSY",
@@ -128,32 +111,17 @@
         appId: "1:951059663532:web:716bc3010eecc741a4ed09",
         measurementId: "G-25HSNZ35ZH"
     };
- 
+
     window.addEventListener('load', () => {
         if (!firebase.apps.length) firebase.initializeApp(firebaseConfig);
         const db = firebase.database();
         let config = {};
- 
+
         db.ref('app_config').on('value', (snap) => {
             if(snap.exists()) config = snap.val();
             updateUI(config);
         });
- 
-        let deferredPrompt;
-        window.addEventListener('beforeinstallprompt', (e) => {
-            e.preventDefault(); deferredPrompt = e;
-            document.getElementById('installBtn').style.display = 'block';
-        });
-        window.installApp = () => {
-            if(deferredPrompt) {
-                deferredPrompt.prompt();
-                deferredPrompt.userChoice.then((res) => {
-                    if(res.outcome === 'accepted') document.getElementById('installBtn').style.display = 'none';
-                    deferredPrompt = null;
-                });
-            }
-        };
- 
+
         function updateUI(cfg) {
             document.getElementById('app_title').innerText = cfg.app_name || "Lapas App";
             document.getElementById('logo_img').src = cfg.logo_url || "";
@@ -165,10 +133,10 @@
             document.getElementById('loader').style.display = 'none';
             startChat();
         }
- 
+
         const chatBox = document.getElementById('chat-box');
         window.startChat = function() { respond('start'); }
- 
+
         window.respond = function(key) {
             if (key === 'start') chatBox.innerHTML = '';
             
@@ -177,79 +145,39 @@
                 askNikForStatus(type);
                 return;
             }
- 
+
             const menu = getMenu(config)[key];
             if(!menu) return;
- 
+
             let opts = menu.options || [];
             if(menu.back) opts.push({text:"⬅️ KEMBALI KE MENU UTAMA", val:"start"});
             if(menu.backTo) opts.push({text:"⬅️ KEMBALI SEBELUMNYA", val: menu.backTo});
- 
-            if(menu.isForm) appendMsg('bot', menu.text, { isForm: true, formType: menu.formType });
-            else if (menu.customHtml) appendMsg('bot', menu.text, { customHtml: menu.customHtml, options: opts });
-            else appendMsg('bot', menu.text, { options: opts });
+
+            // Handle Render Form Khusus
+            if(menu.isForm) {
+                if(menu.formType === 'pengurusan') renderFormPengurusan();
+                else if(menu.formType === 'kritik') renderFormKritik();
+                else renderFormStandard(menu.text, menu.formType);
+            } 
+            else if (menu.customHtml) {
+                appendMsg('bot', menu.text, { customHtml: menu.customHtml, options: opts });
+            }
+            else {
+                appendMsg('bot', menu.text, { options: opts });
+            }
         }
- 
+
         function appendMsg(sender, text, extra = {}) {
             const div = document.createElement('div');
             div.className = `msg ${sender}`;
             let content = text.replace(/\n/g, '<br>').replace(/\*\*(.*?)\*\*/g, '<b>$1</b>');
             if(extra.customHtml) content += `<br>${extra.customHtml}`;
-            
-            if(extra.isForm) {
-                content += `
-                <div class="form-box">
-                    <label style="font-size:12px; font-weight:600; margin-left:2px; color:#8B0000;">📸 Upload Foto KTP/Identitas:</label>
-                    <small style="font-size:10px; color:#666;">Wajib: Klik tombol di bawah untuk ambil foto</small>
-                    
-                    <input id="f_ktp" type="file" accept="image/*" style="display:none" onchange="previewFile()">
-                    
-                    <button onclick="document.getElementById('f_ktp').click()" style="background:#eee; color:#333; border:1px solid #ccc; padding:10px; border-radius:8px; margin:5px 0; cursor:pointer; font-size:12px; display:flex; align-items:center; justify-content:center; gap:5px;">
-                        <i class="fas fa-camera"></i> Buka Kamera / Galeri
-                    </button>
-
-                    <div id="preview-box" class="img-preview">
-                        <span>Belum ada foto</span>
-                    </div>
-
-                    <input id="f_nama" class="inp" placeholder="Nama Pengunjung (Sesuai KTP)">
-                    <input id="f_nik" class="inp" type="number" placeholder="NIK / No. KTP">
-                    <input id="f_alamat" class="inp" placeholder="Alamat Lengkap">
-                    <input id="f_telp" class="inp" type="tel" placeholder="No. HP / WA">
-                    <input id="f_wbp" class="inp" placeholder="Nama WBP (Bin/Binti)">
-                    <label style="font-size:12px; font-weight:600; margin-left:2px; margin-top:5px;">Jadwal Kunjungan:</label>
-                    <div style="display:flex; gap:5px;">
-                        <input id="f_tgl" class="inp" type="date" style="flex:2">
-                        <select id="f_jam" class="inp" style="flex:1">
-                            <option value="Pagi">Pagi</option>
-                            <option value="Siang">Siang</option>
-                        </select>
-                    </div>
-                    <button onclick="submitForm('${extra.formType}')" class="submit-btn">AMBIL NOMOR ANTRIAN</button>
-                    <button onclick="respond('start')" style="background:#f0f0f0; padding:12px; width:100%; border-radius:8px; margin-top:5px; border:none; cursor:pointer;">Batal</button>
-                </div>`;
-            }
             div.innerHTML = content;
             chatBox.appendChild(div);
             if(!extra.isForm && extra.options) showBtn(extra.options);
             chatBox.scrollTop = chatBox.scrollHeight;
         }
 
-        // --- FUNGSI PREVIEW FOTO ---
-        window.previewFile = function() {
-            const input = document.getElementById('f_ktp');
-            const previewBox = document.getElementById('preview-box');
-            
-            if (input.files && input.files[0]) {
-                const reader = new FileReader();
-                reader.onload = function(e) {
-                    previewBox.style.display = 'flex';
-                    previewBox.innerHTML = `<img src="${e.target.result}">`;
-                }
-                reader.readAsDataURL(input.files[0]);
-            }
-        }
- 
         function showBtn(opts) {
             const div = document.createElement('div');
             opts.forEach(o => {
@@ -267,37 +195,99 @@
             });
             chatBox.appendChild(div);
         }
- 
-        function compressImage(file, callback) {
-            const reader = new FileReader();
-            reader.readAsDataURL(file);
-            reader.onload = function(event) {
-                const img = new Image();
-                img.src = event.target.result;
-                img.onload = function() {
-                    const canvas = document.createElement('canvas');
-                    const ctx = canvas.getContext('2d');
-                    // Resize Agresif ke 600px agar ringan di HP
-                    const maxWidth = 600; 
-                    let width = img.width;
-                    let height = img.height;
- 
-                    if (width > maxWidth) {
-                        height *= maxWidth / width;
-                        width = maxWidth;
-                    }
-                    canvas.width = width;
-                    canvas.height = height;
-                    ctx.drawImage(img, 0, 0, width, height);
-                    // Quality 0.5 (Cukup untuk dibaca, kecil ukuran file)
-                    const dataUrl = canvas.toDataURL('image/jpeg', 0.5);
-                    callback(dataUrl);
-                }
-            }
+
+        // --- FORM STANDARD (Kunjungan & VC) ---
+        function renderFormStandard(text, type) {
+            const formHtml = `
+            <div class="form-box">
+                <label style="font-size:12px; font-weight:600; color:#8B0000;">📸 Foto KTP (Wajib):</label>
+                <input id="f_ktp" type="file" accept="image/*" class="inp" style="padding:5px;">
+                <input id="f_nama" class="inp" placeholder="Nama Pengunjung">
+                <input id="f_nik" class="inp" type="number" placeholder="NIK / No. KTP">
+                <input id="f_alamat" class="inp" placeholder="Alamat Lengkap">
+                <input id="f_telp" class="inp" type="tel" placeholder="No. HP / WA">
+                <input id="f_wbp" class="inp" placeholder="Nama WBP (Bin/Binti)">
+                <div style="display:flex; gap:5px;">
+                    <input id="f_tgl" class="inp" type="date" style="flex:2">
+                    <select id="f_jam" class="inp" style="flex:1">
+                        <option value="Pagi">Pagi</option>
+                        <option value="Siang">Siang</option>
+                    </select>
+                </div>
+                <button onclick="submitForm('${type}')" class="submit-btn">AMBIL ANTRIAN</button>
+                <button onclick="respond('start')" style="background:#f0f0f0; border:none; padding:10px; border-radius:8px; width:100%; margin-top:5px;">Batal</button>
+            </div>`;
+            appendMsg('bot', text, { customHtml: formHtml });
         }
- 
+
+        // --- FORM PENGURUSAN (PB/CB/CMB) ---
+        window.renderFormPengurusan = function() {
+            const fields = [
+                {id:'u_ktp_wbp', l:'KTP WBP'}, {id:'u_kk_wbp', l:'KK WBP'},
+                {id:'u_ktp_penj', l:'KTP Penjamin'}, {id:'u_kk_penj', l:'KK Penjamin'},
+                {id:'u_surat_1', l:'Surat Pernyataan Penjamin'},
+                {id:'u_surat_2', l:'Surat Jaminan Kesanggupan'},
+                {id:'u_foto', l:'Foto Diri Penjamin'}
+            ];
+            
+            let uploadsHtml = '';
+            fields.forEach(f => {
+                uploadsHtml += `
+                <div class="upload-group">
+                    <span class="upload-label">📂 ${f.l}</span>
+                    <input type="file" id="${f.id}" accept="image/*" style="font-size:12px;">
+                </div>`;
+            });
+
+            const html = `
+            <div class="form-box">
+                <div style="background:#e3f2fd; padding:10px; font-size:11px; border-radius:5px; margin-bottom:10px;">
+                    ⚠️ Pastikan semua foto dokumen jelas dan terbaca.
+                </div>
+                <input id="p_wbp" class="inp" placeholder="Nama WBP">
+                <input id="p_penjamin" class="inp" placeholder="Nama Penjamin">
+                <input id="p_nik" class="inp" type="number" placeholder="NIK Penjamin (Untuk Cek Status)">
+                <input id="p_alamat" class="inp" placeholder="Alamat Penjamin">
+                <select id="p_hub" class="inp">
+                    <option value="">-- Hubungan --</option>
+                    <option value="Orang Tua">Orang Tua</option>
+                    <option value="Istri/Suami">Istri/Suami</option>
+                    <option value="Anak">Anak</option>
+                    <option value="Saudara">Saudara Kandung</option>
+                    <option value="Lainnya">Lainnya</option>
+                </select>
+                <input id="p_telp" class="inp" type="tel" placeholder="No HP / WA">
+                
+                <div style="margin-top:10px; font-weight:bold; font-size:12px;">UNGGAH DOKUMEN:</div>
+                ${uploadsHtml}
+                
+                <button onclick="submitPengurusan()" class="submit-btn">KIRIM PERMOHONAN</button>
+                <button onclick="respond('start')" style="background:#f0f0f0; border:none; padding:10px; border-radius:8px; width:100%; margin-top:5px;">Batal</button>
+            </div>`;
+            appendMsg('bot', "📝 **FORMULIR PENGURUSAN PB/CB/CMB:**", { customHtml: html });
+        }
+
+        // --- FORM KRITIK & SARAN ---
+        window.renderFormKritik = function() {
+            const html = `
+            <div class="form-box">
+                <label style="font-size:12px;">Tingkat Kepuasan:</label>
+                <select id="k_puas" class="inp">
+                    <option value="Sangat Puas">😍 Sangat Puas</option>
+                    <option value="Puas">🙂 Puas</option>
+                    <option value="Cukup">😐 Cukup</option>
+                    <option value="Kurang">☹️ Kurang</option>
+                </select>
+                <textarea id="k_pesan" class="inp" rows="4" placeholder="Tulis kritik & saran Anda disini..."></textarea>
+                <button onclick="submitKritik()" class="submit-btn">KIRIM MASUKAN</button>
+                <button onclick="respond('start')" style="background:#f0f0f0; border:none; padding:10px; border-radius:8px; width:100%; margin-top:5px;">Batal</button>
+            </div>`;
+            appendMsg('bot', "📢 **KRITIK & SARAN:**\nMasukan Anda sangat berarti bagi kami.", { customHtml: html });
+        }
+
+        // --- LOGIC SUBMIT STANDARD ---
         window.submitForm = function(type) {
-            const fileInput = document.getElementById('f_ktp');
+            const f_ktp = document.getElementById('f_ktp').files[0];
             const nama = document.getElementById('f_nama').value;
             const nik = document.getElementById('f_nik').value;
             const alamat = document.getElementById('f_alamat').value;
@@ -305,163 +295,273 @@
             const wbp = document.getElementById('f_wbp').value;
             const tgl = document.getElementById('f_tgl').value;
             const jam = document.getElementById('f_jam').value;
- 
-            if(fileInput.files.length === 0) return alert("❌ Wajib melampirkan Foto KTP!");
-            if(!nama || !nik || !alamat || !wbp || !tgl || !telp) return alert("❌ Mohon lengkapi semua data!");
- 
-            const btnSubmit = document.querySelector('.submit-btn');
-            const originalText = btnSubmit.innerText;
-            btnSubmit.innerHTML = `<i class="fas fa-spinner fa-spin"></i> Sedang Mengirim...`; 
-            btnSubmit.disabled = true;
- 
+
+            if(!f_ktp || !nama || !nik || !wbp || !tgl) return alert("Lengkapi data & foto KTP!");
+
+            const btn = document.querySelector('.submit-btn');
+            btn.innerHTML = "Mengirim..."; btn.disabled = true;
+
             const path = type === 'fisik' ? 'registrations' : 'online_registrations';
-            const prefix = type === 'fisik' ? 'A' : 'V'; 
-            const sessionCode = jam === 'Pagi' ? 'P' : 'S'; 
-            const label = type === 'fisik' ? 'TATAP MUKA' : 'VIDEO CALL';
+            const prefix = type === 'fisik' ? 'A' : 'V';
+            const sess = jam === 'Pagi' ? 'P' : 'S';
             const counterPath = `counters/${tgl}/${type}/${jam}`;
- 
-            const file = fileInput.files[0];
-            
-            // Proses Kompresi
-            compressImage(file, function(base64Image) {
-                // Simpan ke Database
-                db.ref(counterPath).transaction(curr => (curr || 0) + 1, (err, committed, snap) => {
-                    if (err) {
-                        btnSubmit.innerHTML = "Gagal. Coba Lagi"; btnSubmit.disabled = false;
-                        alert("Error Koneksi Database. Coba refresh.");
-                    } else if (committed) {
-                        const noAntrian = `${prefix}-${sessionCode}-${String(snap.val()).padStart(3, '0')}`;
-                        const dataPayload = {
-                            nama, nik, alamat, telp, wbp, tgl, jam, noAntrian,
-                            ktpUrl: base64Image,
-                            status: 'waiting', 
-                            note: '', 
-                            createdAt: firebase.database.ServerValue.TIMESTAMP
-                        };
+
+            compressImage(f_ktp, (base64) => {
+                db.ref(counterPath).transaction(c => (c||0)+1, (e, comm, s) => {
+                    if(comm) {
+                        const no = `${prefix}-${sess}-${String(s.val()).padStart(3,'0')}`;
+                        const payload = { nama, nik, alamat, telp, wbp, tgl, jam, noAntrian: no, ktpUrl: base64, status: 'waiting', createdAt: firebase.database.ServerValue.TIMESTAMP };
                         
-                        db.ref(path).push(dataPayload).then(() => {
+                        db.ref(path).push(payload).then(() => {
                             chatBox.innerHTML = '';
-                            renderTicket(dataPayload, label);
-                        }).catch(e => {
-                             btnSubmit.innerHTML = originalText; btnSubmit.disabled = false;
-                             alert("Gagal Simpan Database (Data Penuh/Koneksi Buruk).");
+                            renderTicket(payload, type === 'fisik' ? 'TATAP MUKA' : 'VIDEO CALL');
                         });
+                    } else {
+                        btn.disabled = false; alert("Gagal koneksi. Coba lagi.");
                     }
                 });
             });
         }
- 
-        window.askNikForStatus = function(type) {
-            const div = document.createElement('div');
-            div.className = 'msg bot';
-            div.innerHTML = `<b>🔍 CEK STATUS PENDAFTARAN</b><br>Masukkan NIK anda:<div class="form-box"><input id="cek_nik" class="inp" type="number" placeholder="NIK / No. KTP"><button onclick="doCheckStatus('${type}')" class="submit-btn" style="background:#007bff">CARI DATA</button><button onclick="respond('start')" style="background:#f0f0f0; padding:12px; width:100%; border-radius:8px; margin-top:5px; border:none; cursor:pointer;">Kembali</button></div>`;
-            chatBox.appendChild(div);
-            chatBox.scrollTop = chatBox.scrollHeight;
-        }
- 
-        window.doCheckStatus = function(type) {
-            const inputNik = document.getElementById('cek_nik').value.trim();
-            if(!inputNik) return alert("Masukkan NIK!");
-            const path = type === 'fisik' ? 'registrations' : 'online_registrations';
-            const label = type === 'fisik' ? 'TATAP MUKA' : 'VIDEO CALL';
+
+        // --- LOGIC SUBMIT PENGURUSAN ---
+        window.submitPengurusan = async function() {
+            const ids = ['u_ktp_wbp','u_kk_wbp','u_ktp_penj','u_kk_penj','u_surat_1','u_surat_2','u_foto'];
+            const inputs = {};
+            let missing = false;
+
+            // Get Text Data
+            inputs.wbp = document.getElementById('p_wbp').value;
+            inputs.penjamin = document.getElementById('p_penjamin').value;
+            inputs.nik = document.getElementById('p_nik').value;
+            inputs.alamat = document.getElementById('p_alamat').value;
+            inputs.hub = document.getElementById('p_hub').value;
+            inputs.telp = document.getElementById('p_telp').value;
+
+            if(!inputs.wbp || !inputs.penjamin || !inputs.nik || !inputs.hub) return alert("Mohon lengkapi data formulir!");
+
+            // Check Files
+            for(let id of ids) {
+                if(!document.getElementById(id).files[0]) missing = true;
+            }
+            if(missing) return alert("Mohon unggah semua dokumen yang diminta!");
+
             const btn = document.querySelector('.submit-btn');
-            const originalText = btn.innerHTML;
-            btn.innerHTML = "Mencari..."; btn.disabled = true;
-            
-            db.ref(path).limitToLast(100).once('value').then(snapshot => {
-                let foundData = null;
-                if(snapshot.exists()) {
-                    snapshot.forEach(child => {
-                        const val = child.val();
-                        if(String(val.nik) === String(inputNik)) { foundData = val; }
-                    });
+            const oldTxt = btn.innerText;
+            btn.innerText = "Mengompres & Mengunggah (Mohon Tunggu)..."; 
+            btn.disabled = true;
+
+            try {
+                const images = {};
+                // Process images sequentially
+                for(let id of ids) {
+                    const file = document.getElementById(id).files[0];
+                    images[id] = await new Promise(resolve => compressImage(file, resolve));
                 }
-                if(foundData) { chatBox.innerHTML = ''; renderTicket(foundData, label); } 
-                else { btn.innerHTML = originalText; btn.disabled = false; alert("Data tidak ditemukan!"); }
-            }).catch(err => { btn.innerHTML = originalText; btn.disabled = false; alert("Gagal: " + err.message); });
-        }
- 
-        function renderTicket(data, label) {
-            let stBadge = '<span class="badge bg-gray">MENUNGGU VERIFIKASI</span>';
-            let msgStatus = "Menunggu konfirmasi petugas.";
-            if(data.status === 'accepted') { stBadge = '<span class="badge bg-green">✅ DISETUJUI</span>'; msgStatus = "Silakan datang sesuai jadwal."; } 
-            else if(data.status === 'rejected') { stBadge = '<span class="badge bg-red">❌ DITOLAK</span>'; msgStatus = "Maaf, pendaftaran ditolak."; }
-            const noteHtml = data.note ? `<div class="ticket-note"><b>✉️ Pesan Petugas:</b><br>"${data.note}"</div>` : '';
-            const ktpHtml = data.ktpUrl ? `<div style="margin-top:5px; text-align:center;"><img src="${data.ktpUrl}" style="max-height:80px; border-radius:5px; border:1px solid #ccc;"></div>` : '';
-            const ticketHtml = `
-            <div id="ticket-node" class="ticket-card" style="background:white;">
-                <div class="ticket-title" style="font-weight:bold; color:#8B0000; border-bottom:1px solid #eee; padding-bottom:5px;">TIKET ANTRIAN ${label}</div>
-                <div style="font-size:12px; color:#555; margin-top:5px;">STATUS: ${stBadge}</div>
-                <div class="ticket-number">${data.noAntrian}</div>
-                <div style="font-size:12px; color:#555; line-height:1.5; border-top:1px dashed #ccc; padding-top:8px; text-align:left;">
-                    <table style="width:100%"><tr><td width="30%">Nama</td><td>: <b>${data.nama}</b></td></tr><tr><td>Tujuan</td><td>: ${data.wbp}</td></tr><tr><td>Waktu</td><td>: ${data.tgl} (${data.jam})</td></tr></table>
-                </div>
-                ${noteHtml}${ktpHtml}
-                <div style="font-size:10px; margin-top:10px; color:#999;">${msgStatus}</div>
-            </div>
-            <button onclick="downloadTicket()" style="margin-top:10px; padding:15px; background:#000; color:white; border:none; border-radius:8px; font-size:14px; width:100%; cursor:pointer; font-weight:bold; display:flex; justify-content:center; align-items:center; gap:8px;"><i class="fas fa-download"></i> SIMPAN TIKET (JPG)</button>`;
-            appendMsg('bot', `✅ **HASIL PENCARIAN:**`, { customHtml: ticketHtml });
-            showBtn([{text:"⬅️ KEMBALI KE MENU UTAMA", val:"start"}]);
+
+                const payload = {
+                    ...inputs,
+                    images: images,
+                    status: 'waiting',
+                    tgl: new Date().toISOString().split('T')[0],
+                    createdAt: firebase.database.ServerValue.TIMESTAMP
+                };
+
+                await db.ref('pengurusan').push(payload);
+                chatBox.innerHTML = '';
+                appendMsg('bot', `✅ **PERMOHONAN TERKIRIM!**\n\nData pengurusan PB/CB/CMB untuk WBP: **${inputs.wbp}** telah kami terima.\n\nSilakan cek status secara berkala menggunakan menu **Cek Status** dengan NIK Penjamin: **${inputs.nik}**.`);
+                showBtn([{text:"⬅️ KEMBALI KE MENU UTAMA", val:"start"}]);
+
+            } catch(e) {
+                alert("Gagal upload: " + e.message);
+                btn.innerText = oldTxt; btn.disabled = false;
+            }
         }
 
-        // --- FUNGSI DOWNLOAD BARU (SUPORT MOBILE) ---
-        window.downloadTicket = function() {
-            const node = document.getElementById('ticket-node');
-            const btn = event.target;
-            btn.innerHTML = "Memproses Gambar...";
-            
-            // Gunakan useCORS agar gambar logo/ktp ikut ter-render
-            html2canvas(node, { scale: 2, useCORS: true, backgroundColor: "#fff" }).then(canvas => {
-                // Konversi ke Blob (Lebih stabil di Android)
-                canvas.toBlob(function(blob) {
-                    const url = URL.createObjectURL(blob);
-                    
-                    // Tampilkan Modal Result (Solusi paling aman untuk Mobile)
-                    document.getElementById('resultImg').src = url;
-                    document.getElementById('resultModal').style.display = 'flex';
-                    
-                    // Coba trigger download otomatis juga
-                    try {
-                        const link = document.createElement('a');
-                        link.download = 'Tiket_Lapas.jpg';
-                        link.href = url;
-                        document.body.appendChild(link);
-                        link.click();
-                        document.body.removeChild(link);
-                    } catch(e) {
-                        console.log("Auto download blocked, using modal fallback");
-                    }
-                    
-                    btn.innerHTML = '<i class="fas fa-download"></i> SIMPAN TIKET (JPG)';
-                }, 'image/jpeg', 0.9);
+        // --- LOGIC SUBMIT KRITIK ---
+        window.submitKritik = function() {
+            const puas = document.getElementById('k_puas').value;
+            const pesan = document.getElementById('k_pesan').value;
+            if(!pesan) return alert("Mohon isi pesan kritik/saran.");
+
+            const btn = document.querySelector('.submit-btn');
+            btn.disabled = true; btn.innerText = "Mengirim...";
+
+            const payload = {
+                kepuasan: puas,
+                pesan: pesan,
+                tgl: new Date().toISOString().split('T')[0],
+                createdAt: firebase.database.ServerValue.TIMESTAMP
+            };
+
+            db.ref('kritik_saran').push(payload).then(() => {
+                chatBox.innerHTML = '';
+                appendMsg('bot', "🙏 **TERIMA KASIH!**\nMasukan Anda telah kami terima untuk perbaikan layanan kami.");
+                showBtn([{text:"⬅️ KEMBALI KE MENU UTAMA", val:"start"}]);
             });
         }
-        
-        window.closeResultModal = function() {
-            document.getElementById('resultModal').style.display = 'none';
+
+        // --- HELPER: CEK STATUS (GENERAL) ---
+        window.askNikForStatus = function(type) {
+            appendMsg('bot', `🔍 **CEK STATUS ${type.toUpperCase().replace('_', ' ')}**\nMasukkan NIK Penjamin/Pengunjung:`, {
+                customHtml: `<div class="form-box"><input id="cek_nik" class="inp" type="number" placeholder="NIK"><button onclick="doCheckStatus('${type}')" class="submit-btn">CARI DATA</button></div>`,
+                options: [{text:"Batal", val:"start"}]
+            });
         }
+
+        window.doCheckStatus = function(type) {
+            const nik = document.getElementById('cek_nik').value;
+            if(!nik) return alert("Isi NIK!");
+            
+            let path = 'registrations';
+            if(type === 'online') path = 'online_registrations';
+            if(type === 'pengurusan') path = 'pengurusan';
+
+            const btn = document.querySelector('.submit-btn');
+            btn.innerText = "Mencari..."; btn.disabled = true;
+
+            db.ref(path).orderByChild('createdAt').limitToLast(50).once('value').then(s => {
+                let found = null;
+                if(s.exists()) {
+                    s.forEach(c => {
+                        const d = c.val();
+                        // Cek NIK (handle string/number difference)
+                        if(String(d.nik) === String(nik) || (d.inputs && String(d.inputs.nik) === String(nik))) found = d;
+                    });
+                }
+
+                chatBox.innerHTML = '';
+                if(found) {
+                    if(type === 'pengurusan') {
+                        let stBadge = found.status === 'accepted' ? '✅ DISETUJUI' : (found.status === 'rejected' ? '❌ DITOLAK' : '🕒 MENUNGGU');
+                        appendMsg('bot', `📄 **STATUS PENGURUSAN**\n\nNama WBP: **${found.wbp}**\nPenjamin: **${found.penjamin}**\nStatus: **${stBadge}**\nCatatan: "${found.note || '-'}"`);
+                    } else {
+                        renderTicket(found, type === 'fisik' ? 'TATAP MUKA' : 'VIDEO CALL');
+                    }
+                } else {
+                    appendMsg('bot', "❌ **DATA TIDAK DITEMUKAN**\nPastikan NIK benar atau Anda belum mendaftar.");
+                }
+                showBtn([{text:"⬅️ KEMBALI", val:"start"}]);
+            });
+        }
+
+        // --- COMPRESS IMAGE ---
+        function compressImage(file, cb) {
+            const reader = new FileReader();
+            reader.readAsDataURL(file);
+            reader.onload = function(e) {
+                const img = new Image();
+                img.src = e.target.result;
+                img.onload = function() {
+                    const canvas = document.createElement('canvas');
+                    const ctx = canvas.getContext('2d');
+                    const maxW = 800; 
+                    let w = img.width; let h = img.height;
+                    if(w > maxW) { h *= maxW/w; w = maxW; }
+                    canvas.width = w; canvas.height = h;
+                    ctx.drawImage(img, 0, 0, w, h);
+                    cb(canvas.toDataURL('image/jpeg', 0.6));
+                }
+            }
+        }
+
+        // --- RENDER TIKET (UTK KUNJUNGAN) ---
+        function renderTicket(data, label) {
+            let stBadge = data.status === 'accepted' ? '<span class="badge bg-green">✅ DISETUJUI</span>' : (data.status === 'rejected' ? '<span class="badge bg-red">❌ DITOLAK</span>' : '<span class="badge bg-gray">MENUNGGU VERIFIKASI</span>');
+            const noteHtml = data.note ? `<div class="ticket-note"><b>✉️ Pesan:</b> "${data.note}"</div>` : '';
+            const ticketHtml = `
+            <div id="ticket-node" class="ticket-card">
+                <div style="font-weight:bold; color:#8B0000; border-bottom:1px solid #eee; padding-bottom:5px;">TIKET ANTRIAN ${label}</div>
+                <div style="font-size:12px; color:#555; margin-top:5px;">STATUS: ${stBadge}</div>
+                <div class="ticket-number">${data.noAntrian}</div>
+                <div style="font-size:12px; text-align:left; border-top:1px dashed #ccc; padding-top:8px;">
+                    <table style="width:100%">
+                        <tr><td>Nama</td><td>: <b>${data.nama}</b></td></tr>
+                        <tr><td>Tujuan</td><td>: ${data.wbp}</td></tr>
+                        <tr><td>Jadwal</td><td>: ${data.tgl} (${data.jam})</td></tr>
+                    </table>
+                </div>
+                ${noteHtml}
+                <div style="margin-top:5px;"><img src="${data.ktpUrl}" style="max-height:60px; border-radius:4px;"></div>
+            </div>
+            <button onclick="downloadTicket()" style="margin-top:10px; width:100%; padding:12px; background:#333; color:white; border:none; border-radius:8px;">📸 SIMPAN TIKET</button>`;
+            appendMsg('bot', "✅ **TIKET ANDA:**", { customHtml: ticketHtml });
+        }
+
+        window.downloadTicket = function() {
+            html2canvas(document.getElementById('ticket-node'), {scale:2, backgroundColor:"#fff"}).then(canvas => {
+                document.getElementById('resultImg').src = canvas.toDataURL("image/jpeg");
+                document.getElementById('resultModal').style.display = 'flex';
+            });
+        }
+        window.closeResultModal = () => document.getElementById('resultModal').style.display = 'none';
     });
- 
+
     function getMenu(cfg) {
-        const htmlJadwal = `<div style="margin-bottom:8px; font-weight:600; font-size:12px; color:#8B0000;">KATEGORI LAYANAN:</div><table class="spec-table"><tr><th>Jenis Tahanan</th><th>Hari Layanan</th></tr><tr><td><b>PIDUM</b></td><td>${cfg.sch_pidum || 'Senin & Rabu'}</td></tr><tr><td><b>NARKOBA</b></td><td>${cfg.sch_narkoba || 'Selasa & Kamis'}</td></tr></table><div class="schedule-card"><div class="sch-row"><span>Pagi (09.00-11.30)</span><span class="badge bg-green">${cfg.sch_mon_am || '-'}</span></div><div class="sch-row"><span>Siang (13.00-14.30)</span><span class="badge bg-green">${cfg.sch_mon_pm || '-'}</span></div><div class="sch-row"><span>Jumat</span><span class="badge bg-green">${cfg.sch_fri || '-'}</span></div><div class="sch-row"><span>Sabtu</span><span class="badge bg-blue">${cfg.sch_sat || '-'}</span></div><div class="sch-row"><span>Minggu</span><span class="badge bg-red">${cfg.sch_sun || 'TUTUP'}</span></div></div>`;
+        // Gabungan Jadwal & Syarat
+        const htmlInfo = `
+        <div style="margin-bottom:5px; font-weight:bold; color:#8B0000;">JADWAL KUNJUNGAN:</div>
+        <table class="spec-table">
+            <tr><th>PIDUM</th><td>${cfg.sch_pidum || 'Senin & Rabu'}</td></tr>
+            <tr><th>NARKOBA</th><td>${cfg.sch_narkoba || 'Selasa & Kamis'}</td></tr>
+        </table>
+        <div style="font-size:11px; margin-bottom:10px;">
+            <b>Jam Layanan:</b><br>
+            Pagi: ${cfg.sch_mon_am || '09.00 - 11.30'}<br>
+            Siang: ${cfg.sch_mon_pm || '13.00 - 14.30'}
+        </div>
+        <hr>
+        <div style="margin-top:5px; font-weight:bold; color:#8B0000;">SYARAT & KETENTUAN:</div>
+        <div style="font-size:11px; text-align:left;">
+            <b>Dokumen:</b><br>${cfg.txt_doc || '-'}<br><br>
+            <b>Barang Bawaan:</b><br>${cfg.txt_item || '-'}
+        </div>`;
+
         return {
-            'start': { text: cfg.welcome_msg || "Halo, silakan pilih menu layanan:", options: [{ text: "📝 DAFTAR KUNJUNGAN (TATAP MUKA)", val: "daftar_fisik" }, { text: "💻 DAFTAR VIDEO CALL", val: "daftar_online" }, { text: "📅 JADWAL KUNJUNGAN", val: "jadwal" }, { text: "📋 SYARAT & KETENTUAN", val: "syarat" }, { text: "🛒 TOKO LAPAS", val: "toko" }, { text: "📞 KONTAK & PENGADUAN", val: "kontak" }] },
-            'jadwal': { text: "🕒 **INFORMASI JADWAL:**", customHtml: htmlJadwal, back: true },
-            'syarat': { text: "📋 **PILIH INFORMASI SYARAT:**", options: [{ text: "📄 SYARAT KUNJUNGAN & BARANG", val: "syarat_kunjungan" }, { text: "ℹ️ INFO PENGURUSAN", val: "syarat_urus" }, { text: "⬅️ KEMBALI KE MENU UTAMA", val: "start" }] },
-            'syarat_kunjungan': { text: "Silakan pilih detail syarat:", options: [{ text: "📄 DOKUMEN & PAKAIAN", val: "syarat_doc" }, { text: "📦 BARANG BOLEH/DILARANG", val: "syarat_item" }, { text: "⬅️ KEMBALI", val: "syarat" }] },
-            'syarat_urus': { text: "ℹ️ **INFO PENGURUSAN:**\n\n" + (cfg.txt_urus || "Hubungi bagian registrasi."), backTo: "syarat" },
-            'syarat_doc': { text: "📄 **ATURAN DOKUMEN:**\n\n" + (cfg.txt_doc || "-"), backTo: "syarat_kunjungan" },
-            'syarat_item': { text: "📦 **ATURAN BARANG:**\n\n" + (cfg.txt_item || "-"), backTo: "syarat_kunjungan" },
-            'toko': { text: "🛒 **TOKO LAPAS:**\n\n" + (cfg.toko_announce || "-"), options: [{ text: "🌐 BUKA APLIKASI TOKO", type: "link", url: cfg.toko_link }, { text: "⬅️ KEMBALI KE MENU UTAMA", val: "start" }] },
-            'kontak': { text: "📞 **PUSAT KONTAK:**", options: [{ text: "💬 WHATSAPP PENGADUAN", type: "link", url: `https://wa.me/${cfg.wa_pengaduan}` }, { text: "📢 SALURAN INFORMASI (CHANNEL)", type: "link", url: cfg.wa_channel }, { text: "🌐 MEDIA SOSIAL", val: "sosmed" }, { text: "⬅️ KEMBALI KE MENU UTAMA", val: "start" }] },
-            'sosmed': { text: "🌐 **MEDIA SOSIAL RESMI:**", options: [{ text: "📷 INSTAGRAM", type: "link", url: cfg.soc_ig }, { text: "📘 FACEBOOK", type: "link", url: cfg.soc_fb }, { text: "🐦 TWITTER / X", type: "link", url: cfg.soc_tw }, { text: "⬅️ KEMBALI", val: "kontak" }] },
-            'daftar_fisik': { text: "📝 **PENDAFTARAN TATAP MUKA**\nSilakan isi formulir atau cek status jika sudah mendaftar.", options: [{ text: "✍️ ISI FORMULIR PENDAFTARAN", val: "form_fisik" }, { text: "🔍 CEK STATUS PENDAFTARAN", val: "cek_status_fisik" }, { text: "⬅️ KEMBALI", val: "start" }] },
-            'form_fisik': { text: "📝 **ISI DATA DIRI:**", isForm: true, formType: "fisik" },
-            'daftar_online': { text: "💻 **PENDAFTARAN VIDEO CALL**\nSilakan isi formulir atau cek status jika sudah mendaftar.", options: [{ text: "✍️ ISI FORMULIR PENDAFTARAN", val: "form_online" }, { text: "🔍 CEK STATUS PENDAFTARAN", val: "cek_status_online" }, { text: "⬅️ KEMBALI", val: "start" }] },
-            'form_online': { text: "💻 **ISI DATA DIRI:**", isForm: true, formType: "online" }
+            'start': {
+                text: cfg.welcome_msg || "Halo, selamat datang di Layanan Lapas Digital. Silakan pilih menu:",
+                options: [
+                    { text: "1. 📝 DAFTAR KUNJUNGAN (TATAP MUKA)", val: "daftar_fisik" },
+                    { text: "2. 💻 DAFTAR VIDEO CALL", val: "daftar_online" },
+                    { text: "3. 📂 PENGURUSAN (PB/CB/CMB)", val: "menu_urus" },
+                    { text: "4. 🛒 TOKO LAPAS", val: "toko" },
+                    { text: "5. 📅 JADWAL & SYARAT KUNJUNGAN", val: "info_gabung" },
+                    { text: "6. 📢 KRITIK & SARAN", val: "menu_kritik" },
+                    { text: "7. 📞 KONTAK & PENGADUAN", val: "kontak" }
+                ]
+            },
+            
+            // MENU 1 & 2 (Tetap)
+            'daftar_fisik': { text: "📝 **PENDAFTARAN TATAP MUKA**", options: [{ text: "✍️ ISI FORMULIR", val: "form_fisik" }, { text: "🔍 CEK STATUS", val: "cek_status_fisik" }, { text: "⬅️ KEMBALI", val: "start" }] },
+            'form_fisik': { text: "📝 **ISI DATA KUNJUNGAN:**", isForm: true, formType: "fisik" },
+            
+            'daftar_online': { text: "💻 **PENDAFTARAN VIDEO CALL**", options: [{ text: "✍️ ISI FORMULIR", val: "form_online" }, { text: "🔍 CEK STATUS", val: "cek_status_online" }, { text: "⬅️ KEMBALI", val: "start" }] },
+            'form_online': { text: "💻 **ISI DATA VIDEO CALL:**", isForm: true, formType: "online" },
+
+            // MENU 3 (BARU)
+            'menu_urus': {
+                text: "📂 **LAYANAN PENGURUSAN INTEGRASI**\n(PB / CB / CMB / Asimilasi)\n\nSilakan ajukan permohonan atau cek status pengajuan Anda.",
+                options: [
+                    { text: "✍️ AJUKAN PERMOHONAN BARU", val: "form_urus" },
+                    { text: "🔍 CEK STATUS PENGAJUAN", val: "cek_status_pengurusan" },
+                    { text: "⬅️ KEMBALI", val: "start" }
+                ]
+            },
+            'form_urus': { text: "Menyiapkan formulir...", isForm: true, formType: "pengurusan" },
+
+            // MENU 4 (Tetap)
+            'toko': { text: "🛒 **TOKO LAPAS:**\n" + (cfg.toko_announce || "-"), options: [{ text: "🌐 BUKA APLIKASI TOKO", type: "link", url: cfg.toko_link }, { text: "⬅️ KEMBALI", val: "start" }] },
+
+            // MENU 5 (Gabungan)
+            'info_gabung': { text: "📅 **INFORMASI LAYANAN:**", customHtml: htmlInfo, back: true },
+
+            // MENU 6 (BARU)
+            'menu_kritik': { text: "Silakan berikan penilaian dan masukan Anda:", isForm: true, formType: "kritik" },
+
+            // MENU 7 (Tetap)
+            'kontak': { text: "📞 **PUSAT PENGADUAN:**", options: [{ text: "💬 WHATSAPP PENGADUAN", type: "link", url: `https://wa.me/${cfg.wa_pengaduan}` }, { text: "🌐 MEDIA SOSIAL", val: "sosmed" }, { text: "⬅️ KEMBALI", val: "start" }] },
+            'sosmed': { text: "🌐 **MEDIA SOSIAL:**", options: [{ text: "📷 INSTAGRAM", type: "link", url: cfg.soc_ig }, { text: "📘 FACEBOOK", type: "link", url: cfg.soc_fb }, { text: "⬅️ KEMBALI", val: "kontak" }] }
         };
     }
 </script>
 </body>
 </html>
-
