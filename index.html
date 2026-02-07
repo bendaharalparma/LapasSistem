@@ -244,6 +244,13 @@
                 <div style="background:#e3f2fd; padding:10px; font-size:11px; border-radius:5px; margin-bottom:10px;">
                     ⚠️ Pastikan semua foto dokumen jelas dan terbaca.
                 </div>
+                <label style="font-size:12px; font-weight:600;">Jenis Pengurusan:</label>
+                <select id="p_jenis" class="inp">
+                    <option value="PB">PB (Pembebasan Bersyarat)</option>
+                    <option value="CB">CB (Cuti Bersyarat)</option>
+                    <option value="CMB">CMB (Cuti Menjelang Bebas)</option>
+                    <option value="Asimilasi">Asimilasi</option>
+                </select>
                 <input id="p_wbp" class="inp" placeholder="Nama WBP">
                 <input id="p_penjamin" class="inp" placeholder="Nama Penjamin">
                 <input id="p_nik" class="inp" type="number" placeholder="NIK Penjamin (Untuk Cek Status)">
@@ -330,6 +337,7 @@
             let missing = false;
 
             // Get Text Data
+            inputs.jenis = document.getElementById('p_jenis').value;
             inputs.wbp = document.getElementById('p_wbp').value;
             inputs.penjamin = document.getElementById('p_penjamin').value;
             inputs.nik = document.getElementById('p_nik').value;
@@ -368,7 +376,7 @@
 
                 await db.ref('pengurusan').push(payload);
                 chatBox.innerHTML = '';
-                appendMsg('bot', `✅ **PERMOHONAN TERKIRIM!**\n\nData pengurusan PB/CB/CMB untuk WBP: **${inputs.wbp}** telah kami terima.\n\nSilakan cek status secara berkala menggunakan menu **Cek Status** dengan NIK Penjamin: **${inputs.nik}**.`);
+                appendMsg('bot', `✅ **PERMOHONAN TERKIRIM!**\n\nPengajuan **${inputs.jenis}** untuk WBP: **${inputs.wbp}** telah kami terima.\n\nSilakan cek status secara berkala menggunakan menu **Cek Status** dengan NIK Penjamin: **${inputs.nik}**.`);
                 showBtn([{text:"⬅️ KEMBALI KE MENU UTAMA", val:"start"}]);
 
             } catch(e) {
@@ -433,7 +441,7 @@
                 if(found) {
                     if(type === 'pengurusan') {
                         let stBadge = found.status === 'accepted' ? '✅ DISETUJUI' : (found.status === 'rejected' ? '❌ DITOLAK' : '🕒 MENUNGGU');
-                        appendMsg('bot', `📄 **STATUS PENGURUSAN**\n\nNama WBP: **${found.wbp}**\nPenjamin: **${found.penjamin}**\nStatus: **${stBadge}**\nCatatan: "${found.note || '-'}"`);
+                        appendMsg('bot', `📄 **STATUS PENGURUSAN**\n\nJenis: **${found.jenis}**\nNama WBP: **${found.wbp}**\nPenjamin: **${found.penjamin}**\nStatus: **${stBadge}**\nCatatan: "${found.note || '-'}"`);
                     } else {
                         renderTicket(found, type === 'fisik' ? 'TATAP MUKA' : 'VIDEO CALL');
                     }
