@@ -156,7 +156,7 @@
         </div>
         <div class="table-responsive">
             <table id="tbl_urus">
-                <thead><tr><th>Tanggal</th><th>WBP</th><th>Penjamin</th><th>Hubungan</th><th>Berkas</th><th>Status</th><th>Catatan</th><th>Aksi</th></tr></thead>
+                <thead><tr><th>Tanggal</th><th>Jenis</th><th>WBP</th><th>Penjamin</th><th>Hubungan</th><th>Berkas</th><th>Status</th><th>Catatan</th><th>Aksi</th></tr></thead>
                 <tbody id="tb_urus"></tbody>
             </table>
         </div>
@@ -275,6 +275,7 @@
 
                 row += `
                     <td>${v.tgl}</td>
+                    <td>${v.jenis}</td>
                     <td><b>${v.wbp}</b></td>
                     <td>${v.penjamin}<br><small>${v.nik}</small></td>
                     <td>${v.hub}</td>
