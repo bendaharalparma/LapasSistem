@@ -98,8 +98,7 @@
                 <h3><i class="fas fa-clock"></i> 2. Konten & Jadwal</h3>
                 <label>Syarat Kunjungan:</label> <textarea id="txt_doc"></textarea>
                 <label>Aturan Barang:</label> <textarea id="txt_item"></textarea>
-                <label style="color:#8B0000; font-weight:bold;">Syarat PB/CB/CMB:</label> 
-                <textarea id="txt_pb_cb" style="border:2px solid #8B0000; background:#fff8e1;" rows="3"></textarea>
+                <label>Syarat PB/CB/CMB:</label> <textarea id="txt_item"></textarea>
                 <label>Jadwal (PIDUM & NARKOBA):</label> 
                 <div style="display:flex; gap:5px;"><input id="sch_pidum"><input id="sch_narkoba"></div>
                 <label>Jam Layanan:</label> 
@@ -141,7 +140,7 @@
             <i class="fas fa-print"></i> Cetak Laporan:
             <input id="p_nm_fisik" placeholder="Nama Petugas" style="max-width:200px;">
             <input id="p_nip_fisik" placeholder="NIP Petugas" style="max-width:200px;">
-            <button onclick="pdf('tb_fisik','Laporan Kunjungan Tatap Muka','p_nm_fisik','p_nip_fisik')" class="btn btn-print"><i class="fas fa-file-pdf"></i> CETAK PDF RAPI</button>
+            <button onclick="pdf('tb_fisik','Laporan Kunjungan Tatap Muka','p_nm_fisik','p_nip_fisik')" class="btn btn-print"><i class="fas fa-file-pdf"></i> CETAK PDF</button>
         </div>
         <div class="table-responsive">
             <table id="tbl_fisik">
@@ -165,7 +164,7 @@
             <i class="fas fa-print"></i> Cetak Laporan:
             <input id="p_nm_online" placeholder="Nama Petugas" style="max-width:200px;">
             <input id="p_nip_online" placeholder="NIP Petugas" style="max-width:200px;">
-            <button onclick="pdf('tb_online','Laporan Video Call','p_nm_online','p_nip_online')" class="btn btn-print"><i class="fas fa-file-pdf"></i> CETAK PDF RAPI</button>
+            <button onclick="pdf('tb_online','Laporan Video Call','p_nm_online','p_nip_online')" class="btn btn-print"><i class="fas fa-file-pdf"></i> CETAK PDF</button>
         </div>
         <div class="table-responsive">
             <table id="tbl_online">
@@ -529,3 +528,4 @@
 </script>
 </body>
 </html>
+
