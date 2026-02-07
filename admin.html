@@ -24,7 +24,6 @@
         th, td { border: 1px solid #eee; padding: 10px; text-align: left; vertical-align: middle; }
         th { background: #8B0000; color: white; position: sticky; top: 0; z-index: 10; }
         tr:nth-child(even) { background: #f9f9f9; }
-        
         .filter-bar { background: #fff3cd; padding: 15px; border-radius: 8px; display: flex; gap: 10px; margin-bottom: 15px; flex-wrap: wrap; align-items: center; justify-content: space-between; }
         .data-counter { font-weight: bold; color: #8B0000; background: white; padding: 5px 10px; border-radius: 4px; border: 1px solid #ddd; }
         
@@ -38,6 +37,7 @@
         .bg-wait { background: #6c757d; } .bg-acc { background: #28a745; } .bg-rej { background: #dc3545; }
         .act-btn { width: 30px; height: 30px; border: none; border-radius: 4px; color: white; cursor: pointer; margin-right: 2px; }
         
+        /* MODAL */
         #imgModal, #galleryModal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.9); z-index: 999; justify-content: center; align-items: center; padding: 20px; overflow-y: auto; }
         .modal-content { max-width: 90%; max-height: 90vh; border-radius: 8px; }
         .gallery-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 10px; width: 100%; max-width: 800px; background: white; padding: 20px; border-radius: 8px; }
@@ -78,7 +78,7 @@
     <div id="t-set">
         <div style="display:grid; grid-template-columns: 1fr 1fr; gap:20px;">
             <div>
-                <h3 style="border-bottom:1px solid #ddd; padding-bottom:5px;">1. Identitas & Kop Surat</h3>
+                <h3>Identitas & Kop Surat</h3>
                 <label>Nama Aplikasi:</label> <input id="app_name">
                 <label>Kop Baris 1:</label> <input id="kop_1">
                 <label>Kop Baris 2:</label> <input id="kop_2">
@@ -89,13 +89,12 @@
                 <label>Pengumuman:</label> <textarea id="announcement"></textarea>
             </div>
             <div>
-                <h3 style="border-bottom:1px solid #ddd; padding-bottom:5px;">2. Konten & Jadwal</h3>
+                <h3>Konten & Jadwal</h3>
                 <label>Syarat Kunjungan:</label> <textarea id="txt_doc"></textarea>
                 <label>Aturan Barang:</label> <textarea id="txt_item"></textarea>
-                <label style="color:#8B0000; font-weight:bold; margin-top:10px;">Syarat PB/CB/CMB:</label> 
-                <textarea id="txt_pb_cb" style="border:2px solid #8B0000; background:#fff8e1;" rows="4"></textarea>
-                
-                <label style="margin-top:10px;">Jadwal (PIDUM & NARKOBA):</label> 
+                <label style="color:#8B0000; font-weight:bold;">Syarat PB/CB/CMB:</label> 
+                <textarea id="txt_pb_cb" style="border:2px solid #8B0000; background:#fff8e1;" rows="3"></textarea>
+                <label>Jadwal (PIDUM & NARKOBA):</label> 
                 <div style="display:flex; gap:5px;"><input id="sch_pidum"><input id="sch_narkoba"></div>
                 <label>Jam Layanan:</label> 
                 <div style="display:flex; gap:5px;"><input id="sch_mon_am"><input id="sch_mon_pm"></div>
@@ -105,30 +104,30 @@
         </div>
         <div style="display:grid; grid-template-columns: 1fr 1fr; gap:20px; margin-top:20px;">
             <div>
-                <h3 style="border-bottom:1px solid #ddd; padding-bottom:5px;">3. Kontak & Toko</h3>
+                <h3>Kontak & Toko</h3>
                 <label>Info Toko:</label> <textarea id="toko_announce"></textarea>
                 <label>Link Toko:</label> <input id="toko_link">
                 <label>WA Pengaduan:</label> <input id="wa_pengaduan">
                 <label>Link Channel:</label> <input id="wa_channel">
             </div>
             <div>
-                <h3 style="border-bottom:1px solid #ddd; padding-bottom:5px;">4. Media Sosial</h3>
+                <h3>Media Sosial</h3>
                 <label>Instagram:</label> <input id="soc_ig">
                 <label>Facebook:</label> <input id="soc_fb">
                 <label>Twitter/X:</label> <input id="soc_tw">
                 <label>Youtube:</label> <input id="soc_yt">
             </div>
         </div>
-        <button class="btn btn-acc" style="width:100%; margin-top:30px; height:50px;" onclick="saveConf()">💾 SIMPAN PENGATURAN</button>
+        <button class="btn btn-acc" style="width:100%; margin-top:20px; height:45px;" onclick="saveConf()">💾 SIMPAN PENGATURAN</button>
     </div>
 
     <div id="t-fisik" style="display:none;">
         <div class="filter-bar">
-            <div class="data-counter" id="cnt_fisik">Total: 0 Data</div>
+            <div class="data-counter" id="cnt_fisik">Memuat...</div>
             <div style="display:flex; gap:5px;">
                 <input type="date" id="d_fisik" style="width:auto;">
-                <button onclick="load('registrations','tb_fisik','d_fisik')" class="btn btn-search">🔍 Filter</button>
-                <button onclick="loadAll('registrations','tb_fisik','cnt_fisik')" class="btn btn-reset">📂 Tampilkan Semua</button>
+                <button onclick="load('registrations','tb_fisik','d_fisik')" class="btn btn-search">🔍 Filter Tgl</button>
+                <button onclick="loadAll('registrations','tb_fisik','cnt_fisik')" class="btn btn-reset">📂 REFRESH SEMUA DATA</button>
                 <button onclick="pdf('tb_fisik','Laporan Tatap Muka','p_nm_fisik','p_nip_fisik')" class="btn btn-print">🖨️ PDF</button>
             </div>
         </div>
@@ -146,11 +145,11 @@
 
     <div id="t-online" style="display:none;">
         <div class="filter-bar">
-            <div class="data-counter" id="cnt_online">Total: 0 Data</div>
+            <div class="data-counter" id="cnt_online">Memuat...</div>
             <div style="display:flex; gap:5px;">
                 <input type="date" id="d_online" style="width:auto;">
-                <button onclick="load('online_registrations','tb_online','d_online')" class="btn btn-search">🔍 Filter</button>
-                <button onclick="loadAll('online_registrations','tb_online','cnt_online')" class="btn btn-reset">📂 Tampilkan Semua</button>
+                <button onclick="load('online_registrations','tb_online','d_online')" class="btn btn-search">🔍 Filter Tgl</button>
+                <button onclick="loadAll('online_registrations','tb_online','cnt_online')" class="btn btn-reset">📂 REFRESH SEMUA DATA</button>
                 <button onclick="pdf('tb_online','Laporan Video Call','p_nm_online','p_nip_online')" class="btn btn-print">🖨️ PDF</button>
             </div>
         </div>
@@ -168,11 +167,11 @@
 
     <div id="t-urus" style="display:none;">
         <div class="filter-bar">
-            <div class="data-counter" id="cnt_urus">Total: 0 Data</div>
+            <div class="data-counter" id="cnt_urus">Memuat...</div>
             <div style="display:flex; gap:5px;">
                 <input type="date" id="d_urus" style="width:auto;">
-                <button onclick="load('pengurusan','tb_urus','d_urus')" class="btn btn-search">🔍 Filter</button>
-                <button onclick="loadAll('pengurusan','tb_urus','cnt_urus')" class="btn btn-reset">📂 Tampilkan Semua</button>
+                <button onclick="load('pengurusan','tb_urus','d_urus')" class="btn btn-search">🔍 Filter Tgl</button>
+                <button onclick="loadAll('pengurusan','tb_urus','cnt_urus')" class="btn btn-reset">📂 REFRESH SEMUA DATA</button>
                 <button onclick="pdf('tb_urus','Laporan Pengurusan','p_nm_urus','p_nip_urus')" class="btn btn-print">🖨️ PDF</button>
             </div>
         </div>
@@ -190,9 +189,9 @@
 
     <div id="t-kritik" style="display:none;">
         <div class="filter-bar">
-            <div class="data-counter" id="cnt_kritik">Total: 0 Data</div>
+            <div class="data-counter" id="cnt_kritik">Memuat...</div>
             <div style="display:flex; gap:5px;">
-                <button onclick="loadAll('kritik_saran','tb_kritik','cnt_kritik')" class="btn btn-reset">📂 Tampilkan Semua</button>
+                <button onclick="loadAll('kritik_saran','tb_kritik','cnt_kritik')" class="btn btn-reset">📂 REFRESH SEMUA DATA</button>
                 <button onclick="pdf('tb_kritik','Laporan Kritik','p_nm_kritik','p_nip_kritik')" class="btn btn-print">🖨️ PDF</button>
             </div>
         </div>
@@ -210,7 +209,7 @@
 </div>
 
 <script>
-    // PASTIKAN KONFIGURASI INI SAMA PERSIS DENGAN INDEX.HTML
+    // --- KONFIGURASI FIREBASE (PASTIKAN SAMA DENGAN INDEX.HTML) ---
     const firebaseConfig = {
         apiKey: "AIzaSyDvpFZtiG_fXLOf8okjafNm7gqbJZr2pSY",
         authDomain: "lapassistem.firebaseapp.com",
@@ -225,13 +224,14 @@
     if (!firebase.apps.length) firebase.initializeApp(firebaseConfig);
     const auth = firebase.auth();
     const db = firebase.database();
+    let currentListener = null; // Handler untuk mencegah listener ganda
 
     auth.onAuthStateChanged(u => {
         if(u) {
             document.getElementById('login-box').style.display='none';
             document.getElementById('panel-box').style.display='block';
             loadSettings();
-            // AUTO LOAD SEMUA DATA SAAT LOGIN
+            // Default Load: TATAP MUKA
             loadAll('registrations','tb_fisik','cnt_fisik');
         } else {
             document.getElementById('login-box').style.display='block';
@@ -246,44 +246,56 @@
         ['set','fisik','online','urus','kritik'].forEach(x => document.getElementById('t-'+x).style.display='none');
         ['b1','b2','b3','b4','b5'].forEach(x => document.getElementById(x).className='tab-btn');
         document.getElementById('t-'+id).style.display='block';
+        
         if(id=='set') document.getElementById('b1').classList.add('active');
+        
+        // Auto Load saat pindah tab
         if(id=='fisik') { document.getElementById('b2').classList.add('active'); loadAll('registrations','tb_fisik','cnt_fisik'); }
         if(id=='online') { document.getElementById('b3').classList.add('active'); loadAll('online_registrations','tb_online','cnt_online'); }
         if(id=='urus') { document.getElementById('b4').classList.add('active'); loadAll('pengurusan','tb_urus','cnt_urus'); }
         if(id=='kritik') { document.getElementById('b5').classList.add('active'); loadAll('kritik_saran','tb_kritik','cnt_kritik'); }
     }
 
-    // FUNGSI UTAMA: LOAD SEMUA DATA TANPA BATAS
+    // --- FUNGSI LOAD SEMUA DATA (RESET LISTENER) ---
     function loadAll(path, tbodyId, cntId) {
         const tb = document.getElementById(tbodyId);
-        tb.innerHTML = "<tr><td colspan='9' style='text-align:center; color:blue; padding:20px;'><i class='fas fa-spinner fa-spin'></i> Sedang mengambil SELURUH DATA dari Database...</td></tr>";
+        if(currentListener) db.ref().off(); // Matikan semua koneksi sebelumnya
         
-        // Menggunakan once('value') untuk mengambil snapshot penuh
-        db.ref(path).once('value').then(snap => {
+        tb.innerHTML = "<tr><td colspan='9' style='text-align:center; padding:20px; color:blue;'><i class='fas fa-spinner fa-spin'></i> Sedang mengambil data dari Database...</td></tr>";
+        
+        // Menggunakan ON untuk Realtime, tanpa filter tanggal
+        const ref = db.ref(path).limitToLast(200); // Ambil 200 data terakhir
+        currentListener = ref;
+        
+        ref.on('value', snap => {
             render(snap, tbodyId, path, cntId);
-        }).catch(err => {
-            tb.innerHTML = `<tr><td colspan='9' style='text-align:center; color:red;'>Gagal memuat: ${err.message}</td></tr>`;
         });
     }
 
-    // FUNGSI FILTER TANGGAL
+    // --- FUNGSI CARI TANGGAL ---
     function load(path, tbodyId, dateId) {
         const d = document.getElementById(dateId).value;
         if(!d) return alert("Pilih tanggal dulu!");
-        const tb = document.getElementById(tbodyId);
-        tb.innerHTML = "<tr><td colspan='9' style='text-align:center'>Mencari data...</td></tr>";
         
-        db.ref(path).orderByChild('tgl').equalTo(d).once('value').then(snap => {
-            render(snap, tbodyId, path, null); // cntId null karena ini hasil filter
+        if(currentListener) db.ref().off();
+        const tb = document.getElementById(tbodyId);
+        tb.innerHTML = "<tr><td colspan='9' style='text-align:center; padding:20px;'>Mencari data tanggal "+d+"...</td></tr>";
+        
+        const ref = db.ref(path).orderByChild('tgl').equalTo(d);
+        currentListener = ref;
+        
+        ref.on('value', snap => {
+            render(snap, tbodyId, path, null);
         });
     }
 
+    // --- RENDER TABEL ---
     function render(snap, tbodyId, path, cntId) {
         const tb = document.getElementById(tbodyId);
         tb.innerHTML = "";
         
         if(!snap.exists()) { 
-            tb.innerHTML = "<tr><td colspan='9' style='text-align:center; padding:20px; color:#666;'>Belum ada data / Data tidak ditemukan.</td></tr>"; 
+            tb.innerHTML = "<tr><td colspan='9' style='text-align:center; padding:20px; color:#666;'>Tidak ada data ditemukan.</td></tr>"; 
             if(cntId) document.getElementById(cntId).innerText = "Total: 0 Data";
             return; 
         }
@@ -293,17 +305,21 @@
         
         if(cntId) document.getElementById(cntId).innerText = `Total: ${arr.length} Data`;
 
+        // Render data dari yang terbaru (Reverse)
         arr.reverse().forEach(v => {
             let row = `<tr data-key="${v.k}">`;
             
-            // Render Baris Berdasarkan Tipe Tabel
             if(path === 'kritik_saran') {
                 row += `<td>${v.tgl}</td><td><b>${v.kepuasan}</b></td><td>${v.pesan}</td>
                         <td><button onclick="del('${path}','${v.k}')" class="act-btn bg-rej" title="Hapus">🗑️</button></td>`;
             } 
             else if (path === 'pengurusan') {
                 let st = v.status=='accepted' ? '<span class="badge bg-acc">Disetujui</span>' : (v.status=='rejected'?'<span class="badge bg-rej">Ditolak</span>':'<span class="badge bg-wait">Menunggu</span>');
-                let fileBtn = `<button onclick='openGallery(${JSON.stringify(v.images || {})})' style="background:#007bff; color:white; border:none; padding:5px 10px; border-radius:4px; cursor:pointer; font-size:11px;">📂 LIHAT BERKAS</button>`;
+                // Cek apakah ada images
+                let fileBtn = '-';
+                if(v.images) {
+                    fileBtn = `<button onclick='openGallery(${JSON.stringify(v.images)})' style="background:#007bff; color:white; border:none; padding:5px 10px; border-radius:4px; cursor:pointer; font-size:11px;">📂 LIHAT BERKAS</button>`;
+                }
                 
                 row += `<td>${v.tgl}</td><td>${v.jenis}</td><td><b>${v.wbp}</b></td>
                         <td>${v.penjamin}<br><small>${v.nik}</small></td>
@@ -316,7 +332,8 @@
                             <button onclick="del('${path}','${v.k}')" class="act-btn bg-rej">🗑️</button>
                         </td>`;
             } 
-            else { // Tatap Muka & Online
+            else { 
+                // TATAP MUKA & ONLINE
                 let st = v.status=='accepted' ? '<span class="badge bg-acc">OK</span>' : (v.status=='rejected'?'<span class="badge bg-rej">NO</span>':'<span class="badge bg-wait">WAIT</span>');
                 let img = v.ktpUrl ? `<img src="${v.ktpUrl}" style="height:40px; cursor:pointer;" onclick="openImg('${v.ktpUrl}')">` : '-';
                 
@@ -339,7 +356,7 @@
     }
 
     function upd(path, key, st) { const note = document.getElementById(`n-${key}`).value; db.ref(path+'/'+key).update({status:st, note:note}); }
-    function del(path, key) { if(confirm("Hapus data ini secara permanen?")) db.ref(path+'/'+key).remove().then(() => alert("Terhapus. Refresh jika perlu.")); }
+    function del(path, key) { if(confirm("Hapus data ini secara permanen?")) db.ref(path+'/'+key).remove(); }
 
     const fields = ['app_name','logo_url','header_bg','announcement','kop_1','kop_2','kop_3','kop_4', 'sch_pidum', 'sch_narkoba','sch_mon_am','sch_mon_pm','sch_fri','sch_sat','sch_sun', 'txt_doc','txt_item','txt_pb_cb', 'toko_announce','toko_link','wa_pengaduan', 'wa_channel','soc_ig','soc_fb','soc_tw','soc_yt'];
 
