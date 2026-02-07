@@ -3,12 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Admin Panel Lapas (Fixed)</title>
+    <title>Admin Panel Lapas (Final Fixed)</title>
     
     <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-database-compat.js"></script>
-    
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.25/jspdf.plugin.autotable.min.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
@@ -118,11 +117,11 @@
 
     <div id="t-fisik" style="display:none;">
         <div class="filter-bar">
-            <div class="data-counter" id="cnt_fisik">Status: Menunggu...</div>
+            <div class="data-counter" id="cnt_fisik">Memuat...</div>
             <div style="display:flex; gap:5px;">
                 <input type="date" id="d_fisik" style="width:auto;">
                 <button onclick="load('registrations','tb_fisik','d_fisik')" class="btn btn-search">🔍 Cari Tgl</button>
-                <button onclick="forceLoadAll('registrations','tb_fisik','cnt_fisik')" class="btn btn-reset">📂 PAKSA REFRESH DATA</button>
+                <button onclick="forceLoadAll('registrations','tb_fisik','cnt_fisik')" class="btn btn-reset">📂 REFRESH DATA</button>
                 <button onclick="pdf('tb_fisik','Laporan Tatap Muka','p_nm_fisik','p_nip_fisik')" class="btn btn-print">🖨️ PDF</button>
             </div>
         </div>
@@ -140,11 +139,11 @@
 
     <div id="t-online" style="display:none;">
         <div class="filter-bar">
-            <div class="data-counter" id="cnt_online">Status: Menunggu...</div>
+            <div class="data-counter" id="cnt_online">Memuat...</div>
             <div style="display:flex; gap:5px;">
                 <input type="date" id="d_online" style="width:auto;">
                 <button onclick="load('online_registrations','tb_online','d_online')" class="btn btn-search">🔍 Cari Tgl</button>
-                <button onclick="forceLoadAll('online_registrations','tb_online','cnt_online')" class="btn btn-reset">📂 PAKSA REFRESH DATA</button>
+                <button onclick="forceLoadAll('online_registrations','tb_online','cnt_online')" class="btn btn-reset">📂 REFRESH DATA</button>
                 <button onclick="pdf('tb_online','Laporan Video Call','p_nm_online','p_nip_online')" class="btn btn-print">🖨️ PDF</button>
             </div>
         </div>
@@ -162,11 +161,11 @@
 
     <div id="t-urus" style="display:none;">
         <div class="filter-bar">
-            <div class="data-counter" id="cnt_urus">Status: Menunggu...</div>
+            <div class="data-counter" id="cnt_urus">Memuat...</div>
             <div style="display:flex; gap:5px;">
                 <input type="date" id="d_urus" style="width:auto;">
                 <button onclick="load('pengurusan','tb_urus','d_urus')" class="btn btn-search">🔍 Cari Tgl</button>
-                <button onclick="forceLoadAll('pengurusan','tb_urus','cnt_urus')" class="btn btn-reset">📂 PAKSA REFRESH DATA</button>
+                <button onclick="forceLoadAll('pengurusan','tb_urus','cnt_urus')" class="btn btn-reset">📂 REFRESH DATA</button>
                 <button onclick="pdf('tb_urus','Laporan Pengurusan','p_nm_urus','p_nip_urus')" class="btn btn-print">🖨️ PDF</button>
             </div>
         </div>
@@ -184,9 +183,9 @@
 
     <div id="t-kritik" style="display:none;">
         <div class="filter-bar">
-            <div class="data-counter" id="cnt_kritik">Status: Menunggu...</div>
+            <div class="data-counter" id="cnt_kritik">Memuat...</div>
             <div style="display:flex; gap:5px;">
-                <button onclick="forceLoadAll('kritik_saran','tb_kritik','cnt_kritik')" class="btn btn-reset">📂 PAKSA REFRESH DATA</button>
+                <button onclick="forceLoadAll('kritik_saran','tb_kritik','cnt_kritik')" class="btn btn-reset">📂 REFRESH DATA</button>
                 <button onclick="pdf('tb_kritik','Laporan Kritik','p_nm_kritik','p_nip_kritik')" class="btn btn-print">🖨️ PDF</button>
             </div>
         </div>
@@ -204,7 +203,6 @@
 </div>
 
 <script>
-    // === 1. KONFIGURASI FIREBASE ===
     const firebaseConfig = {
         apiKey: "AIzaSyDvpFZtiG_fXLOf8okjafNm7gqbJZr2pSY",
         authDomain: "lapassistem.firebaseapp.com",
@@ -219,14 +217,16 @@
     if (!firebase.apps.length) firebase.initializeApp(firebaseConfig);
     const auth = firebase.auth();
     const db = firebase.database();
+    
+    // --- GLOBAL CACHE (PENTING AGAR TIDAK CRASH) ---
+    const DATA_CACHE = {}; 
 
-    // === 2. AUTHENTICATION ===
     auth.onAuthStateChanged(u => {
         if(u) {
             document.getElementById('login-box').style.display='none';
             document.getElementById('panel-box').style.display='block';
             loadSettings();
-            forceLoadAll('registrations','tb_fisik','cnt_fisik'); // LOAD PERTAMA
+            forceLoadAll('registrations','tb_fisik','cnt_fisik');
         } else {
             document.getElementById('login-box').style.display='block';
             document.getElementById('panel-box').style.display='none';
@@ -248,21 +248,18 @@
         if(id=='kritik') { document.getElementById('b5').classList.add('active'); forceLoadAll('kritik_saran','tb_kritik','cnt_kritik'); }
     }
 
-    // === 3. FUNGSI FORCE LOAD (KUNCI PERBAIKAN) ===
+    // --- FUNGSI UTAMA: LOAD SEMUA DATA ---
     function forceLoadAll(path, tbodyId, cntId) {
         const tb = document.getElementById(tbodyId);
         const cnt = document.getElementById(cntId);
         
-        // 1. Matikan Listener Lama
-        db.ref(path).off();
+        db.ref(path).off(); // Matikan listener lama
         
-        // 2. Tampilkan Loading UI
-        tb.innerHTML = "<tr><td colspan='9' style='text-align:center; padding:20px; color:blue;'><i class='fas fa-spinner fa-spin'></i> Sedang mengambil data Terbaru...</td></tr>";
-        cnt.innerText = "Mengambil data...";
+        tb.innerHTML = "<tr><td colspan='9' style='text-align:center; padding:20px; color:blue;'><i class='fas fa-spinner fa-spin'></i> Memuat data...</td></tr>";
+        cnt.innerText = "Mengambil...";
         
-        // 3. AMBIL DATA SEKALI (ONCE) - Ini mencegah cache lama
-        db.ref(path).limitToLast(300).once('value').then(snapshot => {
-            console.log("Data diterima dari " + path, snapshot.val()); // Debugging di Console
+        // Ambil 500 data terakhir
+        db.ref(path).limitToLast(500).once('value').then(snapshot => {
             render(snapshot, tbodyId, path, cntId);
         }).catch(err => {
             tb.innerHTML = `<tr><td colspan='9' style='text-align:center; color:red;'>Error: ${err.message}</td></tr>`;
@@ -272,8 +269,8 @@
     function load(path, tbodyId, dateId) {
         const d = document.getElementById(dateId).value;
         if(!d) return alert("Pilih tanggal dulu!");
-        db.ref(path).off(); // Matikan listener lain
         
+        db.ref(path).off();
         const tb = document.getElementById(tbodyId);
         tb.innerHTML = "<tr><td colspan='9' style='text-align:center'>Mencari data...</td></tr>";
         
@@ -282,7 +279,7 @@
         });
     }
 
-    // === 4. RENDER DATA KE TABEL ===
+    // --- RENDER TABEL (DENGAN CACHE AGAR TIDAK CRASH) ---
     function render(snap, tbodyId, path, cntId) {
         const tb = document.getElementById(tbodyId);
         tb.innerHTML = "";
@@ -294,62 +291,101 @@
         }
 
         const arr = [];
-        snap.forEach(c => arr.push({k:c.key, ...c.val()}));
+        snap.forEach(c => {
+            const val = c.val();
+            const key = c.key;
+            // SIMPAN KE CACHE GLOBAL
+            DATA_CACHE[key] = val; 
+            arr.push({k:key, ...val});
+        });
         
-        // Update Counter dengan Timestamp agar user tahu data baru
-        if(cntId) {
-            const time = new Date().toLocaleTimeString();
-            document.getElementById(cntId).innerText = `Total: ${arr.length} Data (Updated ${time})`;
-        }
+        if(cntId) document.getElementById(cntId).innerText = `Total: ${arr.length} Data`;
 
         arr.reverse().forEach(v => {
-            let row = `<tr data-key="${v.k}">`;
-            
-            if(path === 'kritik_saran') {
-                row += `<td>${v.tgl}</td><td><b>${v.kepuasan}</b></td><td>${v.pesan}</td>
-                        <td><button onclick="del('${path}','${v.k}')" class="act-btn bg-rej" title="Hapus">🗑️</button></td>`;
-            } 
-            else if (path === 'pengurusan') {
-                let st = v.status=='accepted' ? '<span class="badge bg-acc">Disetujui</span>' : (v.status=='rejected'?'<span class="badge bg-rej">Ditolak</span>':'<span class="badge bg-wait">Menunggu</span>');
-                let fileBtn = v.images ? `<button onclick='openGallery(${JSON.stringify(v.images)})' style="background:#007bff; color:white; border:none; padding:5px 10px; border-radius:4px; cursor:pointer; font-size:11px;">📂 LIHAT BERKAS</button>` : '-';
+            try {
+                let row = `<tr data-key="${v.k}">`;
                 
-                row += `<td>${v.tgl}</td><td>${v.jenis}</td><td><b>${v.wbp}</b></td>
-                        <td>${v.penjamin}<br><small>${v.nik}</small></td>
-                        <td>${v.hub}</td><td style="text-align:center">${fileBtn}</td>
-                        <td>${st}</td>
-                        <td><input id="n-${v.k}" value="${v.note||''}" placeholder="Catatan..." style="font-size:11px;"></td>
-                        <td style="display:flex;">
-                            <button onclick="upd('${path}','${v.k}','accepted')" class="act-btn bg-acc">✅</button>
-                            <button onclick="upd('${path}','${v.k}','rejected')" class="act-btn bg-rej">❌</button>
-                            <button onclick="del('${path}','${v.k}')" class="act-btn bg-rej">🗑️</button>
-                        </td>`;
-            } 
-            else { 
-                let st = v.status=='accepted' ? '<span class="badge bg-acc">OK</span>' : (v.status=='rejected'?'<span class="badge bg-rej">NO</span>':'<span class="badge bg-wait">WAIT</span>');
-                let img = v.ktpUrl ? `<img src="${v.ktpUrl}" style="height:40px; cursor:pointer;" onclick="openImg('${v.ktpUrl}')">` : '-';
-                
-                row += `<td style="font-weight:bold; color:#8B0000;">${v.noAntrian||'-'}</td>
-                        <td>${v.tgl}<br><small>${v.jam||''}</small></td>
-                        <td><b>${v.nama}</b><br><small>${v.telp}</small></td>
-                        <td>${v.wbp}</td>
-                        <td style="text-align:center">${img}</td>
-                        <td>${st}</td>
-                        <td><input id="n-${v.k}" value="${v.note||''}" placeholder="Note" style="font-size:11px;"></td>
-                        <td style="display:flex;">
-                            <button onclick="upd('${path}','${v.k}','accepted')" class="act-btn bg-acc">✅</button>
-                            <button onclick="upd('${path}','${v.k}','rejected')" class="act-btn bg-rej">❌</button>
-                            <button onclick="del('${path}','${v.k}')" class="act-btn bg-rej">🗑️</button>
-                        </td>`;
+                // --- TABEL KRITIK ---
+                if(path === 'kritik_saran') {
+                    row += `<td>${v.tgl}</td><td><b>${v.kepuasan}</b></td><td>${v.pesan}</td>
+                            <td><button onclick="del('${path}','${v.k}')" class="act-btn bg-rej">🗑️</button></td>`;
+                } 
+                // --- TABEL PENGURUSAN ---
+                else if (path === 'pengurusan') {
+                    let st = v.status=='accepted' ? '<span class="badge bg-acc">Disetujui</span>' : (v.status=='rejected'?'<span class="badge bg-rej">Ditolak</span>':'<span class="badge bg-wait">Menunggu</span>');
+                    // PANGGIL GAMBAR VIA ID (BUKAN BASE64 LANGSUNG)
+                    let fileBtn = `<button onclick="showFiles('${v.k}')" style="background:#007bff; color:white; border:none; padding:5px 10px; border-radius:4px; cursor:pointer; font-size:11px;">📂 LIHAT BERKAS</button>`;
+                    
+                    row += `<td>${v.tgl}</td><td>${v.jenis}</td><td><b>${v.wbp}</b></td>
+                            <td>${v.penjamin}<br><small>${v.nik}</small></td>
+                            <td>${v.hub}</td><td style="text-align:center">${fileBtn}</td>
+                            <td>${st}</td>
+                            <td><input id="n-${v.k}" value="${v.note||''}" placeholder="Catatan..." style="font-size:11px;"></td>
+                            <td style="display:flex;">
+                                <button onclick="upd('${path}','${v.k}','accepted')" class="act-btn bg-acc">✅</button>
+                                <button onclick="upd('${path}','${v.k}','rejected')" class="act-btn bg-rej">❌</button>
+                                <button onclick="del('${path}','${v.k}')" class="act-btn bg-rej">🗑️</button>
+                            </td>`;
+                } 
+                // --- TABEL KUNJUNGAN ---
+                else { 
+                    let st = v.status=='accepted' ? '<span class="badge bg-acc">OK</span>' : (v.status=='rejected'?'<span class="badge bg-rej">NO</span>':'<span class="badge bg-wait">WAIT</span>');
+                    // PANGGIL GAMBAR VIA ID
+                    let imgBtn = v.ktpUrl ? `<img src="${v.ktpUrl}" style="height:40px; cursor:pointer;" onclick="showSingleImg('${v.k}')">` : '-';
+                    
+                    row += `<td style="font-weight:bold; color:#8B0000;">${v.noAntrian||'-'}</td>
+                            <td>${v.tgl}<br><small>${v.jam||''}</small></td>
+                            <td><b>${v.nama}</b><br><small>${v.telp}</small></td>
+                            <td>${v.wbp}</td>
+                            <td style="text-align:center">${imgBtn}</td>
+                            <td>${st}</td>
+                            <td><input id="n-${v.k}" value="${v.note||''}" placeholder="Note" style="font-size:11px;"></td>
+                            <td style="display:flex;">
+                                <button onclick="upd('${path}','${v.k}','accepted')" class="act-btn bg-acc">✅</button>
+                                <button onclick="upd('${path}','${v.k}','rejected')" class="act-btn bg-rej">❌</button>
+                                <button onclick="del('${path}','${v.k}')" class="act-btn bg-rej">🗑️</button>
+                            </td>`;
+                }
+                row += "</tr>";
+                tb.insertAdjacentHTML('beforeend', row);
+            } catch (e) {
+                console.error("Error render row:", e);
             }
-            row += "</tr>";
-            tb.insertAdjacentHTML('beforeend', row);
         });
     }
 
     function upd(path, key, st) { const note = document.getElementById(`n-${key}`).value; db.ref(path+'/'+key).update({status:st, note:note}); }
     function del(path, key) { if(confirm("Hapus data ini?")) db.ref(path+'/'+key).remove().then(()=> forceLoadAll(path, 'tbl_'+path.split('_')[0], 'cnt_'+path.split('_')[0])); }
 
-    // SETTINGS & HELPERS
+    // --- MODAL FUNCTIONS (LOAD FROM CACHE) ---
+    window.showSingleImg = (key) => {
+        const data = DATA_CACHE[key];
+        if(data && data.ktpUrl) {
+            document.getElementById('imgView').src = data.ktpUrl;
+            document.getElementById('imgModal').style.display = 'flex';
+        }
+    }
+
+    window.showFiles = (key) => {
+        const data = DATA_CACHE[key];
+        const grid = document.getElementById('galleryGrid');
+        grid.innerHTML = '';
+        
+        if(data && data.images) {
+            const labels = {'u_ktp_wbp': 'KTP WBP', 'u_kk_wbp': 'KK WBP', 'u_ktp_penj': 'KTP Penjamin', 'u_kk_penj': 'KK Penjamin', 'u_surat_1': 'Surat Pernyataan', 'u_surat_2': 'Surat Jaminan', 'u_foto': 'Foto Penjamin'};
+            for(let k in data.images) {
+                const div = document.createElement('div');
+                div.className = 'gallery-item';
+                div.innerHTML = `<span style="font-size:10px; margin-bottom:5px;">${labels[k] || k}</span><img src="${data.images[k]}" onclick="document.getElementById('imgView').src=this.src; document.getElementById('imgModal').style.display='flex';">`;
+                grid.appendChild(div);
+            }
+            document.getElementById('galleryModal').style.display='flex';
+        }
+    }
+
+    window.closeM = (id) => document.getElementById(id).style.display='none';
+
+    // SETTINGS
     const fields = ['app_name','logo_url','header_bg','announcement','kop_1','kop_2','kop_3','kop_4', 'sch_pidum', 'sch_narkoba','sch_mon_am','sch_mon_pm','sch_fri','sch_sat','sch_sun', 'txt_doc','txt_item','txt_pb_cb', 'toko_announce','toko_link','wa_pengaduan', 'wa_channel','soc_ig','soc_fb','soc_tw','soc_yt'];
 
     function loadSettings() {
@@ -364,22 +400,6 @@
         const d = {};
         fields.forEach(f => { if(document.getElementById(f)) d[f] = document.getElementById(f).value; });
         db.ref('app_config').update(d).then(() => alert("Pengaturan Tersimpan!"));
-    }
-
-    window.openImg = (src) => { document.getElementById('imgView').src=src; document.getElementById('imgModal').style.display='flex'; }
-    window.closeM = (id) => document.getElementById(id).style.display='none';
-    
-    window.openGallery = (images) => {
-        const grid = document.getElementById('galleryGrid');
-        grid.innerHTML = '';
-        const labels = {'u_ktp_wbp': 'KTP WBP', 'u_kk_wbp': 'KK WBP', 'u_ktp_penj': 'KTP Penjamin', 'u_kk_penj': 'KK Penjamin', 'u_surat_1': 'Surat Pernyataan', 'u_surat_2': 'Surat Jaminan', 'u_foto': 'Foto Penjamin'};
-        for(let key in images) {
-            const div = document.createElement('div');
-            div.className = 'gallery-item';
-            div.innerHTML = `<span style="font-size:10px; margin-bottom:5px;">${labels[key] || key}</span><img src="${images[key]}" onclick="openImg('${images[key]}')">`;
-            grid.appendChild(div);
-        }
-        document.getElementById('galleryModal').style.display='flex';
     }
 
     window.pdf = (tableId, title, nmId, nipId) => {
