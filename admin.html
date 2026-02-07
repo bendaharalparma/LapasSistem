@@ -49,6 +49,7 @@
         .close-modal { position: absolute; top: 20px; right: 30px; color: white; font-size: 40px; cursor: pointer; }
 
         input, textarea, select { padding: 8px; border: 1px solid #ccc; border-radius: 4px; width: 100%; box-sizing: border-box; }
+        .input-group { margin-bottom: 10px; }
         #login-box { max-width: 400px; margin: 100px auto; background: white; padding: 30px; border-radius: 10px; text-align: center; box-shadow: 0 10px 30px rgba(0,0,0,0.1); }
     </style>
 </head>
@@ -86,23 +87,43 @@
     </div>
 
     <div id="t-set">
-        <div style="display:grid; grid-template-columns: 1fr 1fr; gap:20px;">
-            <div>
-                <h3>Identitas & Kop Surat</h3>
-                <input id="app_name" placeholder="Nama Aplikasi"><br><br>
-                <input id="kop_1" placeholder="Baris 1 (Kementerian)">
-                <input id="kop_2" placeholder="Baris 2 (Wilayah)">
-                <input id="kop_3" placeholder="Baris 3 (Nama UPT)">
-                <input id="kop_4" placeholder="Baris 4 (Alamat)">
-            </div>
-            <div>
-                <h3>Konten & Syarat</h3>
-                <textarea id="announcement" placeholder="Pengumuman (Info Penting)"></textarea>
-                <textarea id="txt_doc" placeholder="Syarat Dokumen" style="margin-top:5px;"></textarea>
-                <textarea id="txt_item" placeholder="Aturan Barang" style="margin-top:5px;"></textarea>
-            </div>
-        </div>
-        <button onclick="saveConf()" class="btn btn-acc" style="width:100%; margin-top:20px; height:50px;">💾 SIMPAN SEMUA PENGATURAN</button>
+        <h3>1. Kop Surat & Tampilan</h3>
+        <label>Baris 1 (Kementerian):</label> <input id="kop_1">
+        <label>Baris 2 (Wilayah):</label> <input id="kop_2">
+        <label>Baris 3 (Nama Lapas):</label> <input id="kop_3">
+        <label>Baris 4 (Alamat):</label> <input id="kop_4">
+        <label>Nama Aplikasi:</label> <input id="app_name">
+        <label>Link Logo (URL):</label> <input id="logo_url">
+        <label>Link Background Header (URL):</label> <input id="header_bg">
+        <label>Pengumuman (Info Penting):</label> <textarea id="announcement"></textarea>
+
+        <h3>2. Jadwal & Konten</h3>
+        <label>Jadwal PIDUM & NARKOBA:</label> 
+        <div style="display:flex; gap:10px;"><input id="sch_pidum" placeholder="PIDUM"><input id="sch_narkoba" placeholder="NARKOBA"></div>
+        <label>Jam Sesi (Pagi & Siang):</label> 
+        <div style="display:flex; gap:10px;"><input id="sch_mon_am" placeholder="Jam Pagi"><input id="sch_mon_pm" placeholder="Jam Siang"></div>
+        <label>Hari Lain:</label> 
+        <div style="display:flex; gap:10px;"><input id="sch_fri" placeholder="Jumat"><input id="sch_sat" placeholder="Sabtu"><input id="sch_sun" placeholder="Minggu"></div>
+
+        <label>Syarat & Ketentuan (Dokumen & Barang):</label>
+        <textarea id="txt_doc" placeholder="Syarat Dokumen"></textarea>
+        <textarea id="txt_item" placeholder="Syarat Barang" style="margin-top:5px;"></textarea>
+        
+        <label style="color:#8B0000; margin-top:15px;">Info Pengurusan (PB/CB/Asimilasi):</label>
+        <textarea id="txt_urus" placeholder="Tulis informasi pengurusan di sini..."></textarea>
+        
+        <label style="color:#8B0000; margin-top:20px;">Toko Lapas:</label>
+        <textarea id="toko_announce" placeholder="Pengumuman Toko"></textarea>
+        <input id="toko_link" placeholder="Link Aplikasi Toko">
+
+        <h3>3. Kontak</h3>
+        <label>Kontak:</label>
+        <div style="display:flex; gap:10px;"><input id="wa_pengaduan" placeholder="No WA"><input id="wa_channel" placeholder="Link Channel"></div>
+        <label>Sosmed:</label>
+        <input id="soc_ig" placeholder="Instagram"><input id="soc_fb" placeholder="Facebook">
+        <input id="soc_tw" placeholder="Twitter"><input id="soc_yt" placeholder="Youtube">
+        
+        <button class="btn btn-acc" style="width:100%; margin-top:20px; height:45px;" onclick="saveConf()">💾 SIMPAN PENGATURAN</button>
     </div>
 
     <div id="t-fisik" style="display:none;">
@@ -320,8 +341,18 @@
     }
     function del(path, key) { if(confirm("Hapus data?")) db.ref(path+'/'+key).remove(); }
 
-    // SETTINGS
-    const fields = ['app_name','kop_1','kop_2','kop_3','kop_4','announcement','txt_doc','txt_item'];
+    // SETTINGS (DIKEMBALIKAN SESUAI PERMINTAAN PERTAMA)
+    const fields = [
+        'app_name','logo_url','header_bg','announcement',
+        'kop_1','kop_2','kop_3','kop_4',
+        'sch_pidum', 'sch_narkoba',
+        'sch_mon_am','sch_mon_pm','sch_fri','sch_sat','sch_sun',
+        'txt_doc','txt_item','txt_urus', 
+        'toko_announce','toko_link',
+        'wa_pengaduan', 'wa_channel',
+        'soc_ig','soc_fb','soc_tw','soc_yt'
+    ];
+
     function loadSettings() {
         db.ref('app_config').once('value', s => {
             if(s.exists()) {
@@ -332,8 +363,8 @@
     }
     function saveConf() {
         const d = {};
-        fields.forEach(f => d[f] = document.getElementById(f).value);
-        db.ref('app_config').update(d).then(() => alert("Tersimpan!"));
+        fields.forEach(f => { if(document.getElementById(f)) d[f] = document.getElementById(f).value; });
+        db.ref('app_config').update(d).then(() => alert("Pengaturan Tersimpan!"));
     }
 
     // MODALS
