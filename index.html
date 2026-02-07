@@ -498,8 +498,8 @@
     });
 
     function getMenu(cfg) {
-        // GABUNGAN MENU 5 (JADWAL & SYARAT)
-        const htmlGabungan = `
+        // HTML JADWAL (DEFAULT)
+        const htmlJadwal = `
         <div style="margin-bottom:8px; font-weight:600; font-size:12px; color:#8B0000;">KATEGORI LAYANAN:</div>
         <table class="spec-table">
             <tr><th>Jenis Tahanan</th><th>Hari Layanan</th></tr>
@@ -512,13 +512,6 @@
             <div class="sch-row"><span>Jumat</span><span class="badge bg-green">${cfg.sch_fri || '-'}</span></div>
             <div class="sch-row"><span>Sabtu</span><span class="badge bg-blue">${cfg.sch_sat || '-'}</span></div>
             <div class="sch-row"><span>Minggu</span><span class="badge bg-red">${cfg.sch_sun || 'TUTUP'}</span></div>
-        </div>
-        <hr style="border:0; border-top:1px dashed #ccc; margin:10px 0;">
-        <div style="font-size:12px;">
-            <div style="font-weight:600; color:#8B0000; margin-bottom:5px;">📄 SYARAT DOKUMEN:</div>
-            ${cfg.txt_doc || '-'}<br><br>
-            <div style="font-weight:600; color:#8B0000; margin-bottom:5px;">📦 ATURAN BARANG:</div>
-            ${cfg.txt_item || '-'}
         </div>`;
 
         return {
@@ -535,14 +528,14 @@
                 ]
             },
             
-            // MENU 1 & 2 (Tetap)
+            // MENU 1 & 2
             'daftar_fisik': { text: "📝 **PENDAFTARAN TATAP MUKA**", options: [{ text: "✍️ ISI FORMULIR", val: "form_fisik" }, { text: "🔍 CEK STATUS", val: "cek_status_fisik" }, { text: "⬅️ KEMBALI", val: "start" }] },
             'form_fisik': { text: "📝 **ISI DATA KUNJUNGAN:**", isForm: true, formType: "fisik" },
             
             'daftar_online': { text: "💻 **PENDAFTARAN VIDEO CALL**", options: [{ text: "✍️ ISI FORMULIR", val: "form_online" }, { text: "🔍 CEK STATUS", val: "cek_status_online" }, { text: "⬅️ KEMBALI", val: "start" }] },
             'form_online': { text: "💻 **ISI DATA VIDEO CALL:**", isForm: true, formType: "online" },
 
-            // MENU 3 (BARU - LENGKAP)
+            // MENU 3 (PENGURUSAN)
             'menu_urus': {
                 text: "📂 **LAYANAN PENGURUSAN INTEGRASI**\n(PB / CB / CMB)\n\nSilakan ajukan permohonan atau cek status pengajuan Anda.",
                 options: [
@@ -553,16 +546,27 @@
             },
             'form_urus': { text: "Menyiapkan formulir...", isForm: true, formType: "pengurusan" },
 
-            // MENU 4 (Tetap)
+            // MENU 4
             'toko': { text: "🛒 **TOKO LAPAS:**\n" + (cfg.toko_announce || "-"), options: [{ text: "🌐 BUKA APLIKASI TOKO", type: "link", url: cfg.toko_link }, { text: "⬅️ KEMBALI", val: "start" }] },
 
-            // MENU 5 (GABUNGAN JADWAL & SYARAT)
-            'info_gabung': { text: "📅 **INFORMASI LAYANAN & SYARAT:**", customHtml: htmlGabungan, back: true },
+            // MENU 5 (INDUK)
+            'info_gabung': {
+                text: "📅 **PILIH INFORMASI LAYANAN:**",
+                options: [
+                    { text: "📅 LIHAT JADWAL KUNJUNGAN", val: "sub_jadwal" },
+                    { text: "👜 SYARAT KUNJUNGAN & BARANG", val: "sub_syarat_kunjungan" },
+                    { text: "📂 SYARAT PENGURUSAN PB/CB/CMB", val: "sub_syarat_pb" },
+                    { text: "⬅️ KEMBALI", val: "start" }
+                ]
+            },
+            'sub_jadwal': { text: "📅 **JADWAL LAYANAN:**", customHtml: htmlJadwal, backTo: 'info_gabung' },
+            'sub_syarat_kunjungan': { text: "👜 **SYARAT KUNJUNGAN:**\n\n**📄 DOKUMEN:**\n" + (cfg.txt_doc || "-") + "\n\n**📦 ATURAN BARANG:**\n" + (cfg.txt_item || "-"), backTo: 'info_gabung' },
+            'sub_syarat_pb': { text: "📂 **SYARAT PENGURUSAN PB/CB/CMB:**\n\n" + (cfg.txt_pb_cb || "Belum ada informasi syarat. Hubungi admin."), backTo: 'info_gabung' },
 
-            // MENU 6 (BARU - KRITIK)
+            // MENU 6
             'menu_kritik': { text: "Silakan berikan penilaian dan masukan Anda:", isForm: true, formType: "kritik" },
 
-            // MENU 7 (Tetap)
+            // MENU 7
             'kontak': { text: "📞 **PUSAT PENGADUAN:**", options: [{ text: "💬 WHATSAPP PENGADUAN", type: "link", url: `https://wa.me/${cfg.wa_pengaduan}` }, { text: "📢 SALURAN INFORMASI", type: "link", url: cfg.wa_channel }, { text: "🌐 MEDIA SOSIAL", val: "sosmed" }, { text: "⬅️ KEMBALI", val: "start" }] },
             'sosmed': { text: "🌐 **MEDIA SOSIAL:**", options: [{ text: "📷 INSTAGRAM", type: "link", url: cfg.soc_ig }, { text: "📘 FACEBOOK", type: "link", url: cfg.soc_fb }, { text: "🐦 TWITTER / X", type: "link", url: cfg.soc_tw }, { text: "⬅️ KEMBALI", val: "kontak" }] }
         };
