@@ -19,27 +19,33 @@
         .tabs { display: flex; border-bottom: 2px solid #ddd; margin-bottom: 20px; overflow-x: auto; gap: 5px; }
         .tab-btn { padding: 12px 20px; background: none; border: none; cursor: pointer; font-weight: 600; color: #666; border-bottom: 4px solid transparent; white-space: nowrap; transition: 0.3s; }
         .tab-btn:hover, .tab-btn.active { color: #8B0000; border-bottom-color: #8B0000; background: #fdfdfd; }
-        .table-responsive { overflow-x: auto; }
+        .table-responsive { overflow-x: auto; max-height: 70vh; overflow-y: auto; } /* Scrollable Table */
         table { width: 100%; border-collapse: collapse; font-size: 12px; min-width: 1000px; }
         th, td { border: 1px solid #eee; padding: 10px; text-align: left; vertical-align: middle; }
-        th { background: #8B0000; color: white; }
+        th { background: #8B0000; color: white; position: sticky; top: 0; z-index: 10; } /* Sticky Header */
         tr:nth-child(even) { background: #f9f9f9; }
+        
         .filter-bar { background: #fff3cd; padding: 15px; border-radius: 8px; display: flex; gap: 10px; margin-bottom: 15px; flex-wrap: wrap; align-items: flex-end; }
         .print-area { background: #e3f2fd; padding: 15px; border-radius: 8px; display: flex; gap: 10px; margin-bottom: 15px; flex-wrap: wrap; align-items: flex-end; }
-        .btn { padding: 8px 15px; border: none; border-radius: 5px; color: white; font-weight: bold; cursor: pointer; height: 38px; }
+        
+        .btn { padding: 8px 15px; border: none; border-radius: 5px; color: white; font-weight: bold; cursor: pointer; height: 38px; font-size: 12px; }
         .btn-search { background: #8B0000; }
         .btn-print { background: #007bff; }
         .btn-reset { background: #555; }
+        .btn-all { background: #333; } /* Tombol Semua Data */
         .btn-acc { background: #28a745; }
+        
         .badge { padding: 4px 8px; border-radius: 4px; color: white; font-size: 10px; text-transform: uppercase; }
         .bg-wait { background: #6c757d; } .bg-acc { background: #28a745; } .bg-rej { background: #dc3545; }
         .act-btn { width: 30px; height: 30px; border: none; border-radius: 4px; color: white; cursor: pointer; margin-right: 2px; }
+        
         #imgModal, #galleryModal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.9); z-index: 999; justify-content: center; align-items: center; padding: 20px; overflow-y: auto; }
         .modal-content { max-width: 90%; max-height: 90vh; border-radius: 8px; }
         .gallery-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 10px; width: 100%; max-width: 800px; background: white; padding: 20px; border-radius: 8px; }
         .gallery-item { display: flex; flex-direction: column; align-items: center; }
         .gallery-item img { width: 100%; height: 120px; object-fit: cover; border: 1px solid #ddd; cursor: pointer; }
         .close-modal { position: absolute; top: 20px; right: 30px; color: white; font-size: 40px; cursor: pointer; }
+        
         input, textarea, select { padding: 8px; border: 1px solid #ccc; border-radius: 4px; width: 100%; box-sizing: border-box; }
         #login-box { max-width: 400px; margin: 100px auto; background: white; padding: 30px; border-radius: 10px; text-align: center; box-shadow: 0 10px 30px rgba(0,0,0,0.1); }
     </style>
@@ -95,18 +101,17 @@
                 <h3 style="border-bottom:1px solid #ddd; padding-bottom:5px;">2. Konten & Jadwal</h3>
                 <label>Syarat Dokumen Kunjungan:</label> <textarea id="txt_doc"></textarea>
                 <label>Aturan Barang Bawaan:</label> <textarea id="txt_item"></textarea>
-                
-                <label style="color:#8B0000; font-weight:bold; margin-top:10px;">Syarat PB/CB/CMB (Tampil di Menu Info):</label> 
-                <textarea id="txt_pb_cb" style="border:2px solid #8B0000; background:#fff8e1;" rows="4" placeholder="Tulis syarat lengkap PB/CB disini..."></textarea>
+                <label style="color:#8B0000; font-weight:bold; margin-top:10px;">Syarat PB/CB/CMB:</label> 
+                <textarea id="txt_pb_cb" style="border:2px solid #8B0000; background:#fff8e1;" rows="4"></textarea>
                 
                 <label style="margin-top:15px;">Jadwal PIDUM & NARKOBA:</label> 
-                <div style="display:flex; gap:5px;"><input id="sch_pidum" placeholder="PIDUM"><input id="sch_narkoba" placeholder="NARKOBA"></div>
+                <div style="display:flex; gap:5px;"><input id="sch_pidum"><input id="sch_narkoba"></div>
                 
                 <label>Jam Layanan:</label> 
-                <div style="display:flex; gap:5px;"><input id="sch_mon_am" placeholder="Pagi"><input id="sch_mon_pm" placeholder="Siang"></div>
+                <div style="display:flex; gap:5px;"><input id="sch_mon_am"><input id="sch_mon_pm"></div>
                 
                 <label>Hari Lain:</label> 
-                <div style="display:flex; gap:5px;"><input id="sch_fri" placeholder="Jumat"><input id="sch_sat" placeholder="Sabtu"><input id="sch_sun" placeholder="Minggu"></div>
+                <div style="display:flex; gap:5px;"><input id="sch_fri"><input id="sch_sat"><input id="sch_sun"></div>
             </div>
         </div>
 
@@ -127,19 +132,20 @@
             </div>
         </div>
 
-        <button class="btn btn-acc" style="width:100%; margin-top:30px; height:50px; font-size:16px;" onclick="saveConf()">💾 SIMPAN SEMUA PENGATURAN</button>
+        <button class="btn btn-acc" style="width:100%; margin-top:30px; height:50px; font-size:16px;" onclick="saveConf()">💾 SIMPAN PENGATURAN</button>
     </div>
 
     <div id="t-fisik" style="display:none;">
         <div class="filter-bar">
             <div><label>Tanggal:</label><input type="date" id="d_fisik"></div>
-            <button onclick="load('registrations','tb_fisik','d_fisik')" class="btn btn-search">CARI</button>
-            <button onclick="live('registrations','tb_fisik')" class="btn btn-reset">LIVE</button>
+            <button onclick="load('registrations','tb_fisik','d_fisik')" class="btn btn-search">🔍 CARI TANGGAL</button>
+            <button onclick="live('registrations','tb_fisik')" class="btn btn-reset">⚡ LIVE (100)</button>
+            <button onclick="loadAll('registrations','tb_fisik')" class="btn btn-all">📂 SEMUA DATA</button>
         </div>
         <div class="print-area">
             <input id="p_nm_fisik" placeholder="Nama Petugas">
             <input id="p_nip_fisik" placeholder="NIP Petugas">
-            <button onclick="pdf('tb_fisik','Laporan Kunjungan Tatap Muka','p_nm_fisik','p_nip_fisik')" class="btn btn-print">CETAK PDF</button>
+            <button onclick="pdf('tb_fisik','Laporan Kunjungan Tatap Muka','p_nm_fisik','p_nip_fisik')" class="btn btn-print">🖨️ CETAK PDF</button>
         </div>
         <div class="table-responsive">
             <table id="tbl_fisik">
@@ -152,13 +158,14 @@
     <div id="t-online" style="display:none;">
         <div class="filter-bar">
             <div><label>Tanggal:</label><input type="date" id="d_online"></div>
-            <button onclick="load('online_registrations','tb_online','d_online')" class="btn btn-search">CARI</button>
-            <button onclick="live('online_registrations','tb_online')" class="btn btn-reset">LIVE</button>
+            <button onclick="load('online_registrations','tb_online','d_online')" class="btn btn-search">🔍 CARI TANGGAL</button>
+            <button onclick="live('online_registrations','tb_online')" class="btn btn-reset">⚡ LIVE (100)</button>
+            <button onclick="loadAll('online_registrations','tb_online')" class="btn btn-all">📂 SEMUA DATA</button>
         </div>
         <div class="print-area">
             <input id="p_nm_online" placeholder="Nama Petugas">
             <input id="p_nip_online" placeholder="NIP Petugas">
-            <button onclick="pdf('tb_online','Laporan Video Call','p_nm_online','p_nip_online')" class="btn btn-print">CETAK PDF</button>
+            <button onclick="pdf('tb_online','Laporan Video Call','p_nm_online','p_nip_online')" class="btn btn-print">🖨️ CETAK PDF</button>
         </div>
         <div class="table-responsive">
             <table id="tbl_online">
@@ -171,13 +178,14 @@
     <div id="t-urus" style="display:none;">
         <div class="filter-bar">
             <div><label>Tanggal:</label><input type="date" id="d_urus"></div>
-            <button onclick="load('pengurusan','tb_urus','d_urus')" class="btn btn-search">CARI</button>
-            <button onclick="live('pengurusan','tb_urus')" class="btn btn-reset">LIVE</button>
+            <button onclick="load('pengurusan','tb_urus','d_urus')" class="btn btn-search">🔍 CARI TANGGAL</button>
+            <button onclick="live('pengurusan','tb_urus')" class="btn btn-reset">⚡ LIVE (100)</button>
+            <button onclick="loadAll('pengurusan','tb_urus')" class="btn btn-all">📂 SEMUA DATA</button>
         </div>
         <div class="print-area">
             <input id="p_nm_urus" placeholder="Nama Petugas">
             <input id="p_nip_urus" placeholder="NIP Petugas">
-            <button onclick="pdf('tb_urus','Laporan Pengurusan PB/CB/CMB','p_nm_urus','p_nip_urus')" class="btn btn-print">CETAK PDF</button>
+            <button onclick="pdf('tb_urus','Laporan Pengurusan PB/CB/CMB','p_nm_urus','p_nip_urus')" class="btn btn-print">🖨️ CETAK PDF</button>
         </div>
         <div class="table-responsive">
             <table id="tbl_urus">
@@ -189,12 +197,13 @@
 
     <div id="t-kritik" style="display:none;">
         <div class="filter-bar">
-            <button onclick="live('kritik_saran','tb_kritik')" class="btn btn-reset">MUAT DATA TERBARU</button>
+            <button onclick="live('kritik_saran','tb_kritik')" class="btn btn-reset">⚡ LIVE (100)</button>
+            <button onclick="loadAll('kritik_saran','tb_kritik')" class="btn btn-all">📂 SEMUA DATA</button>
         </div>
         <div class="print-area">
             <input id="p_nm_kritik" placeholder="Nama Petugas">
             <input id="p_nip_kritik" placeholder="NIP Petugas">
-            <button onclick="pdf('tb_kritik','Laporan Kritik & Saran','p_nm_kritik','p_nip_kritik')" class="btn btn-print">CETAK PDF</button>
+            <button onclick="pdf('tb_kritik','Laporan Kritik & Saran','p_nm_kritik','p_nip_kritik')" class="btn btn-print">🖨️ CETAK PDF</button>
         </div>
         <div class="table-responsive">
             <table id="tbl_kritik">
@@ -227,7 +236,8 @@
             document.getElementById('login-box').style.display='none';
             document.getElementById('panel-box').style.display='block';
             loadSettings();
-            live('registrations','tb_fisik');
+            // Default Load All Data for Registration to avoid empty screen
+            live('registrations','tb_fisik'); 
         } else {
             document.getElementById('login-box').style.display='block';
             document.getElementById('panel-box').style.display='none';
@@ -246,23 +256,43 @@
         if(id=='online') document.getElementById('b3').classList.add('active');
         if(id=='urus') document.getElementById('b4').classList.add('active');
         if(id=='kritik') document.getElementById('b5').classList.add('active');
+        
+        // Auto load live data when switching tabs
+        if(id === 'fisik') live('registrations', 'tb_fisik');
+        if(id === 'online') live('online_registrations', 'tb_online');
         if(id === 'urus') live('pengurusan', 'tb_urus');
         if(id === 'kritik') live('kritik_saran', 'tb_kritik');
     }
 
+    // 1. LIVE (Limit 100)
     function live(path, tbodyId) {
         if(listeners[path]) db.ref(path).off();
         const tb = document.getElementById(tbodyId);
-        tb.innerHTML = "<tr><td colspan='9' style='text-align:center'>Memuat data...</td></tr>";
+        tb.innerHTML = "<tr><td colspan='9' style='text-align:center'>Memuat 100 data terbaru...</td></tr>";
         listeners[path] = db.ref(path).limitToLast(100);
         listeners[path].on('value', s => render(s, tbodyId, path));
     }
 
+    // 2. SEARCH BY DATE
     function load(path, tbodyId, dateId) {
         const d = document.getElementById(dateId).value;
         if(!d) return alert("Pilih tanggal!");
         if(listeners[path]) db.ref(path).off();
+        const tb = document.getElementById(tbodyId);
+        tb.innerHTML = "<tr><td colspan='9' style='text-align:center'>Mencari data tanggal "+d+"...</td></tr>";
         db.ref(path).orderByChild('tgl').equalTo(d).on('value', s => render(s, tbodyId, path));
+    }
+
+    // 3. LOAD ALL (NEW FEATURE)
+    function loadAll(path, tbodyId) {
+        if(listeners[path]) db.ref(path).off();
+        const tb = document.getElementById(tbodyId);
+        tb.innerHTML = "<tr><td colspan='9' style='text-align:center; color:red; font-weight:bold;'>Sedang mengambil SELURUH DATA... (Mohon Tunggu)</td></tr>";
+        
+        // Get everything without limit
+        db.ref(path).once('value').then(s => {
+            render(s, tbodyId, path);
+        });
     }
 
     function render(snap, tbodyId, path) {
@@ -272,6 +302,9 @@
 
         const arr = [];
         snap.forEach(c => arr.push({k:c.key, ...c.val()}));
+        // Show counter
+        const prevRow = tb.previousElementSibling; // Checking if header exists
+        
         arr.reverse().forEach(v => {
             let row = `<tr data-key="${v.k}">`;
             if(path === 'kritik_saran') {
@@ -291,7 +324,7 @@
     }
 
     function upd(path, key, st) { const note = document.getElementById(`n-${key}`).value; db.ref(path+'/'+key).update({status:st, note:note}); }
-    function del(path, key) { if(confirm("Hapus data?")) db.ref(path+'/'+key).remove(); }
+    function del(path, key) { if(confirm("Hapus data ini secara permanen?")) db.ref(path+'/'+key).remove(); }
 
     const fields = ['app_name','logo_url','header_bg','announcement','kop_1','kop_2','kop_3','kop_4', 'sch_pidum', 'sch_narkoba','sch_mon_am','sch_mon_pm','sch_fri','sch_sat','sch_sun', 'txt_doc','txt_item','txt_pb_cb', 'toko_announce','toko_link','wa_pengaduan', 'wa_channel','soc_ig','soc_fb','soc_tw','soc_yt'];
 
