@@ -6,8 +6,9 @@
     <meta name="theme-color" content="#8B0000">
     <title>Layanan Lapas Digital</title>
     
-    <script defer src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
-    <script defer src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
+    <script defer src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+    <script defer src="https://www.gstatic.com/firebasejs/10.7.1/firebase-database-compat.js"></script>
+    
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
@@ -101,6 +102,7 @@
 </div>
 
 <script>
+    // KONFIGURASI FIREBASE
     const firebaseConfig = {
         apiKey: "AIzaSyDvpFZtiG_fXLOf8okjafNm7gqbJZr2pSY",
         authDomain: "lapassistem.firebaseapp.com",
@@ -117,6 +119,7 @@
         const db = firebase.database();
         let config = {};
 
+        // Load Konfigurasi Realtime
         db.ref('app_config').on('value', (snap) => {
             if(snap.exists()) config = snap.val();
             updateUI(config);
@@ -140,6 +143,7 @@
         window.respond = function(key) {
             if (key === 'start') chatBox.innerHTML = '';
             
+            // Handle Cek Status Universal
             if (key.startsWith('cek_status_')) {
                 const type = key.split('_')[2]; 
                 askNikForStatus(type);
@@ -220,9 +224,8 @@
             appendMsg('bot', text, { customHtml: formHtml });
         }
 
-        // --- FORM PENGURUSAN (Menu 3) ---
+        // --- FORM PENGURUSAN (Menu 3 - 7 Dokumen) ---
         window.renderFormPengurusan = function() {
-            // Daftar 7 Dokumen Upload
             const fields = [
                 {id:'u_ktp_wbp', l:'KTP WBP'}, 
                 {id:'u_kk_wbp', l:'KK WBP'},
@@ -427,6 +430,7 @@
                 if(s.exists()) {
                     s.forEach(c => {
                         const d = c.val();
+                        // Support pencarian berdasarkan string atau number
                         if(String(d.nik) === String(nik) || (d.inputs && String(d.inputs.nik) === String(nik))) found = d;
                     });
                 }
@@ -446,7 +450,7 @@
             });
         }
 
-        // --- COMPRESS IMAGE (Max 600px quality 0.5 for lightness) ---
+        // --- COMPRESS IMAGE (Optimized for Multi Upload) ---
         function compressImage(file, cb) {
             const reader = new FileReader();
             reader.readAsDataURL(file);
@@ -456,12 +460,12 @@
                 img.onload = function() {
                     const canvas = document.createElement('canvas');
                     const ctx = canvas.getContext('2d');
-                    const maxW = 600; 
+                    const maxW = 600; // Cukup untuk dibaca
                     let w = img.width; let h = img.height;
                     if(w > maxW) { h *= maxW/w; w = maxW; }
                     canvas.width = w; canvas.height = h;
                     ctx.drawImage(img, 0, 0, w, h);
-                    cb(canvas.toDataURL('image/jpeg', 0.5));
+                    cb(canvas.toDataURL('image/jpeg', 0.5)); // Kompresi 50%
                 }
             }
         }
@@ -498,7 +502,7 @@
     });
 
     function getMenu(cfg) {
-        // HTML JADWAL (DEFAULT)
+        // GABUNGAN MENU 5 (JADWAL, SYARAT, & SYARAT PB/CB)
         const htmlJadwal = `
         <div style="margin-bottom:8px; font-weight:600; font-size:12px; color:#8B0000;">KATEGORI LAYANAN:</div>
         <table class="spec-table">
@@ -528,14 +532,12 @@
                 ]
             },
             
-            // MENU 1 & 2
             'daftar_fisik': { text: "📝 **PENDAFTARAN TATAP MUKA**", options: [{ text: "✍️ ISI FORMULIR", val: "form_fisik" }, { text: "🔍 CEK STATUS", val: "cek_status_fisik" }, { text: "⬅️ KEMBALI", val: "start" }] },
             'form_fisik': { text: "📝 **ISI DATA KUNJUNGAN:**", isForm: true, formType: "fisik" },
             
             'daftar_online': { text: "💻 **PENDAFTARAN VIDEO CALL**", options: [{ text: "✍️ ISI FORMULIR", val: "form_online" }, { text: "🔍 CEK STATUS", val: "cek_status_online" }, { text: "⬅️ KEMBALI", val: "start" }] },
             'form_online': { text: "💻 **ISI DATA VIDEO CALL:**", isForm: true, formType: "online" },
 
-            // MENU 3 (PENGURUSAN)
             'menu_urus': {
                 text: "📂 **LAYANAN PENGURUSAN INTEGRASI**\n(PB / CB / CMB)\n\nSilakan ajukan permohonan atau cek status pengajuan Anda.",
                 options: [
@@ -546,10 +548,9 @@
             },
             'form_urus': { text: "Menyiapkan formulir...", isForm: true, formType: "pengurusan" },
 
-            // MENU 4
             'toko': { text: "🛒 **TOKO LAPAS:**\n" + (cfg.toko_announce || "-"), options: [{ text: "🌐 BUKA APLIKASI TOKO", type: "link", url: cfg.toko_link }, { text: "⬅️ KEMBALI", val: "start" }] },
 
-            // MENU 5 (INDUK)
+            // MENU 5: INDUK (JADWAL, SYARAT KUNJUNGAN, SYARAT PB/CB)
             'info_gabung': {
                 text: "📅 **PILIH INFORMASI LAYANAN:**",
                 options: [
@@ -563,10 +564,8 @@
             'sub_syarat_kunjungan': { text: "👜 **SYARAT KUNJUNGAN:**\n\n**📄 DOKUMEN:**\n" + (cfg.txt_doc || "-") + "\n\n**📦 ATURAN BARANG:**\n" + (cfg.txt_item || "-"), backTo: 'info_gabung' },
             'sub_syarat_pb': { text: "📂 **SYARAT PENGURUSAN PB/CB/CMB:**\n\n" + (cfg.txt_pb_cb || "Belum ada informasi syarat. Hubungi admin."), backTo: 'info_gabung' },
 
-            // MENU 6
             'menu_kritik': { text: "Silakan berikan penilaian dan masukan Anda:", isForm: true, formType: "kritik" },
 
-            // MENU 7
             'kontak': { text: "📞 **PUSAT PENGADUAN:**", options: [{ text: "💬 WHATSAPP PENGADUAN", type: "link", url: `https://wa.me/${cfg.wa_pengaduan}` }, { text: "📢 SALURAN INFORMASI", type: "link", url: cfg.wa_channel }, { text: "🌐 MEDIA SOSIAL", val: "sosmed" }, { text: "⬅️ KEMBALI", val: "start" }] },
             'sosmed': { text: "🌐 **MEDIA SOSIAL:**", options: [{ text: "📷 INSTAGRAM", type: "link", url: cfg.soc_ig }, { text: "📘 FACEBOOK", type: "link", url: cfg.soc_fb }, { text: "🐦 TWITTER / X", type: "link", url: cfg.soc_tw }, { text: "⬅️ KEMBALI", val: "kontak" }] }
         };
