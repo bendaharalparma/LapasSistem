@@ -4,9 +4,11 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Admin Panel Lapas</title>
-    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
+    
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-database-compat.js"></script>
+    
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.25/jspdf.plugin.autotable.min.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
@@ -14,42 +16,31 @@
     <style>
         body { font-family: 'Poppins', sans-serif; background: #f0f2f5; padding: 20px; margin: 0; }
         .container { max-width: 1400px; margin: 0 auto; background: white; padding: 20px; border-radius: 12px; box-shadow: 0 5px 15px rgba(0,0,0,0.05); }
-        
-        /* TABS */
         .tabs { display: flex; border-bottom: 2px solid #ddd; margin-bottom: 20px; overflow-x: auto; gap: 5px; }
         .tab-btn { padding: 12px 20px; background: none; border: none; cursor: pointer; font-weight: 600; color: #666; border-bottom: 4px solid transparent; white-space: nowrap; transition: 0.3s; }
         .tab-btn:hover, .tab-btn.active { color: #8B0000; border-bottom-color: #8B0000; background: #fdfdfd; }
-        
-        /* TABLES */
         .table-responsive { overflow-x: auto; }
         table { width: 100%; border-collapse: collapse; font-size: 12px; min-width: 1000px; }
         th, td { border: 1px solid #eee; padding: 10px; text-align: left; vertical-align: middle; }
         th { background: #8B0000; color: white; }
         tr:nth-child(even) { background: #f9f9f9; }
-        
-        /* CONTROLS */
         .filter-bar { background: #fff3cd; padding: 15px; border-radius: 8px; display: flex; gap: 10px; margin-bottom: 15px; flex-wrap: wrap; align-items: flex-end; }
         .print-area { background: #e3f2fd; padding: 15px; border-radius: 8px; display: flex; gap: 10px; margin-bottom: 15px; flex-wrap: wrap; align-items: flex-end; }
         .btn { padding: 8px 15px; border: none; border-radius: 5px; color: white; font-weight: bold; cursor: pointer; height: 38px; }
         .btn-search { background: #8B0000; }
         .btn-print { background: #007bff; }
         .btn-reset { background: #555; }
-        
-        /* STATUS & ACTION */
+        .btn-acc { background: #28a745; }
         .badge { padding: 4px 8px; border-radius: 4px; color: white; font-size: 10px; text-transform: uppercase; }
         .bg-wait { background: #6c757d; } .bg-acc { background: #28a745; } .bg-rej { background: #dc3545; }
         .act-btn { width: 30px; height: 30px; border: none; border-radius: 4px; color: white; cursor: pointer; margin-right: 2px; }
-        
-        /* MODAL */
         #imgModal, #galleryModal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.9); z-index: 999; justify-content: center; align-items: center; padding: 20px; overflow-y: auto; }
         .modal-content { max-width: 90%; max-height: 90vh; border-radius: 8px; }
         .gallery-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 10px; width: 100%; max-width: 800px; background: white; padding: 20px; border-radius: 8px; }
         .gallery-item { display: flex; flex-direction: column; align-items: center; }
         .gallery-item img { width: 100%; height: 120px; object-fit: cover; border: 1px solid #ddd; cursor: pointer; }
         .close-modal { position: absolute; top: 20px; right: 30px; color: white; font-size: 40px; cursor: pointer; }
-
         input, textarea, select { padding: 8px; border: 1px solid #ccc; border-radius: 4px; width: 100%; box-sizing: border-box; }
-        .input-group { margin-bottom: 10px; }
         #login-box { max-width: 400px; margin: 100px auto; background: white; padding: 30px; border-radius: 10px; text-align: center; box-shadow: 0 10px 30px rgba(0,0,0,0.1); }
     </style>
 </head>
@@ -104,7 +95,9 @@
                 <h3 style="border-bottom:1px solid #ddd; padding-bottom:5px;">2. Konten & Jadwal</h3>
                 <label>Syarat Dokumen Kunjungan:</label> <textarea id="txt_doc"></textarea>
                 <label>Aturan Barang Bawaan:</label> <textarea id="txt_item"></textarea>
-                <label style="color:#8B0000; font-weight:bold;">Syarat PB/CB/CMB (Baru):</label> <textarea id="txt_pb_cb" style="border:2px solid #8B0000; background:#fff8e1;" placeholder="Isi syarat lengkap PB/CB disini..."></textarea>
+                
+                <label style="color:#8B0000; font-weight:bold; margin-top:10px;">Syarat PB/CB/CMB (Tampil di Menu Info):</label> 
+                <textarea id="txt_pb_cb" style="border:2px solid #8B0000; background:#fff8e1;" rows="4" placeholder="Tulis syarat lengkap PB/CB disini..."></textarea>
                 
                 <label style="margin-top:15px;">Jadwal PIDUM & NARKOBA:</label> 
                 <div style="display:flex; gap:5px;"><input id="sch_pidum" placeholder="PIDUM"><input id="sch_narkoba" placeholder="NARKOBA"></div>
@@ -229,13 +222,11 @@
     const db = firebase.database();
     let listeners = {};
 
-    // AUTH
     auth.onAuthStateChanged(u => {
         if(u) {
             document.getElementById('login-box').style.display='none';
             document.getElementById('panel-box').style.display='block';
             loadSettings();
-            // Load Default Live
             live('registrations','tb_fisik');
         } else {
             document.getElementById('login-box').style.display='block';
@@ -246,28 +237,23 @@
     function login() { auth.signInWithEmailAndPassword(document.getElementById('email').value, document.getElementById('pass').value).catch(e=>alert(e.message)); }
     function logout() { auth.signOut(); }
 
-    // TABS
     function tab(id) {
         ['set','fisik','online','urus','kritik'].forEach(x => document.getElementById('t-'+x).style.display='none');
         ['b1','b2','b3','b4','b5'].forEach(x => document.getElementById(x).className='tab-btn');
-        
         document.getElementById('t-'+id).style.display='block';
         if(id=='set') document.getElementById('b1').classList.add('active');
         if(id=='fisik') document.getElementById('b2').classList.add('active');
         if(id=='online') document.getElementById('b3').classList.add('active');
         if(id=='urus') document.getElementById('b4').classList.add('active');
         if(id=='kritik') document.getElementById('b5').classList.add('active');
-
         if(id === 'urus') live('pengurusan', 'tb_urus');
         if(id === 'kritik') live('kritik_saran', 'tb_kritik');
     }
 
-    // DATA LOADING
     function live(path, tbodyId) {
         if(listeners[path]) db.ref(path).off();
         const tb = document.getElementById(tbodyId);
         tb.innerHTML = "<tr><td colspan='9' style='text-align:center'>Memuat data...</td></tr>";
-        
         listeners[path] = db.ref(path).limitToLast(100);
         listeners[path].on('value', s => render(s, tbodyId, path));
     }
@@ -276,11 +262,9 @@
         const d = document.getElementById(dateId).value;
         if(!d) return alert("Pilih tanggal!");
         if(listeners[path]) db.ref(path).off();
-        
         db.ref(path).orderByChild('tgl').equalTo(d).on('value', s => render(s, tbodyId, path));
     }
 
-    // RENDER DATA
     function render(snap, tbodyId, path) {
         const tb = document.getElementById(tbodyId);
         tb.innerHTML = "";
@@ -290,80 +274,26 @@
         snap.forEach(c => arr.push({k:c.key, ...c.val()}));
         arr.reverse().forEach(v => {
             let row = `<tr data-key="${v.k}">`;
-            
-            // Render logic based on Table Type
             if(path === 'kritik_saran') {
-                row += `
-                    <td>${v.tgl}</td>
-                    <td><b>${v.kepuasan}</b></td>
-                    <td>${v.pesan}</td>
-                    <td><button onclick="del('${path}','${v.k}')" class="act-btn bg-rej" title="Hapus">🗑️</button></td>
-                `;
+                row += `<td>${v.tgl}</td><td><b>${v.kepuasan}</b></td><td>${v.pesan}</td><td><button onclick="del('${path}','${v.k}')" class="act-btn bg-rej" title="Hapus">🗑️</button></td>`;
             } else if (path === 'pengurusan') {
                 let st = v.status=='accepted' ? '<span class="badge bg-acc">Disetujui</span>' : (v.status=='rejected'?'<span class="badge bg-rej">Ditolak</span>':'<span class="badge bg-wait">Menunggu</span>');
-                
-                // Button to open gallery
                 let fileBtn = `<button onclick='openGallery(${JSON.stringify(v.images || {})})' style="background:#007bff; color:white; border:none; padding:5px 10px; border-radius:4px; cursor:pointer; font-size:11px;">📂 LIHAT BERKAS</button>`;
-
-                row += `
-                    <td>${v.tgl}</td>
-                    <td>${v.jenis}</td>
-                    <td><b>${v.wbp}</b></td>
-                    <td>${v.penjamin}<br><small>${v.nik}</small></td>
-                    <td>${v.hub}</td>
-                    <td style="text-align:center">${fileBtn}</td>
-                    <td>${st}</td>
-                    <td><input id="n-${v.k}" value="${v.note||''}" placeholder="Catatan..." style="font-size:11px;"></td>
-                    <td style="display:flex;">
-                        <button onclick="upd('${path}','${v.k}','accepted')" class="act-btn bg-acc">✅</button>
-                        <button onclick="upd('${path}','${v.k}','rejected')" class="act-btn bg-rej">❌</button>
-                        <button onclick="del('${path}','${v.k}')" class="act-btn bg-rej">🗑️</button>
-                    </td>
-                `;
+                row += `<td>${v.tgl}</td><td>${v.jenis}</td><td><b>${v.wbp}</b></td><td>${v.penjamin}<br><small>${v.nik}</small></td><td>${v.hub}</td><td style="text-align:center">${fileBtn}</td><td>${st}</td><td><input id="n-${v.k}" value="${v.note||''}" placeholder="Catatan..." style="font-size:11px;"></td><td style="display:flex;"><button onclick="upd('${path}','${v.k}','accepted')" class="act-btn bg-acc">✅</button><button onclick="upd('${path}','${v.k}','rejected')" class="act-btn bg-rej">❌</button><button onclick="del('${path}','${v.k}')" class="act-btn bg-rej">🗑️</button></td>`;
             } else {
-                // Kunjungan Standard (Fisik / Online)
                 let st = v.status=='accepted' ? '<span class="badge bg-acc">OK</span>' : (v.status=='rejected'?'<span class="badge bg-rej">NO</span>':'<span class="badge bg-wait">WAIT</span>');
                 let img = v.ktpUrl ? `<img src="${v.ktpUrl}" style="height:40px; cursor:pointer;" onclick="openImg('${v.ktpUrl}')">` : '-';
-                
-                row += `
-                    <td style="font-weight:bold; color:#8B0000;">${v.noAntrian||'-'}</td>
-                    <td>${v.tgl}<br><small>${v.jam||''}</small></td>
-                    <td><b>${v.nama}</b><br><small>${v.telp}</small></td>
-                    <td>${v.wbp}</td>
-                    <td style="text-align:center">${img}</td>
-                    <td>${st}</td>
-                    <td><input id="n-${v.k}" value="${v.note||''}" placeholder="Note" style="font-size:11px;"></td>
-                    <td style="display:flex;">
-                        <button onclick="upd('${path}','${v.k}','accepted')" class="act-btn bg-acc">✅</button>
-                        <button onclick="upd('${path}','${v.k}','rejected')" class="act-btn bg-rej">❌</button>
-                        <button onclick="del('${path}','${v.k}')" class="act-btn bg-rej">🗑️</button>
-                    </td>
-                `;
+                row += `<td style="font-weight:bold; color:#8B0000;">${v.noAntrian||'-'}</td><td>${v.tgl}<br><small>${v.jam||''}</small></td><td><b>${v.nama}</b><br><small>${v.telp}</small></td><td>${v.wbp}</td><td style="text-align:center">${img}</td><td>${st}</td><td><input id="n-${v.k}" value="${v.note||''}" placeholder="Note" style="font-size:11px;"></td><td style="display:flex;"><button onclick="upd('${path}','${v.k}','accepted')" class="act-btn bg-acc">✅</button><button onclick="upd('${path}','${v.k}','rejected')" class="act-btn bg-rej">❌</button><button onclick="del('${path}','${v.k}')" class="act-btn bg-rej">🗑️</button></td>`;
             }
             row += "</tr>";
             tb.insertAdjacentHTML('beforeend', row);
         });
     }
 
-    // ACTIONS
-    function upd(path, key, st) {
-        const note = document.getElementById(`n-${key}`).value;
-        db.ref(path+'/'+key).update({status:st, note:note});
-    }
+    function upd(path, key, st) { const note = document.getElementById(`n-${key}`).value; db.ref(path+'/'+key).update({status:st, note:note}); }
     function del(path, key) { if(confirm("Hapus data?")) db.ref(path+'/'+key).remove(); }
 
-    // SETTINGS (ARRAY LENGKAP)
-    const fields = [
-        'app_name','logo_url','header_bg','announcement',
-        'kop_1','kop_2','kop_3','kop_4',
-        'sch_pidum', 'sch_narkoba',
-        'sch_mon_am','sch_mon_pm','sch_fri','sch_sat','sch_sun',
-        'txt_doc','txt_item',
-        'txt_pb_cb', // KOLOM BARU UNTUK SYARAT PB/CB
-        'toko_announce','toko_link',
-        'wa_pengaduan', 'wa_channel',
-        'soc_ig','soc_fb','soc_tw','soc_yt'
-    ];
+    const fields = ['app_name','logo_url','header_bg','announcement','kop_1','kop_2','kop_3','kop_4', 'sch_pidum', 'sch_narkoba','sch_mon_am','sch_mon_pm','sch_fri','sch_sat','sch_sun', 'txt_doc','txt_item','txt_pb_cb', 'toko_announce','toko_link','wa_pengaduan', 'wa_channel','soc_ig','soc_fb','soc_tw','soc_yt'];
 
     function loadSettings() {
         db.ref('app_config').once('value', s => {
@@ -379,84 +309,56 @@
         db.ref('app_config').update(d).then(() => alert("Pengaturan Tersimpan!"));
     }
 
-    // MODALS
     window.openImg = (src) => { document.getElementById('imgView').src=src; document.getElementById('imgModal').style.display='flex'; }
     window.closeM = (id) => document.getElementById(id).style.display='none';
     
     window.openGallery = (images) => {
         const grid = document.getElementById('galleryGrid');
         grid.innerHTML = '';
-        const labels = {
-            'u_ktp_wbp': 'KTP WBP', 'u_kk_wbp': 'KK WBP',
-            'u_ktp_penj': 'KTP Penjamin', 'u_kk_penj': 'KK Penjamin',
-            'u_surat_1': 'Surat Pernyataan', 'u_surat_2': 'Surat Jaminan',
-            'u_foto': 'Foto Penjamin'
-        };
-        
+        const labels = {'u_ktp_wbp': 'KTP WBP', 'u_kk_wbp': 'KK WBP', 'u_ktp_penj': 'KTP Penjamin', 'u_kk_penj': 'KK Penjamin', 'u_surat_1': 'Surat Pernyataan', 'u_surat_2': 'Surat Jaminan', 'u_foto': 'Foto Penjamin'};
         for(let key in images) {
             const div = document.createElement('div');
             div.className = 'gallery-item';
-            div.innerHTML = `<span style="font-size:10px; margin-bottom:5px;">${labels[key] || key}</span>
-                             <img src="${images[key]}" onclick="openImg('${images[key]}')">`;
+            div.innerHTML = `<span style="font-size:10px; margin-bottom:5px;">${labels[key] || key}</span><img src="${images[key]}" onclick="openImg('${images[key]}')">`;
             grid.appendChild(div);
         }
         document.getElementById('galleryModal').style.display='flex';
     }
 
-    // PDF PRINTING
     window.pdf = (tableId, title, nmId, nipId) => {
         const { jsPDF } = window.jspdf;
         const doc = new jsPDF('l', 'mm', 'a4');
         const petugas = document.getElementById(nmId).value;
         const nip = document.getElementById(nipId).value;
-        
         if(!petugas) return alert("Isi nama petugas!");
 
-        // KOP
         doc.setFontSize(14).setFont("times", "bold").text(document.getElementById('kop_1').value.toUpperCase(), 148, 15, {align:'center'});
         doc.text(document.getElementById('kop_2').value.toUpperCase(), 148, 22, {align:'center'});
         doc.setFontSize(16).text(document.getElementById('kop_3').value.toUpperCase(), 148, 30, {align:'center'});
         doc.setFontSize(11).setFont("times", "normal").text(document.getElementById('kop_4').value, 148, 37, {align:'center'});
         doc.line(10, 42, 287, 42);
-
-        // TITLE
         doc.setFont("helvetica", "bold").setFontSize(12).text(title.toUpperCase(), 148, 52, {align:'center'});
 
-        // DATA
         const table = document.getElementById(tableId);
         const body = [];
         const headers = [];
-        
-        // Get Headers
         for(let th of table.parentElement.querySelectorAll('thead th')) headers.push(th.innerText);
-
-        // Get Body
         for (let row of table.rows) {
             const rowData = [];
             for (let cell of row.cells) {
-                // Ignore button columns for specific tables if needed, or parse text
                 if(cell.querySelector('input')) rowData.push(cell.querySelector('input').value);
-                else if(cell.querySelector('button')) rowData.push(""); // Skip buttons
+                else if(cell.querySelector('button')) rowData.push(""); 
                 else rowData.push(cell.innerText.replace(/\n/g, ' '));
             }
             body.push(rowData);
         }
 
-        doc.autoTable({
-            head: [headers],
-            body: body,
-            startY: 60,
-            theme: 'grid',
-            styles: { fontSize: 8, cellPadding: 2 },
-            headStyles: { fillColor: [139, 0, 0] }
-        });
-
+        doc.autoTable({ head: [headers], body: body, startY: 60, theme: 'grid', styles: { fontSize: 8, cellPadding: 2 }, headStyles: { fillColor: [139, 0, 0] } });
         const fy = doc.lastAutoTable.finalY + 15;
         doc.text(`Arga Makmur, ${new Date().toLocaleDateString('id-ID')}`, 230, fy);
         doc.text("Petugas,", 230, fy+7);
         doc.text(`( ${petugas} )`, 230, fy+25);
         doc.text(`NIP. ${nip}`, 230, fy+30);
-
         doc.save(title + ".pdf");
     }
 </script>
