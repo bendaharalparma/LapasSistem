@@ -23,77 +23,61 @@
         .tab-btn:hover { background: #f5f5f5; color: #8B0000; }
         .tab-btn.active { background: #ffebee; color: #8B0000; border: 1px solid #ffcdd2; }
         
-        /* TOMBOL SIMPAN KEREN (MODERN BUTTON) */
+        /* BUTTONS */
         .btn-save-fancy {
             background: linear-gradient(135deg, #28a745 0%, #218838 100%);
-            color: white;
-            border: none;
-            padding: 16px 30px;
-            border-radius: 50px;
-            font-size: 15px;
-            font-weight: 700;
-            letter-spacing: 1px;
-            text-transform: uppercase;
-            box-shadow: 0 5px 15px rgba(40, 167, 69, 0.3);
-            transition: all 0.3s ease;
-            cursor: pointer;
-            width: 100%;
-            margin-top: 30px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 10px;
+            color: white; border: none; padding: 16px 30px; border-radius: 50px;
+            font-size: 15px; font-weight: 700; letter-spacing: 1px; text-transform: uppercase;
+            box-shadow: 0 5px 15px rgba(40, 167, 69, 0.3); transition: all 0.3s ease;
+            cursor: pointer; width: 100%; margin-top: 30px; display: flex; align-items: center; justify-content: center; gap: 10px;
         }
-        .btn-save-fancy:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 8px 25px rgba(40, 167, 69, 0.5);
-        }
-        .btn-save-fancy:active { transform: scale(0.98); }
+        .btn-save-fancy:hover { transform: translateY(-3px); box-shadow: 0 8px 25px rgba(40, 167, 69, 0.5); }
+        
+        /* EDITOR STYLE */
+        .rich-editor-box { border: 1px solid #ddd; border-radius: 8px; overflow: hidden; margin-bottom: 15px; background: #fff; }
+        .editor-toolbar { background: #f8f9fa; border-bottom: 1px solid #ddd; padding: 8px; display: flex; gap: 5px; }
+        .tool-btn { background: white; border: 1px solid #ccc; border-radius: 4px; padding: 5px 10px; cursor: pointer; font-size: 12px; }
+        .tool-btn:hover { background: #e2e6ea; }
+        .editable-content { min-height: 100px; max-height: 300px; overflow-y: auto; padding: 12px; outline: none; font-size: 13px; line-height: 1.5; }
+        .editable-content:focus { background-color: #fafafa; }
+        .editable-content img { max-width: 100%; height: auto; border-radius: 4px; margin: 5px 0; }
 
-        /* TABLES */
-        .table-responsive { overflow-x: auto; max-height: 65vh; overflow-y: auto; border: 1px solid #eee; border-radius: 10px; scrollbar-width: thin; }
+        /* TABLES & INPUTS */
+        .table-responsive { overflow-x: auto; max-height: 65vh; overflow-y: auto; border: 1px solid #eee; border-radius: 10px; }
         table { width: 100%; border-collapse: collapse; font-size: 12px; min-width: 1000px; }
         th, td { border-bottom: 1px solid #eee; padding: 14px; text-align: left; vertical-align: middle; }
-        th { background: #8B0000; color: white; position: sticky; top: 0; z-index: 10; text-transform: uppercase; font-size: 11px; letter-spacing: 0.5px; }
+        th { background: #8B0000; color: white; position: sticky; top: 0; z-index: 10; text-transform: uppercase; font-size: 11px; }
         tr:nth-child(even) { background: #fafafa; }
         tr:hover { background-color: #fff8e1; }
         
-        /* INPUTS */
-        input, textarea, select { padding: 12px; border: 1px solid #ddd; border-radius: 8px; width: 100%; box-sizing: border-box; font-family: 'Poppins', sans-serif; font-size: 13px; transition: 0.3s; }
-        input:focus, textarea:focus { border-color: #8B0000; outline: none; box-shadow: 0 0 0 3px rgba(139, 0, 0, 0.1); }
-        label { font-size: 12px; font-weight: 600; color: #555; margin-top: 15px; display: block; margin-bottom: 5px; }
-        h3 { color: #8B0000; border-bottom: 2px solid #eee; padding-bottom: 10px; margin-bottom: 20px; font-size: 16px; display: flex; align-items: center; gap: 10px; }
+        input, select { padding: 12px; border: 1px solid #ddd; border-radius: 8px; width: 100%; box-sizing: border-box; font-family: 'Poppins', sans-serif; font-size: 13px; margin-bottom: 10px; }
+        input:focus { border-color: #8B0000; outline: none; }
+        label { font-size: 12px; font-weight: 600; color: #555; margin-top: 10px; display: block; margin-bottom: 5px; }
+        h3 { color: #8B0000; border-bottom: 2px solid #eee; padding-bottom: 10px; margin-bottom: 20px; font-size: 16px; }
 
-        /* OTHER COMPONENTS */
-        .filter-bar { background: #fff; padding: 15px; border-radius: 10px; display: flex; gap: 10px; margin-bottom: 15px; flex-wrap: wrap; align-items: center; border: 1px solid #eee; box-shadow: 0 2px 10px rgba(0,0,0,0.02); }
-        .data-counter { font-weight: bold; color: #8B0000; background: #fff3cd; padding: 8px 15px; border-radius: 50px; font-size: 12px; border: 1px solid #ffeeba; }
-        
-        .btn { padding: 9px 18px; border: none; border-radius: 6px; color: white; font-weight: 600; cursor: pointer; height: 40px; font-size: 12px; display: flex; align-items: center; gap: 6px; transition: 0.2s; }
+        /* UTILS */
+        .filter-bar { background: #fff; padding: 15px; border-radius: 10px; display: flex; gap: 10px; margin-bottom: 15px; flex-wrap: wrap; align-items: center; border: 1px solid #eee; }
+        .data-counter { font-weight: bold; color: #8B0000; background: #fff3cd; padding: 8px 15px; border-radius: 50px; font-size: 12px; }
+        .btn { padding: 9px 18px; border: none; border-radius: 6px; color: white; font-weight: 600; cursor: pointer; height: 40px; font-size: 12px; display: flex; align-items: center; gap: 6px; }
         .btn:hover { opacity: 0.9; transform: translateY(-1px); }
         .btn-search { background: #007bff; } .btn-print { background: #17a2b8; } .btn-reset { background: #343a40; } .btn-del-all { background: #dc3545; }
-        
-        .badge { padding: 5px 12px; border-radius: 30px; font-size: 10px; font-weight: 700; letter-spacing: 0.5px; color: white; }
+        .badge { padding: 5px 12px; border-radius: 30px; font-size: 10px; font-weight: 700; color: white; }
         .bg-wait { background: #6c757d; } .bg-acc { background: #28a745; } .bg-rej { background: #dc3545; }
+        .act-btn { width: 34px; height: 34px; border: none; border-radius: 8px; color: white; cursor: pointer; margin-right: 4px; display: flex; align-items: center; justify-content: center; }
         
-        .act-btn { width: 34px; height: 34px; border: none; border-radius: 8px; color: white; cursor: pointer; margin-right: 4px; transition: 0.2s; display: flex; align-items: center; justify-content: center; }
-        .act-btn:hover { transform: scale(1.15); }
-
         #login-box { max-width: 400px; margin: 80px auto; background: white; padding: 40px; border-radius: 20px; text-align: center; box-shadow: 0 20px 60px rgba(0,0,0,0.1); }
         #imgModal, #galleryModal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.95); z-index: 999; justify-content: center; align-items: center; padding: 20px; overflow-y: auto; }
-        .modal-content { max-width: 90%; max-height: 90vh; border-radius: 10px; box-shadow: 0 0 30px rgba(0,0,0,0.5); }
-        .close-modal { position: absolute; top: 20px; right: 30px; color: white; font-size: 40px; cursor: pointer; transition: 0.3s; }
-        .close-modal:hover { color: #dc3545; transform: rotate(90deg); }
+        .modal-content { max-width: 90%; max-height: 90vh; border-radius: 10px; }
+        .close-modal { position: absolute; top: 20px; right: 30px; color: white; font-size: 40px; cursor: pointer; }
         .gallery-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 15px; width: 100%; max-width: 900px; background: white; padding: 25px; border-radius: 15px; }
-        .gallery-item img { width: 100%; height: 140px; object-fit: cover; border-radius: 6px; cursor: pointer; transition: 0.3s; }
-        .gallery-item img:hover { transform: scale(1.05); }
+        .gallery-item img { width: 100%; height: 140px; object-fit: cover; border-radius: 6px; cursor: pointer; }
     </style>
 </head>
 <body>
 
 <div id="login-box">
     <div style="font-size: 50px; color: #8B0000; margin-bottom: 10px;"><i class="fas fa-shield-alt"></i></div>
-    <h2 style="color:#333; margin-bottom: 5px;">Admin Login</h2>
-    <p style="color:#777; font-size:12px; margin-bottom: 25px;">Masuk untuk mengelola layanan lapas</p>
+    <h2 style="color:#333;">Admin Login</h2>
     <input id="email" type="email" placeholder="Email Administrator" style="margin-bottom:15px; background:#f9f9f9;">
     <input id="pass" type="password" placeholder="Password" style="margin-bottom:25px; background:#f9f9f9;">
     <button onclick="login()" class="btn-save-fancy" style="margin-top:0;">MASUK DASHBOARD <i class="fas fa-arrow-right"></i></button>
@@ -104,7 +88,7 @@
 
 <div id="panel-box" class="container" style="display:none;">
     <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px; padding-bottom:15px; border-bottom:1px solid #eee;">
-        <h2 style="color:#8B0000; margin:0; display:flex; align-items:center; gap:10px;"><i class="fas fa-landmark"></i> Dashboard Admin Lapas</h2>
+        <h2 style="color:#8B0000; margin:0;"><i class="fas fa-landmark"></i> Dashboard Admin Lapas</h2>
         <button onclick="logout()" class="btn btn-del-all" style="height:40px;"><i class="fas fa-sign-out-alt"></i> LOGOUT</button>
     </div>
 
@@ -127,16 +111,48 @@
                 <label>Kop Baris 4 (Alamat):</label> <input id="kop_4">
                 <label>Link Logo (URL):</label> <input id="logo_url">
                 <label>Link Header (URL):</label> <input id="header_bg">
-                <label>Pengumuman (Info Penting):</label> <textarea id="announcement" rows="3"></textarea>
+                
+                <label>Pengumuman (Teks/Gambar):</label> 
+                <div class="rich-editor-box">
+                    <div class="editor-toolbar">
+                        <button class="tool-btn" onclick="formatDoc('announcement_edit', 'bold')"><b>B</b></button>
+                        <button class="tool-btn" onclick="formatDoc('announcement_edit', 'italic')"><i>I</i></button>
+                        <button class="tool-btn" onclick="insertImage('announcement_edit')"><i class="fas fa-image"></i> Gambar</button>
+                    </div>
+                    <div id="announcement_edit" class="editable-content" contenteditable="true"></div>
+                </div>
             </div>
             
             <div>
                 <h3><i class="fas fa-file-alt"></i> Konten & Jadwal</h3>
-                <label>Syarat Kunjungan (Tampil di Menu Info):</label> <textarea id="txt_doc" rows="2"></textarea>
-                <label>Aturan Barang (Tampil di Menu Info):</label> <textarea id="txt_item" rows="2"></textarea>
                 
-                <label>Syarat PB/CB/CMB:</label> 
-                <textarea id="txt_pb_cb" rows="4" placeholder="Tulis informasi syarat disini..."></textarea>
+                <label>Syarat Kunjungan (Dokumen):</label>
+                <div class="rich-editor-box">
+                    <div class="editor-toolbar">
+                        <button class="tool-btn" onclick="formatDoc('txt_doc_edit', 'bold')"><b>B</b></button>
+                        <button class="tool-btn" onclick="insertImage('txt_doc_edit')"><i class="fas fa-image"></i></button>
+                    </div>
+                    <div id="txt_doc_edit" class="editable-content" contenteditable="true"></div>
+                </div>
+
+                <label>Aturan Barang:</label>
+                <div class="rich-editor-box">
+                    <div class="editor-toolbar">
+                        <button class="tool-btn" onclick="formatDoc('txt_item_edit', 'bold')"><b>B</b></button>
+                        <button class="tool-btn" onclick="insertImage('txt_item_edit')"><i class="fas fa-image"></i></button>
+                    </div>
+                    <div id="txt_item_edit" class="editable-content" contenteditable="true"></div>
+                </div>
+                
+                <label>Syarat PB/CB/CMB (Lengkap):</label> 
+                <div class="rich-editor-box">
+                    <div class="editor-toolbar">
+                        <button class="tool-btn" onclick="formatDoc('txt_pb_cb_edit', 'bold')"><b>B</b></button>
+                        <button class="tool-btn" onclick="formatDoc('txt_pb_cb_edit', 'italic')"><i>I</i></button>
+                        <button class="tool-btn" onclick="insertImage('txt_pb_cb_edit')"><i class="fas fa-image"></i> Gambar</button>
+                    </div>
+                    <div id="txt_pb_cb_edit" class="editable-content" contenteditable="true"></div>
+                </div>
                 
                 <label>Jadwal PIDUM & NARKOBA:</label> 
                 <div style="display:flex; gap:10px;"><input id="sch_pidum" placeholder="PIDUM"><input id="sch_narkoba" placeholder="NARKOBA"></div>
@@ -150,7 +166,7 @@
         <div style="display:grid; grid-template-columns: 1fr 1fr; gap:30px; margin-top:30px;">
             <div>
                 <h3><i class="fas fa-phone"></i> Kontak & Toko</h3>
-                <label>Info Toko Lapas:</label> <textarea id="toko_announce"></textarea>
+                <label>Info Toko Lapas:</label> <input id="toko_announce">
                 <label>Link Aplikasi Toko:</label> <input id="toko_link">
                 <label>WhatsApp Pengaduan (Tanpa 0/62):</label> <input id="wa_pengaduan">
                 <label>Link Saluran Informasi:</label> <input id="wa_channel">
@@ -179,18 +195,13 @@
                 <button onclick="deleteAllData('registrations')" class="btn btn-del-all"><i class="fas fa-trash"></i> Hapus Semua</button>
             </div>
         </div>
-        <div class="print-area" style="display:flex; gap:10px; align-items:center;">
+        <div class="print-area" style="display:flex; gap:10px; align-items:center; margin-bottom:10px;">
             <i class="fas fa-print"></i> <b>Cetak:</b>
-            <input id="p_nm_fisik" placeholder="Nama Petugas">
-            <input id="p_nip_fisik" placeholder="NIP Petugas">
+            <input id="p_nm_fisik" placeholder="Nama Petugas" style="margin:0; width:150px;">
+            <input id="p_nip_fisik" placeholder="NIP Petugas" style="margin:0; width:150px;">
             <button onclick="pdf('tb_fisik','Laporan Kunjungan Tatap Muka','p_nm_fisik','p_nip_fisik')" class="btn btn-print"><i class="fas fa-file-pdf"></i> PDF</button>
         </div>
-        <div class="table-responsive">
-            <table id="tbl_fisik">
-                <thead><tr><th>No Antrian</th><th>Waktu</th><th>Pengunjung</th><th>WBP</th><th>KTP</th><th>Status</th><th>Catatan</th><th>Aksi</th></tr></thead>
-                <tbody id="tb_fisik"></tbody>
-            </table>
-        </div>
+        <div class="table-responsive"><table id="tbl_fisik"><thead><tr><th>No Antrian</th><th>Waktu</th><th>Pengunjung</th><th>WBP</th><th>KTP</th><th>Status</th><th>Catatan</th><th>Aksi</th></tr></thead><tbody id="tb_fisik"></tbody></table></div>
     </div>
 
     <div id="t-online" style="display:none;">
@@ -203,18 +214,13 @@
                 <button onclick="deleteAllData('online_registrations')" class="btn btn-del-all"><i class="fas fa-trash"></i> Hapus Semua</button>
             </div>
         </div>
-        <div class="print-area" style="display:flex; gap:10px; align-items:center;">
+        <div class="print-area" style="display:flex; gap:10px; align-items:center; margin-bottom:10px;">
             <i class="fas fa-print"></i> <b>Cetak:</b>
-            <input id="p_nm_online" placeholder="Nama Petugas">
-            <input id="p_nip_online" placeholder="NIP Petugas">
+            <input id="p_nm_online" placeholder="Nama Petugas" style="margin:0; width:150px;">
+            <input id="p_nip_online" placeholder="NIP Petugas" style="margin:0; width:150px;">
             <button onclick="pdf('tb_online','Laporan Video Call','p_nm_online','p_nip_online')" class="btn btn-print"><i class="fas fa-file-pdf"></i> PDF</button>
         </div>
-        <div class="table-responsive">
-            <table id="tbl_online">
-                <thead><tr><th>No Antrian</th><th>Waktu</th><th>Pengunjung</th><th>WBP</th><th>KTP</th><th>Status</th><th>Catatan</th><th>Aksi</th></tr></thead>
-                <tbody id="tb_online"></tbody>
-            </table>
-        </div>
+        <div class="table-responsive"><table id="tbl_online"><thead><tr><th>No Antrian</th><th>Waktu</th><th>Pengunjung</th><th>WBP</th><th>KTP</th><th>Status</th><th>Catatan</th><th>Aksi</th></tr></thead><tbody id="tb_online"></tbody></table></div>
     </div>
 
     <div id="t-urus" style="display:none;">
@@ -227,18 +233,13 @@
                 <button onclick="deleteAllData('pengurusan')" class="btn btn-del-all"><i class="fas fa-trash"></i> Hapus Semua</button>
             </div>
         </div>
-        <div class="print-area" style="display:flex; gap:10px; align-items:center;">
+        <div class="print-area" style="display:flex; gap:10px; align-items:center; margin-bottom:10px;">
             <i class="fas fa-print"></i> <b>Cetak:</b>
-            <input id="p_nm_urus" placeholder="Nama Petugas">
-            <input id="p_nip_urus" placeholder="NIP Petugas">
+            <input id="p_nm_urus" placeholder="Nama Petugas" style="margin:0; width:150px;">
+            <input id="p_nip_urus" placeholder="NIP Petugas" style="margin:0; width:150px;">
             <button onclick="pdf('tb_urus','Laporan Pengurusan PB/CB/CMB','p_nm_urus','p_nip_urus')" class="btn btn-print"><i class="fas fa-file-pdf"></i> PDF</button>
         </div>
-        <div class="table-responsive">
-            <table id="tbl_urus">
-                <thead><tr><th>Tanggal</th><th>Jenis</th><th>WBP</th><th>Penjamin</th><th>Hubungan</th><th>Berkas</th><th>Status</th><th>Catatan</th><th>Aksi</th></tr></thead>
-                <tbody id="tb_urus"></tbody>
-            </table>
-        </div>
+        <div class="table-responsive"><table id="tbl_urus"><thead><tr><th>Tanggal</th><th>Jenis</th><th>WBP</th><th>Penjamin</th><th>Hubungan</th><th>Berkas</th><th>Status</th><th>Catatan</th><th>Aksi</th></tr></thead><tbody id="tb_urus"></tbody></table></div>
     </div>
 
     <div id="t-kritik" style="display:none;">
@@ -247,25 +248,19 @@
             <div style="display:flex; gap:5px;">
                 <button onclick="realtimeLoad('kritik_saran','tb_kritik','cnt_kritik')" class="btn btn-reset"><i class="fas fa-sync"></i> Refresh</button>
                 <button onclick="deleteAllData('kritik_saran')" class="btn btn-del-all"><i class="fas fa-trash"></i> Hapus Semua</button>
-                <button onclick="pdf('tb_kritik','Laporan Kritik & Saran','p_nm_kritik','p_nip_kritik')" class="btn btn-print"><i class="fas fa-file-pdf"></i> PDF</button>
             </div>
         </div>
-        <div class="print-area" style="display:flex; gap:10px; align-items:center;">
-            <i class="fas fa-print"></i> <b>Cetak:</b>
-            <input id="p_nm_kritik" placeholder="Nama Petugas">
-            <input id="p_nip_kritik" placeholder="NIP Petugas">
+        <div class="print-area" style="display:flex; gap:10px; align-items:center; margin-bottom:10px;">
+             <i class="fas fa-print"></i> <b>Cetak:</b>
+            <input id="p_nm_kritik" placeholder="Nama Petugas" style="margin:0; width:150px;">
+            <input id="p_nip_kritik" placeholder="NIP Petugas" style="margin:0; width:150px;">
+            <button onclick="pdf('tb_kritik','Laporan Kritik & Saran','p_nm_kritik','p_nip_kritik')" class="btn btn-print"><i class="fas fa-file-pdf"></i> PDF</button>
         </div>
-        <div class="table-responsive">
-            <table id="tbl_kritik">
-                <thead><tr><th>Tanggal</th><th>Kepuasan</th><th>Pesan / Masukan</th><th>Aksi</th></tr></thead>
-                <tbody id="tb_kritik"></tbody>
-            </table>
-        </div>
+        <div class="table-responsive"><table id="tbl_kritik"><thead><tr><th>Tanggal</th><th>Kepuasan</th><th>Pesan / Masukan</th><th>Aksi</th></tr></thead><tbody id="tb_kritik"></tbody></table></div>
     </div>
 </div>
 
 <script>
-    // 1. KONFIGURASI (SAMA DENGAN INDEX.HTML)
     const firebaseConfig = {
         apiKey: "AIzaSyDvpFZtiG_fXLOf8okjafNm7gqbJZr2pSY",
         authDomain: "lapassistem.firebaseapp.com",
@@ -302,58 +297,87 @@
         ['set','fisik','online','urus','kritik'].forEach(x => document.getElementById('t-'+x).style.display='none');
         ['b1','b2','b3','b4','b5'].forEach(x => document.getElementById(x).className='tab-btn');
         document.getElementById('t-'+id).style.display='block';
-        if(id=='set') document.getElementById('b1').classList.add('active');
-        if(id=='fisik') { document.getElementById('b2').classList.add('active'); realtimeLoad('registrations','tb_fisik','cnt_fisik'); }
-        if(id=='online') { document.getElementById('b3').classList.add('active'); realtimeLoad('online_registrations','tb_online','cnt_online'); }
-        if(id=='urus') { document.getElementById('b4').classList.add('active'); realtimeLoad('pengurusan','tb_urus','cnt_urus'); }
-        if(id=='kritik') { document.getElementById('b5').classList.add('active'); realtimeLoad('kritik_saran','tb_kritik','cnt_kritik'); }
+        document.getElementById(id=='set'?'b1':(id=='fisik'?'b2':(id=='online'?'b3':(id=='urus'?'b4':'b5')))).classList.add('active');
+        if(id=='fisik') realtimeLoad('registrations','tb_fisik','cnt_fisik');
+        if(id=='online') realtimeLoad('online_registrations','tb_online','cnt_online');
+        if(id=='urus') realtimeLoad('pengurusan','tb_urus','cnt_urus');
+        if(id=='kritik') realtimeLoad('kritik_saran','tb_kritik','cnt_kritik');
     }
 
-    // 2. REALTIME LOAD
+    // --- RICH TEXT EDITOR FUNCTIONS ---
+    window.formatDoc = function(id, cmd, val=null) {
+        document.getElementById(id).focus();
+        document.execCommand(cmd, false, val);
+    }
+    window.insertImage = function(id) {
+        const url = prompt("Masukkan Link Gambar (URL):");
+        if(url) {
+            document.getElementById(id).focus();
+            document.execCommand('insertImage', false, url);
+        }
+    }
+
+    // --- LOAD & SAVE SETTINGS (UPDATED FOR HTML CONTENT) ---
+    // List field input biasa
+    const inputFields = ['app_name','logo_url','header_bg','kop_1','kop_2','kop_3','kop_4','sch_pidum','sch_narkoba','sch_mon_am','sch_mon_pm','sch_fri','sch_sat','sch_sun','toko_announce','toko_link','wa_pengaduan','wa_channel','soc_ig','soc_fb','soc_tw','soc_yt'];
+    // Mapping DB key -> ID ContentEditable
+    const htmlFields = {'announcement': 'announcement_edit', 'txt_doc': 'txt_doc_edit', 'txt_item': 'txt_item_edit', 'txt_pb_cb': 'txt_pb_cb_edit'};
+
+    function loadSettings() {
+        db.ref('app_config').once('value', s => {
+            if(s.exists()) {
+                const d = s.val();
+                inputFields.forEach(f => { if(document.getElementById(f)) document.getElementById(f).value = d[f]||""; });
+                for(let key in htmlFields) {
+                    if(document.getElementById(htmlFields[key])) document.getElementById(htmlFields[key]).innerHTML = d[key] || "";
+                }
+            }
+        });
+    }
+
+    function saveConf() {
+        const d = {};
+        inputFields.forEach(f => { if(document.getElementById(f)) d[f] = document.getElementById(f).value; });
+        for(let key in htmlFields) {
+            if(document.getElementById(htmlFields[key])) d[key] = document.getElementById(htmlFields[key]).innerHTML;
+        }
+        db.ref('app_config').update(d).then(() => alert("✅ Pengaturan Berhasil Disimpan!"));
+    }
+
+    // --- STANDARD FUNCTIONS (SAMA SEPERTI SEBELUMNYA) ---
     function realtimeLoad(path, tbodyId, cntId) {
         const tb = document.getElementById(tbodyId);
         const cnt = document.getElementById(cntId);
         if(currentListener) db.ref().off();
-        
-        tb.innerHTML = "<tr><td colspan='9' style='text-align:center; padding:20px; color:#8B0000;'><i class='fas fa-spinner fa-spin'></i> Menghubungkan ke Database...</td></tr>";
+        tb.innerHTML = "<tr><td colspan='9' style='text-align:center; padding:20px;'><i class='fas fa-spinner fa-spin'></i> Memuat data...</td></tr>";
         cnt.innerText = "Connecting...";
         
         const ref = db.ref(path).limitToLast(500);
         currentListener = ref;
         
-        ref.on('value', snapshot => {
-            render(snapshot, tbodyId, path, cntId);
-        });
+        ref.on('value', snapshot => { render(snapshot, tbodyId, path, cntId); });
     }
 
     function load(path, tbodyId, dateId) {
         const d = document.getElementById(dateId).value;
         if(!d) return alert("Pilih tanggal dulu!");
         if(currentListener) db.ref().off();
-        const tb = document.getElementById(tbodyId);
-        tb.innerHTML = "<tr><td colspan='9' style='text-align:center; padding:20px;'>Mencari data tanggal "+d+"...</td></tr>";
-        
-        db.ref(path).orderByChild('tgl').equalTo(d).once('value').then(snap => {
-            render(snap, tbodyId, path, null);
-        });
+        document.getElementById(tbodyId).innerHTML = "<tr><td colspan='9' style='text-align:center; padding:20px;'>Mencari...</td></tr>";
+        db.ref(path).orderByChild('tgl').equalTo(d).once('value').then(snap => { render(snap, tbodyId, path, null); });
     }
 
     function deleteAllData(path) {
-        if(confirm("⚠️ HAPUS SEMUA DATA? Data tidak bisa dikembalikan!")) {
-            if(confirm("Yakin ingin melanjutkan menghapus seluruh data di menu ini?")) {
-                db.ref(path).remove().then(() => alert("✅ Semua data berhasil dihapus."));
-            }
+        if(confirm("⚠️ HAPUS SEMUA DATA? Data tidak bisa dikembalikan!") && confirm("Yakin ingin melanjutkan?")) {
+            db.ref(path).remove().then(() => alert("✅ Data bersih."));
         }
     }
 
-    // 3. RENDER DATA
     function render(snap, tbodyId, path, cntId) {
         const tb = document.getElementById(tbodyId);
         tb.innerHTML = "";
-        
         if(!snap.exists()) { 
             tb.innerHTML = "<tr><td colspan='9' style='text-align:center; padding:20px; color:#999;'>Belum ada data.</td></tr>"; 
-            if(cntId) document.getElementById(cntId).innerText = "Total: 0 Data";
+            if(cntId) document.getElementById(cntId).innerText = "Total: 0";
             return; 
         }
 
@@ -365,30 +389,25 @@
             arr.push({k:key, ...val});
         });
         
-        if(cntId) document.getElementById(cntId).innerText = `Total: ${arr.length} Data`;
+        if(cntId) document.getElementById(cntId).innerText = `Total: ${arr.length}`;
 
         arr.reverse().forEach(v => {
             try {
                 let row = `<tr data-key="${v.k}">`;
-                const btnAcc = `<button onclick="upd('${path}','${v.k}','accepted')" class="act-btn bg-acc" title="Terima"><i class="fas fa-check"></i></button>`;
-                const btnRej = `<button onclick="upd('${path}','${v.k}','rejected')" class="act-btn bg-rej" title="Tolak"><i class="fas fa-times"></i></button>`;
-                const btnDel = `<button onclick="del('${path}','${v.k}')" class="act-btn bg-rej" title="Hapus"><i class="fas fa-trash"></i></button>`;
+                const btnAcc = `<button onclick="upd('${path}','${v.k}','accepted')" class="act-btn bg-acc"><i class="fas fa-check"></i></button>`;
+                const btnRej = `<button onclick="upd('${path}','${v.k}','rejected')" class="act-btn bg-rej"><i class="fas fa-times"></i></button>`;
+                const btnDel = `<button onclick="del('${path}','${v.k}')" class="act-btn bg-rej"><i class="fas fa-trash"></i></button>`;
                 const actions = `<div style="display:flex; justify-content:center;">${btnAcc}${btnRej}${btnDel}</div>`;
-
-                let statusBadge = '<span class="badge bg-wait">MENUNGGU</span>';
-                if(v.status === 'accepted') statusBadge = '<span class="badge bg-acc">DISETUJUI</span>';
-                if(v.status === 'rejected') statusBadge = '<span class="badge bg-rej">DITOLAK</span>';
-
-                const noteInput = `<input id="n-${v.k}" value="${v.note||''}" placeholder="Catatan..." onblur="saveNote('${path}','${v.k}',this.value)" style="font-size:11px;">`;
+                
+                let statusBadge = v.status === 'accepted' ? '<span class="badge bg-acc">DISETUJUI</span>' : (v.status === 'rejected' ? '<span class="badge bg-rej">DITOLAK</span>' : '<span class="badge bg-wait">MENUNGGU</span>');
+                const noteInput = `<input id="n-${v.k}" value="${v.note||''}" placeholder="Catatan..." onblur="saveNote('${path}','${v.k}',this.value)" style="font-size:11px; margin:0;">`;
 
                 if(path === 'kritik_saran') {
                     row += `<td>${v.tgl}</td><td><b>${v.kepuasan}</b></td><td>${v.pesan}</td><td style="text-align:center">${btnDel}</td>`;
-                } 
-                else if (path === 'pengurusan') {
+                } else if (path === 'pengurusan') {
                     let fileBtn = v.images ? `<button onclick='showFiles("${v.k}")' style="background:#17a2b8; color:white; border:none; padding:5px 8px; border-radius:4px; cursor:pointer; font-size:10px;"><i class="fas fa-folder-open"></i> BERKAS</button>` : '-';
                     row += `<td>${v.tgl}</td><td>${v.jenis}</td><td><b>${v.wbp}</b></td><td>${v.penjamin}<br><small>${v.nik}</small></td><td>${v.hub}</td><td style="text-align:center">${fileBtn}</td><td style="text-align:center">${statusBadge}</td><td>${noteInput}</td><td>${actions}</td>`;
-                } 
-                else { 
+                } else {
                     let imgBtn = v.ktpUrl ? `<img src="${v.ktpUrl}" style="height:35px; border-radius:3px; cursor:pointer; border:1px solid #ccc;" onclick="showSingleImg('${v.k}')">` : '-';
                     row += `<td style="font-weight:bold; color:#8B0000; text-align:center;">${v.noAntrian||'-'}</td><td>${v.tgl}<br><small style="color:#666;">${v.jam||''}</small></td><td><b>${v.nama}</b><br><small>${v.telp}</small></td><td>${v.wbp}</td><td style="text-align:center">${imgBtn}</td><td style="text-align:center">${statusBadge}</td><td>${noteInput}</td><td>${actions}</td>`;
                 }
@@ -402,42 +421,14 @@
     function saveNote(path, key, val) { db.ref(path+'/'+key).update({note:val}); }
     function del(path, key) { if(confirm("Hapus data ini?")) { db.ref(path+'/'+key).remove(); } }
 
-    // 4. PENYIMPANAN PENGATURAN
-    const fields = [
-        'app_name','logo_url','header_bg','announcement',
-        'kop_1','kop_2','kop_3','kop_4',
-        'sch_pidum', 'sch_narkoba','sch_mon_am','sch_mon_pm','sch_fri','sch_sat','sch_sun', 
-        'txt_doc','txt_item',
-        'txt_pb_cb', // INI KUNCINYA (SUDAH ADA)
-        'toko_announce','toko_link',
-        'wa_pengaduan', 'wa_channel',
-        'soc_ig','soc_fb','soc_tw','soc_yt'
-    ];
-
-    function loadSettings() {
-        db.ref('app_config').once('value', s => {
-            if(s.exists()) {
-                const d = s.val();
-                fields.forEach(f => { if(document.getElementById(f)) document.getElementById(f).value = d[f]||""; });
-            }
-        });
-    }
-    function saveConf() {
-        const d = {};
-        fields.forEach(f => { if(document.getElementById(f)) d[f] = document.getElementById(f).value; });
-        db.ref('app_config').update(d).then(() => alert("Pengaturan Berhasil Disimpan!"));
-    }
-
-    // 5. MODAL & PDF
-    window.showSingleImg = (key) => { const data = DATA_CACHE[key]; if(data && data.ktpUrl) { document.getElementById('imgView').src = data.ktpUrl; document.getElementById('imgModal').style.display = 'flex'; } }
+    window.showSingleImg = (key) => { const d = DATA_CACHE[key]; if(d && d.ktpUrl) { document.getElementById('imgView').src = d.ktpUrl; document.getElementById('imgModal').style.display = 'flex'; } }
     window.showFiles = (key) => {
-        const data = DATA_CACHE[key];
-        const grid = document.getElementById('galleryGrid'); grid.innerHTML = '';
-        if(data && data.images) {
+        const d = DATA_CACHE[key]; const grid = document.getElementById('galleryGrid'); grid.innerHTML = '';
+        if(d && d.images) {
             const labels = {'u_ktp_wbp': 'KTP WBP', 'u_kk_wbp': 'KK WBP', 'u_ktp_penj': 'KTP Penjamin', 'u_kk_penj': 'KK Penjamin', 'u_surat_1': 'Surat Pernyataan', 'u_surat_2': 'Surat Jaminan', 'u_foto': 'Foto Penjamin'};
-            for(let k in data.images) {
+            for(let k in d.images) {
                 const div = document.createElement('div'); div.className = 'gallery-item';
-                div.innerHTML = `<span style="font-size:10px; margin-bottom:5px;">${labels[k] || k}</span><img src="${data.images[k]}" onclick="document.getElementById('imgView').src=this.src; document.getElementById('imgModal').style.display='flex';">`;
+                div.innerHTML = `<span style="font-size:10px; margin-bottom:5px;">${labels[k] || k}</span><img src="${d.images[k]}" onclick="document.getElementById('imgView').src=this.src; document.getElementById('imgModal').style.display='flex';">`;
                 grid.appendChild(div);
             }
             document.getElementById('galleryModal').style.display='flex';
@@ -446,39 +437,27 @@
     window.closeM = (id) => document.getElementById(id).style.display='none';
 
     window.pdf = (tableId, title, nmId, nipId) => {
-        const { jsPDF } = window.jspdf;
-        const doc = new jsPDF('l', 'mm', 'a4');
-        const petugas = document.getElementById(nmId).value;
-        const nip = document.getElementById(nipId).value;
-        if(!petugas) return alert("Mohon isi Nama Petugas penandatangan!");
+        const { jsPDF } = window.jspdf; const doc = new jsPDF('l', 'mm', 'a4');
+        const petugas = document.getElementById(nmId).value; const nip = document.getElementById(nipId).value;
+        if(!petugas) return alert("Mohon isi Nama Petugas!");
 
         const k1 = document.getElementById('kop_1').value.toUpperCase();
         const k2 = document.getElementById('kop_2').value.toUpperCase();
         const k3 = document.getElementById('kop_3').value.toUpperCase();
         const k4 = document.getElementById('kop_4').value;
 
-        doc.setFont("times", "bold"); doc.setFontSize(14);
-        doc.text(k1, 148, 15, {align:'center'});
+        doc.setFont("times", "bold"); doc.setFontSize(14); doc.text(k1, 148, 15, {align:'center'});
         doc.text(k2, 148, 22, {align:'center'});
-        doc.setFontSize(16);
-        doc.text(k3, 148, 30, {align:'center'});
-        doc.setFontSize(11); doc.setFont("times", "normal");
-        doc.text(k4, 148, 37, {align:'center'});
+        doc.setFontSize(16); doc.text(k3, 148, 30, {align:'center'});
+        doc.setFontSize(11); doc.setFont("times", "normal"); doc.text(k4, 148, 37, {align:'center'});
         doc.setLineWidth(0.5); doc.line(10, 42, 287, 42);
 
-        doc.setFont("helvetica", "bold"); doc.setFontSize(12);
-        doc.text(title.toUpperCase(), 148, 52, {align:'center'});
-        doc.setFontSize(10); doc.setFont("helvetica", "normal");
-        doc.text("Dicetak Tanggal: " + new Date().toLocaleDateString('id-ID'), 148, 58, {align:'center'});
+        doc.setFont("helvetica", "bold"); doc.setFontSize(12); doc.text(title.toUpperCase(), 148, 52, {align:'center'});
+        doc.setFontSize(10); doc.setFont("helvetica", "normal"); doc.text("Dicetak Tanggal: " + new Date().toLocaleDateString('id-ID'), 148, 58, {align:'center'});
 
         const table = document.getElementById(tableId);
-        const headers = [];
-        const body = [];
-
-        for(let th of table.parentElement.querySelectorAll('thead th')) {
-            if(th.innerText!=='Aksi' && th.innerText!=='KTP' && th.innerText!=='Berkas') headers.push(th.innerText);
-        }
-
+        const headers = []; const body = [];
+        for(let th of table.parentElement.querySelectorAll('thead th')) { if(th.innerText!=='Aksi' && th.innerText!=='KTP' && th.innerText!=='Berkas') headers.push(th.innerText); }
         for (let row of table.rows) {
             const rowData = [];
             for (let i = 0; i < row.cells.length; i++) {
@@ -491,24 +470,13 @@
             if(rowData.length > 0) body.push(rowData);
         }
 
-        doc.autoTable({
-            head: [headers], body: body, startY: 65, theme: 'grid',
-            styles: { fontSize: 9, cellPadding: 3, valign: 'middle' },
-            headStyles: { fillColor: [139, 0, 0], textColor: 255, halign:'center' },
-            alternateRowStyles: { fillColor: [245, 245, 245] }
-        });
-
-        let finalY = doc.lastAutoTable.finalY + 20;
-        if(finalY > 170) { doc.addPage(); finalY = 20; }
+        doc.autoTable({ head: [headers], body: body, startY: 65, theme: 'grid', styles: { fontSize: 9, cellPadding: 3, valign: 'middle' }, headStyles: { fillColor: [139, 0, 0], textColor: 255, halign:'center' }, alternateRowStyles: { fillColor: [245, 245, 245] } });
+        let finalY = doc.lastAutoTable.finalY + 20; if(finalY > 170) { doc.addPage(); finalY = 20; }
         const dateStr = new Date().toLocaleDateString('id-ID', {day: 'numeric', month: 'long', year: 'numeric'});
-        doc.setFont("times", "normal");
-        doc.text(`Arga Makmur, ${dateStr}`, 230, finalY);
+        doc.setFont("times", "normal"); doc.text(`Arga Makmur, ${dateStr}`, 230, finalY);
         doc.text("Petugas Layanan,", 230, finalY+6);
-        doc.setFont("times", "bold");
-        doc.text(`( ${petugas} )`, 230, finalY+25);
-        doc.setFont("times", "normal");
-        doc.text(`NIP. ${nip}`, 230, finalY+30);
-
+        doc.setFont("times", "bold"); doc.text(`( ${petugas} )`, 230, finalY+25);
+        doc.setFont("times", "normal"); doc.text(`NIP. ${nip}`, 230, finalY+30);
         doc.save(title.replace(/\s+/g, '_') + ".pdf");
     }
 </script>
