@@ -2,220 +2,265 @@
 <html lang="id">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <meta name="theme-color" content="#333333">
-    <title>Layanan Lapas Digital</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Panel Lapas (Final Pro)</title>
     
-    <script defer src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
-    <script defer src="https://www.gstatic.com/firebasejs/10.7.1/firebase-database-compat.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700;800;900&family=Share+Tech+Mono&display=swap" rel="stylesheet">
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-database-compat.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.25/jspdf.plugin.autotable.min.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
     
     <style>
-        * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
-        body {
-            font-family: 'Poppins', sans-serif;
-            background: #eef2f5;
-            margin: 0;
-            display: flex;
-            justify-content: center;
-            min-height: 100vh;
-        }
-        .app-container {
-            width: 100%;
-            max-width: 480px;
-            background: #f8f9fa;
-            min-height: 100vh;
-            box-shadow: 0 0 40px rgba(0,0,0,0.15);
-            display: flex;
-            flex-direction: column;
-            position: relative;
-        }
+        body { font-family: 'Poppins', sans-serif; background: #f0f2f5; padding: 20px; margin: 0; }
+        .container { max-width: 1400px; margin: 0 auto; background: white; padding: 25px; border-radius: 15px; box-shadow: 0 10px 30px rgba(0,0,0,0.08); }
         
-        /* HEADER 3D */
-        .header {
-            position: relative;
-            height: 220px;
-            background-color: #333;
-            background-size: cover;
-            background-position: center;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            color: white;
-            border-bottom-left-radius: 40px;
-            border-bottom-right-radius: 40px;
-            z-index: 10;
-            padding: 20px;
-            box-shadow: 0 10px 20px rgba(0,0,0,0.25);
-        }
-        .header::before {
-            content: ''; position: absolute; inset: 0;
-            background: linear-gradient(to bottom, rgba(0,0,0,0.3), rgba(0,0,0,0.7));
-            border-bottom-left-radius: 40px;
-            border-bottom-right-radius: 40px;
-            z-index: 1;
-        }
-        .header-content { position: relative; z-index: 2; text-align: center; width: 100%; display: flex; flex-direction: column; align-items: center; }
+        .tabs { display: flex; border-bottom: 2px solid #eee; margin-bottom: 25px; gap: 10px; overflow-x: auto; padding-bottom: 5px; }
+        .tab-btn { padding: 12px 25px; background: none; border: none; cursor: pointer; font-weight: 600; color: #777; border-radius: 8px; transition: 0.3s; white-space: nowrap; display: flex; align-items: center; gap: 8px; }
+        .tab-btn:hover { background: #f5f5f5; color: #555; }
+        .tab-btn.active { background: #e0e0e0; color: #333; border: 1px solid #ccc; }
         
-        .logo-area {
-            width: auto; height: 90px; margin-bottom: 5px;
-            filter: drop-shadow(0 8px 8px rgba(0,0,0,0.6));
-            transform: perspective(500px) translateZ(30px);
-        }
-        .logo-area img { height: 100%; width: auto; object-fit: contain; }
-        .app-name { 
-            font-weight: 900; font-size: 26px; margin: 0; 
-            text-transform: uppercase; letter-spacing: 1px; 
-            text-shadow: 0 4px 10px rgba(0,0,0,0.9); 
-        }
+        /* EDITOR STYLE */
+        .rich-box { border: 1px solid #ccc; border-radius: 8px; margin-bottom: 15px; background: #fff; overflow: hidden; }
+        .rich-toolbar { background: #f1f1f1; padding: 8px; border-bottom: 1px solid #ccc; display: flex; gap: 5px; }
+        .tool-btn { background: white; border: 1px solid #bbb; border-radius: 4px; padding: 4px 8px; cursor: pointer; font-size: 12px; }
+        .tool-btn:hover { background: #ddd; }
+        .rich-edit { min-height: 120px; max-height: 300px; overflow-y: auto; padding: 10px; outline: none; font-size: 13px; }
+        .rich-edit:focus { background: #fafafa; }
+        .rich-edit img { max-width: 100%; height: auto; }
 
-        /* INFO PENTING (DI BAWAH BACKGROUND) */
-        #announcement {
-            /* Posisi relatif terhadap flow halaman, bukan absolute di atas header */
-            margin: -25px 20px 10px 20px; /* Minus margin top untuk sedikit overlap estetis */
-            position: relative;
-            z-index: 11; /* Di atas shadow header */
-            
-            background: linear-gradient(135deg, #FFD700 0%, #FDB931 100%);
-            color: #222;
-            padding: 15px 20px;
-            text-align: center;
-            display: none;
-            
-            border-radius: 15px;
-            border: 2px solid #fff;
-            box-shadow: 0 10px 20px rgba(0,0,0,0.1);
-            animation: slideDown 0.5s ease-out;
+        .btn-save-fancy {
+            background: linear-gradient(135deg, #28a745 0%, #218838 100%);
+            color: white; border: none; padding: 16px 30px; border-radius: 50px;
+            font-size: 15px; font-weight: 700; letter-spacing: 1px; text-transform: uppercase;
+            box-shadow: 0 5px 15px rgba(40, 167, 69, 0.3); transition: all 0.3s ease;
+            cursor: pointer; width: 100%; margin-top: 30px; display: flex; align-items: center; justify-content: center; gap: 10px;
         }
-        @keyframes slideDown { from { opacity: 0; transform: translateY(-10px); } to { opacity: 1; transform: translateY(0); } }
-
-        /* CHAT AREA */
-        #chat-box { flex: 1; padding: 10px 20px 20px 20px; overflow-y: auto; display: flex; flex-direction: column; gap: 15px; padding-bottom: 60px; }
-        .msg { max-width: 95%; animation: popIn 0.3s ease; }
+        .btn-save-fancy:hover { transform: translateY(-3px); box-shadow: 0 8px 25px rgba(40, 167, 69, 0.5); }
         
-        /* JAM REALTIME */
-        .clock-box {
-            text-align: center;
-            padding: 15px;
-            background: white;
-            border-radius: 15px;
-            margin-bottom: 10px;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.05);
-            border: 1px solid #eee;
-        }
-        .time-display { font-family: 'Share Tech Mono', monospace; font-size: 34px; font-weight: bold; color: #333; letter-spacing: 2px; }
-        .date-display { font-size: 11px; color: #777; font-weight: 600; text-transform: uppercase; margin-bottom: 5px; }
-        .status-msg { font-size: 11px; padding: 6px 10px; border-radius: 6px; display: inline-block; width: 100%; line-height: 1.4; }
+        .table-responsive { overflow-x: auto; max-height: 65vh; overflow-y: auto; border: 1px solid #eee; border-radius: 10px; scrollbar-width: thin; }
+        table { width: 100%; border-collapse: collapse; font-size: 12px; min-width: 1000px; }
+        th, td { border-bottom: 1px solid #eee; padding: 14px; text-align: left; vertical-align: middle; }
+        th { background: #555; color: white; position: sticky; top: 0; z-index: 10; text-transform: uppercase; font-size: 11px; }
+        tr:nth-child(even) { background: #fafafa; }
+        tr:hover { background-color: #eee; }
         
-        .open { color: #155724; background: #d4edda; border: 1px solid #c3e6cb; font-weight: bold; }
-        .closed { color: #721c24; background: #fff5f5; border: 1px solid #ffcdd2; font-weight: bold; }
+        input, select { padding: 12px; border: 1px solid #ddd; border-radius: 8px; width: 100%; box-sizing: border-box; font-family: 'Poppins', sans-serif; font-size: 13px; transition: 0.3s; margin-bottom: 5px; }
+        input:focus { border-color: #555; outline: none; box-shadow: 0 0 0 3px rgba(85, 85, 85, 0.1); }
+        label { font-size: 12px; font-weight: 600; color: #555; margin-top: 15px; display: block; margin-bottom: 5px; }
+        h3 { color: #555; border-bottom: 2px solid #eee; padding-bottom: 10px; margin-bottom: 20px; font-size: 16px; display: flex; align-items: center; gap: 10px; }
 
-        /* TOMBOL MENU 3D */
-        .btn {
-            background: linear-gradient(145deg, #ffffff, #e6e6e6);
-            color: #444;
-            padding: 18px 20px;
-            border-radius: 15px;
-            font-size: 14px;
-            font-weight: 700;
-            cursor: pointer;
-            width: 100%;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            border: 1px solid white;
-            margin-bottom: 12px;
-            box-shadow: 5px 5px 10px #d1d1d1, -5px -5px 10px #ffffff;
-            transition: transform 0.1s;
-        }
-        .btn:active { transform: scale(0.98); }
-        .btn i { font-size: 18px; color: #555; }
-
-        /* TOMBOL KEMBALI */
-        .btn-back {
-            background: linear-gradient(135deg, #FFD700, #FDB931);
-            color: #5a4a00;
-            justify-content: center;
-            box-shadow: 0 4px 10px rgba(218, 165, 32, 0.3);
-            border: none;
-        }
-        .btn-back i { color: #5a4a00; margin-left: 8px; }
-
-        /* SOSMED BUTTONS */
-        .btn-wa { background: #25D366; color: white; border:none; } .btn-wa i { color: white; }
-        .btn-ig { background: linear-gradient(45deg, #f09433, #e6683c, #dc2743, #cc2366, #bc1888); color: white; border:none; } .btn-ig i { color: white; }
-        .btn-fb { background: #1877F2; color: white; border:none; } .btn-fb i { color: white; }
-        .btn-tw { background: #000000; color: white; border:none; } .btn-tw i { color: white; }
-        .btn-yt { background: #FF0000; color: white; border:none; } .btn-yt i { color: white; }
-
-        /* BOARDING PASS */
-        .boarding-pass {
-            background: white; border-radius: 16px; overflow: hidden;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.15); margin-top: 10px; border: 1px solid #eee; position: relative;
-        }
-        .bp-header { background: #333; color: #FFD700; padding: 15px; text-align: center; font-weight: 800; letter-spacing: 2px; font-size: 16px; border-bottom: 2px dashed #FFD700; }
-        .bp-body { padding: 20px; }
-        .bp-row { display: flex; justify-content: space-between; margin-bottom: 12px; border-bottom: 1px solid #f5f5f5; padding-bottom: 5px; }
-        .bp-label { font-size: 11px; color: #888; text-transform: uppercase; }
-        .bp-val { font-size: 13px; font-weight: 700; color: #333; text-align: right; }
-        .bp-antrian { text-align: center; margin: 20px 0; padding: 10px; background: #f8f9fa; border-radius: 8px; border: 1px solid #ddd; }
-        .bp-antrian-label { font-size: 12px; color: #555; letter-spacing: 1px; }
-        .bp-antrian-num { font-size: 42px; font-weight: 800; color: #333; line-height: 1; margin-top: 5px; font-family: 'Share Tech Mono', monospace; }
-        .bp-status { text-align: center; margin-bottom: 15px; }
-        .bp-footer { background: #f4f4f4; padding: 15px; text-align: center; font-size: 10px; color: #777; border-top: 2px dashed #ccc; display: flex; justify-content: space-between; align-items: center; }
-        .boarding-pass::before, .boarding-pass::after { content: ''; position: absolute; top: 58px; width: 20px; height: 20px; background: #f8f9fa; border-radius: 50%; }
-        .boarding-pass::before { left: -10px; } .boarding-pass::after { right: -10px; }
-
-        /* FORM STYLE */
-        .form-box { background: white; padding: 20px; border-radius: 15px; box-shadow: 0 5px 15px rgba(0,0,0,0.05); }
-        .inp { width: 100%; padding: 14px; margin-bottom: 10px; border: 1px solid #ddd; border-radius: 8px; font-size: 14px; background: #fafafa; }
-        .inp:focus { border-color: #333; background: #fff; outline: none; }
-        .submit-btn { background: linear-gradient(to right, #333, #000); color: #FFD700; border: none; padding: 16px; border-radius: 10px; font-weight: 800; width: 100%; cursor: pointer; margin-top: 10px; box-shadow: 0 4px 10px rgba(0,0,0,0.3); }
-
-        #resultModal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.9); flex-direction: column; justify-content: center; align-items: center; padding: 20px; z-index: 999; }
-        #resultImg { max-width: 100%; max-height: 70vh; border-radius: 10px; }
-        .close-modal { position: absolute; top: 20px; right: 20px; color: white; font-size: 30px; cursor: pointer; background: none; border: none; }
+        .filter-bar { background: #fff; padding: 15px; border-radius: 10px; display: flex; gap: 10px; margin-bottom: 15px; flex-wrap: wrap; align-items: center; border: 1px solid #eee; box-shadow: 0 2px 10px rgba(0,0,0,0.02); }
+        .data-counter { font-weight: bold; color: #555; background: #eee; padding: 8px 15px; border-radius: 50px; font-size: 12px; border: 1px solid #ccc; }
         
-        .badge { padding: 5px 10px; border-radius: 4px; font-size: 11px; font-weight: bold; text-transform: uppercase; }
-        .bg-wait { background: #fff3e0; color: #ef6c00; } .bg-acc { background: #e8f5e9; color: #2e7d32; } .bg-rej { background: #ffebee; color: #c62828; }
-
-        @keyframes popIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
-        #loader { position: absolute; inset: 0; background: white; display: flex; flex-direction: column; justify-content: center; align-items: center; z-index: 99; }
+        .btn { padding: 9px 18px; border: none; border-radius: 6px; color: white; font-weight: 600; cursor: pointer; height: 40px; font-size: 12px; display: flex; align-items: center; gap: 6px; transition: 0.2s; }
+        .btn:hover { opacity: 0.9; transform: translateY(-1px); }
+        .btn-search { background: #007bff; } .btn-print { background: #17a2b8; } .btn-reset { background: #343a40; } .btn-del-all { background: #dc3545; }
         
-        /* Table & Rich Text */
-        .spec-table { width: 100%; border-collapse: collapse; font-size: 12px; margin-bottom: 10px; border-radius: 8px; overflow: hidden; border: 1px solid #eee; background: white; }
-        .spec-table th { background: #555; color: white; padding: 10px; text-align: left; }
-        .spec-table td { padding: 10px; border-bottom: 1px solid #eee; }
-        .rich-content { font-size: 13px; line-height: 1.6; color: #333; }
-        .rich-content ul { padding-left: 20px; margin: 5px 0; }
-        .rich-content img { max-width: 100%; border-radius: 5px; margin: 5px 0; }
+        .badge { padding: 5px 12px; border-radius: 30px; font-size: 10px; font-weight: 700; letter-spacing: 0.5px; color: white; }
+        .bg-wait { background: #6c757d; } .bg-acc { background: #28a745; } .bg-rej { background: #dc3545; }
+        .act-btn { width: 34px; height: 34px; border: none; border-radius: 8px; color: white; cursor: pointer; margin-right: 4px; transition: 0.2s; display: flex; align-items: center; justify-content: center; }
+        .act-btn:hover { transform: scale(1.15); }
+
+        #login-box { max-width: 400px; margin: 80px auto; background: white; padding: 40px; border-radius: 20px; text-align: center; box-shadow: 0 20px 60px rgba(0,0,0,0.1); }
+        #imgModal, #galleryModal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.95); z-index: 999; justify-content: center; align-items: center; padding: 20px; overflow-y: auto; }
+        .modal-content { max-width: 90%; max-height: 90vh; border-radius: 10px; box-shadow: 0 0 30px rgba(0,0,0,0.5); }
+        .close-modal { position: absolute; top: 20px; right: 30px; color: white; font-size: 40px; cursor: pointer; transition: 0.3s; }
+        .gallery-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 15px; width: 100%; max-width: 900px; background: white; padding: 25px; border-radius: 15px; }
+        .gallery-item img { width: 100%; height: 140px; object-fit: cover; border-radius: 6px; cursor: pointer; transition: 0.3s; }
     </style>
 </head>
 <body>
 
-<div id="resultModal">
-    <button class="close-modal" onclick="closeResultModal()">&times;</button>
-    <img id="resultImg" src="" alt="Tiket">
-    <div style="color:white; text-align:center; margin-top:15px; font-size:13px;">Tekan tahan gambar untuk menyimpan</div>
+<div id="login-box">
+    <div style="font-size: 50px; color: #555; margin-bottom: 10px;"><i class="fas fa-shield-alt"></i></div>
+    <h2 style="color:#333; margin-bottom: 5px;">Admin Login</h2>
+    <p style="color:#777; font-size:12px; margin-bottom: 25px;">Masuk untuk mengelola layanan lapas</p>
+    <input id="email" type="email" placeholder="Email Administrator" style="margin-bottom:15px; background:#f9f9f9;">
+    <input id="pass" type="password" placeholder="Password" style="margin-bottom:25px; background:#f9f9f9;">
+    <button onclick="login()" class="btn-save-fancy" style="margin-top:0;">MASUK DASHBOARD <i class="fas fa-arrow-right"></i></button>
 </div>
 
-<div class="app-container">
-    <div id="loader"><i class="fas fa-circle-notch fa-spin fa-2x" style="color:#333;"></i></div>
-    
-    <div class="header" id="header_bg">
-        <div class="header-content">
-            <div class="logo-area"><img id="logo_img" src="" alt="Logo" loading="lazy"></div>
-            <h1 class="app-name" id="app_title">Loading...</h1>
-        </div>
+<div id="imgModal"><span class="close-modal" onclick="closeM('imgModal')">&times;</span><img id="imgView" class="modal-content"></div>
+<div id="galleryModal"><span class="close-modal" onclick="closeM('galleryModal')">&times;</span><div id="galleryGrid" class="gallery-grid"></div></div>
+
+<div id="panel-box" class="container" style="display:none;">
+    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px; padding-bottom:15px; border-bottom:1px solid #eee;">
+        <h2 style="color:#555; margin:0; display:flex; align-items:center; gap:10px;"><i class="fas fa-landmark"></i> Dashboard Admin Lapas</h2>
+        <button onclick="logout()" class="btn btn-del-all" style="height:40px;"><i class="fas fa-sign-out-alt"></i> LOGOUT</button>
     </div>
-    
-    <div id="announcement"></div>
-    
-    <div id="chat-box"></div>
-    <div style="text-align:center; padding:15px; font-size:11px; color:#aaa; margin-top: auto;">&copy; 2026 Sistem Lapas Digital</div>
+
+    <div class="tabs">
+        <button class="tab-btn active" onclick="tab('set')" id="b1"><i class="fas fa-cogs"></i> PENGATURAN</button>
+        <button class="tab-btn" onclick="tab('fisik')" id="b2"><i class="fas fa-users"></i> TATAP MUKA</button>
+        <button class="tab-btn" onclick="tab('online')" id="b3"><i class="fas fa-video"></i> VIDEO CALL</button>
+        <button class="tab-btn" onclick="tab('urus')" id="b4"><i class="fas fa-folder-open"></i> PENGURUSAN</button>
+        <button class="tab-btn" onclick="tab('kritik')" id="b5"><i class="fas fa-comments"></i> KRITIK SARAN</button>
+    </div>
+
+    <div id="t-set">
+        <div style="display:grid; grid-template-columns: 1fr 1fr; gap:30px;">
+            <div>
+                <h3><i class="fas fa-id-badge"></i> Identitas & Kop Surat</h3>
+                <label>Nama Aplikasi:</label> <input id="app_name">
+                <label>Kop Baris 1 (Kementerian):</label> <input id="kop_1">
+                <label>Kop Baris 2 (Wilayah):</label> <input id="kop_2">
+                <label>Kop Baris 3 (Nama Lapas):</label> <input id="kop_3">
+                <label>Kop Baris 4 (Alamat):</label> <input id="kop_4">
+                <label>Link Logo (URL):</label> <input id="logo_url">
+                <label>Link Header (URL):</label> <input id="header_bg">
+                
+                <label>Pengumuman (Info Penting):</label>
+                <div class="rich-box">
+                    <div class="rich-toolbar">
+                        <button class="tool-btn" onclick="fmt('announcement_edit', 'bold')"><b>B</b></button>
+                        <button class="tool-btn" onclick="fmt('announcement_edit', 'italic')"><i>I</i></button>
+                        <button class="tool-btn" onclick="insImg('announcement_edit')"><i class="fas fa-image"></i></button>
+                    </div>
+                    <div id="announcement_edit" class="rich-edit" contenteditable="true"></div>
+                </div>
+            </div>
+            
+            <div>
+                <h3><i class="fas fa-file-alt"></i> Konten & Jadwal</h3>
+                
+                <label>Syarat Kunjungan (Dokumen):</label>
+                <div class="rich-box">
+                    <div class="rich-toolbar">
+                        <button class="tool-btn" onclick="fmt('txt_doc_edit', 'bold')"><b>B</b></button>
+                        <button class="tool-btn" onclick="fmt('txt_doc_edit', 'insertUnorderedList')"><i class="fas fa-list-ul"></i></button>
+                        <button class="tool-btn" onclick="insImg('txt_doc_edit')"><i class="fas fa-image"></i></button>
+                    </div>
+                    <div id="txt_doc_edit" class="rich-edit" contenteditable="true"></div>
+                </div>
+
+                <label>Aturan Barang:</label>
+                <div class="rich-box">
+                    <div class="rich-toolbar">
+                        <button class="tool-btn" onclick="fmt('txt_item_edit', 'bold')"><b>B</b></button>
+                        <button class="tool-btn" onclick="fmt('txt_item_edit', 'insertUnorderedList')"><i class="fas fa-list-ul"></i></button>
+                        <button class="tool-btn" onclick="insImg('txt_item_edit')"><i class="fas fa-image"></i></button>
+                    </div>
+                    <div id="txt_item_edit" class="rich-edit" contenteditable="true"></div>
+                </div>
+                
+                <label>Syarat PB/CB/CMB (Lengkap):</label> 
+                <div class="rich-box">
+                    <div class="rich-toolbar">
+                        <button class="tool-btn" onclick="fmt('txt_pb_cb_edit', 'bold')"><b>B</b></button>
+                        <button class="tool-btn" onclick="fmt('txt_pb_cb_edit', 'italic')"><i>I</i></button>
+                        <button class="tool-btn" onclick="fmt('txt_pb_cb_edit', 'insertUnorderedList')"><i class="fas fa-list-ul"></i></button>
+                        <button class="tool-btn" onclick="insImg('txt_pb_cb_edit')"><i class="fas fa-image"></i> Gambar</button>
+                    </div>
+                    <div id="txt_pb_cb_edit" class="rich-edit" contenteditable="true" placeholder="Paste dari Word di sini..."></div>
+                </div>
+                
+                <label>Jadwal PIDUM & NARKOBA:</label> 
+                <div style="display:flex; gap:10px;"><input id="sch_pidum" placeholder="PIDUM"><input id="sch_narkoba" placeholder="NARKOBA"></div>
+                <label>Jam Layanan:</label> 
+                <div style="display:flex; gap:10px;"><input id="sch_mon_am" placeholder="Pagi"><input id="sch_mon_pm" placeholder="Siang"></div>
+                <label>Hari Lain:</label> 
+                <div style="display:flex; gap:10px;"><input id="sch_fri" placeholder="Jumat"><input id="sch_sat" placeholder="Sabtu"><input id="sch_sun" placeholder="Minggu"></div>
+            </div>
+        </div>
+
+        <div style="display:grid; grid-template-columns: 1fr 1fr; gap:30px; margin-top:30px;">
+            <div>
+                <h3><i class="fas fa-phone"></i> Kontak & Toko</h3>
+                <label>Info Toko Lapas:</label> <input id="toko_announce">
+                <label>Link Aplikasi Toko:</label> <input id="toko_link">
+                <label>WhatsApp Pengaduan (Tanpa 0/62):</label> <input id="wa_pengaduan">
+                <label>Link Saluran Informasi:</label> <input id="wa_channel">
+            </div>
+            <div>
+                <h3><i class="fas fa-share-alt"></i> Media Sosial</h3>
+                <label>Instagram URL:</label> <input id="soc_ig">
+                <label>Facebook URL:</label> <input id="soc_fb">
+                <label>Twitter/X URL:</label> <input id="soc_tw">
+                <label>Youtube URL:</label> <input id="soc_yt">
+            </div>
+        </div>
+
+        <button class="btn-save-fancy" onclick="saveConf()">
+            <i class="fas fa-check-circle"></i> SIMPAN SEMUA PENGATURAN
+        </button>
+    </div>
+
+    <div id="t-fisik" style="display:none;">
+        <div class="filter-bar">
+            <div class="data-counter" id="cnt_fisik">Memuat...</div>
+            <div style="display:flex; gap:5px;">
+                <input type="date" id="d_fisik" style="width:auto;">
+                <button onclick="load('registrations','tb_fisik','d_fisik')" class="btn btn-search"><i class="fas fa-search"></i> Cari</button>
+                <button onclick="realtimeLoad('registrations','tb_fisik','cnt_fisik')" class="btn btn-reset"><i class="fas fa-sync"></i> Refresh</button>
+                <button onclick="deleteAllData('registrations')" class="btn btn-del-all"><i class="fas fa-trash"></i> Hapus Semua</button>
+            </div>
+        </div>
+        <div class="print-area" style="display:flex; gap:10px; align-items:center; margin-bottom:10px;">
+            <i class="fas fa-print"></i> <b>Cetak:</b>
+            <input id="p_nm_fisik" placeholder="Nama Petugas" style="margin:0; width:150px;">
+            <input id="p_nip_fisik" placeholder="NIP Petugas" style="margin:0; width:150px;">
+            <button onclick="pdf('tb_fisik','Laporan Kunjungan Tatap Muka','p_nm_fisik','p_nip_fisik')" class="btn btn-print"><i class="fas fa-file-pdf"></i> PDF</button>
+        </div>
+        <div class="table-responsive"><table id="tbl_fisik"><thead><tr><th>No Antrian</th><th>Waktu</th><th>Pengunjung</th><th>WBP</th><th>KTP</th><th>Status</th><th>Catatan</th><th>Aksi</th></tr></thead><tbody id="tb_fisik"></tbody></table></div>
+    </div>
+
+    <div id="t-online" style="display:none;">
+        <div class="filter-bar">
+            <div class="data-counter" id="cnt_online">Memuat...</div>
+            <div style="display:flex; gap:5px;">
+                <input type="date" id="d_online" style="width:auto;">
+                <button onclick="load('online_registrations','tb_online','d_online')" class="btn btn-search"><i class="fas fa-search"></i> Cari</button>
+                <button onclick="realtimeLoad('online_registrations','tb_online','cnt_online')" class="btn btn-reset"><i class="fas fa-sync"></i> Refresh</button>
+                <button onclick="deleteAllData('online_registrations')" class="btn btn-del-all"><i class="fas fa-trash"></i> Hapus Semua</button>
+            </div>
+        </div>
+        <div class="print-area" style="display:flex; gap:10px; align-items:center; margin-bottom:10px;">
+            <i class="fas fa-print"></i> <b>Cetak:</b>
+            <input id="p_nm_online" placeholder="Nama Petugas" style="margin:0; width:150px;">
+            <input id="p_nip_online" placeholder="NIP Petugas" style="margin:0; width:150px;">
+            <button onclick="pdf('tb_online','Laporan Video Call','p_nm_online','p_nip_online')" class="btn btn-print"><i class="fas fa-file-pdf"></i> PDF</button>
+        </div>
+        <div class="table-responsive"><table id="tbl_online"><thead><tr><th>No Antrian</th><th>Waktu</th><th>Pengunjung</th><th>WBP</th><th>KTP</th><th>Status</th><th>Catatan</th><th>Aksi</th></tr></thead><tbody id="tb_online"></tbody></table></div>
+    </div>
+
+    <div id="t-urus" style="display:none;">
+        <div class="filter-bar">
+            <div class="data-counter" id="cnt_urus">Memuat...</div>
+            <div style="display:flex; gap:5px;">
+                <input type="date" id="d_urus" style="width:auto;">
+                <button onclick="load('pengurusan','tb_urus','d_urus')" class="btn btn-search"><i class="fas fa-search"></i> Cari</button>
+                <button onclick="realtimeLoad('pengurusan','tb_urus','cnt_urus')" class="btn btn-reset"><i class="fas fa-sync"></i> Refresh</button>
+                <button onclick="deleteAllData('pengurusan')" class="btn btn-del-all"><i class="fas fa-trash"></i> Hapus Semua</button>
+            </div>
+        </div>
+        <div class="print-area" style="display:flex; gap:10px; align-items:center; margin-bottom:10px;">
+            <i class="fas fa-print"></i> <b>Cetak:</b>
+            <input id="p_nm_urus" placeholder="Nama Petugas" style="margin:0; width:150px;">
+            <input id="p_nip_urus" placeholder="NIP Petugas" style="margin:0; width:150px;">
+            <button onclick="pdf('tb_urus','Laporan Pengurusan PB/CB/CMB','p_nm_urus','p_nip_urus')" class="btn btn-print"><i class="fas fa-file-pdf"></i> PDF</button>
+        </div>
+        <div class="table-responsive"><table id="tbl_urus"><thead><tr><th>Tanggal</th><th>Jenis</th><th>WBP</th><th>Penjamin</th><th>Hubungan</th><th>Berkas</th><th>Status</th><th>Catatan</th><th>Aksi</th></tr></thead><tbody id="tb_urus"></tbody></table></div>
+    </div>
+
+    <div id="t-kritik" style="display:none;">
+        <div class="filter-bar">
+            <div class="data-counter" id="cnt_kritik">Memuat...</div>
+            <div style="display:flex; gap:5px;">
+                <button onclick="realtimeLoad('kritik_saran','tb_kritik','cnt_kritik')" class="btn btn-reset"><i class="fas fa-sync"></i> Refresh</button>
+                <button onclick="deleteAllData('kritik_saran')" class="btn btn-del-all"><i class="fas fa-trash"></i> Hapus Semua</button>
+            </div>
+        </div>
+        <div class="print-area" style="display:flex; gap:10px; align-items:center; margin-bottom:10px;">
+             <i class="fas fa-print"></i> <b>Cetak:</b>
+            <input id="p_nm_kritik" placeholder="Nama Petugas" style="margin:0; width:150px;">
+            <input id="p_nip_kritik" placeholder="NIP Petugas" style="margin:0; width:150px;">
+            <button onclick="pdf('tb_kritik','Laporan Kritik & Saran','p_nm_kritik','p_nip_kritik')" class="btn btn-print"><i class="fas fa-file-pdf"></i> PDF</button>
+        </div>
+        <div class="table-responsive"><table id="tbl_kritik"><thead><tr><th>Tanggal</th><th>Kepuasan</th><th>Pesan / Masukan</th><th>Aksi</th></tr></thead><tbody id="tb_kritik"></tbody></table></div>
+    </div>
 </div>
 
 <script>
@@ -230,359 +275,212 @@
         measurementId: "G-25HSNZ35ZH"
     };
 
-    window.addEventListener('load', () => {
-        if (!firebase.apps.length) firebase.initializeApp(firebaseConfig);
-        const db = firebase.database();
-        let config = {};
-        let clockInterval;
+    if (!firebase.apps.length) firebase.initializeApp(firebaseConfig);
+    const auth = firebase.auth();
+    const db = firebase.database();
+    let currentListener = null;
+    const DATA_CACHE = {};
 
-        db.ref('app_config').on('value', (snap) => {
-            if(snap.exists()) config = snap.val();
-            updateUI(config);
-        });
-
-        function updateUI(cfg) {
-            document.getElementById('app_title').innerText = cfg.app_name || "Lapas App";
-            document.getElementById('logo_img').src = cfg.logo_url || "";
-            if(cfg.header_bg) document.getElementById('header_bg').style.backgroundImage = `url('${cfg.header_bg}')`;
-            
-            const ann = document.getElementById('announcement');
-            if(cfg.announcement && cfg.announcement.trim() !== "") { 
-                ann.style.display = 'block'; 
-                // Tampilan Info Penting Lebih Tegas
-                ann.innerHTML = "<div style='font-size:14px; font-weight:900; letter-spacing:1px; margin-bottom:5px; text-decoration:underline; text-underline-offset:3px;'>📢 INFO PENTING:</div>" + 
-                                "<div style='font-weight:700; font-size:13px; color:#000; line-height:1.5;'>" + cfg.announcement + "</div>"; 
-            } else { ann.style.display = 'none'; }
-            
-            document.getElementById('loader').style.display = 'none';
-            startChat();
+    auth.onAuthStateChanged(u => {
+        if(u) {
+            document.getElementById('login-box').style.display='none';
+            document.getElementById('panel-box').style.display='block';
+            loadSettings();
+            realtimeLoad('registrations','tb_fisik','cnt_fisik');
+        } else {
+            document.getElementById('login-box').style.display='block';
+            document.getElementById('panel-box').style.display='none';
         }
-
-        const chatBox = document.getElementById('chat-box');
-        window.startChat = function() { respond('start'); }
-
-        window.respond = function(key) {
-            if (key === 'start') {
-                chatBox.innerHTML = '';
-                // Render Realtime Clock
-                const clockDiv = document.createElement('div');
-                clockDiv.className = 'clock-box';
-                clockDiv.innerHTML = `<div id="time-display" class="time-display">00:00:00</div><div id="date-display" class="date-display">-</div><div id="status-msg" class="status-msg"></div>`;
-                chatBox.appendChild(clockDiv);
-                startClock();
-                
-                // **PERBAIKAN UTAMA**: Memanggil tombol menu secara eksplisit setelah jam
-                const menuData = getMenu(config)['start'];
-                showBtn(menuData.options);
-                return;
-            } else {
-                if(clockInterval) clearInterval(clockInterval); 
-            }
-
-            if (key.startsWith('cek_status_')) {
-                const type = key.split('_')[2]; 
-                askNikForStatus(type);
-                return;
-            }
-
-            const menu = getMenu(config)[key];
-            if(!menu) return;
-
-            let opts = menu.options || [];
-            if(menu.back) opts.push({text:"KEMBALI KE MENU UTAMA", val:"start"});
-            if(menu.backTo) opts.push({text:"KEMBALI SEBELUMNYA", val: menu.backTo});
-
-            if(menu.isForm) {
-                if(menu.formType === 'pengurusan') renderFormPengurusan();
-                else if(menu.formType === 'kritik') renderFormKritik();
-                else renderFormStandard(menu.text, menu.formType);
-            } else if (menu.customHtml) {
-                appendMsg('bot', menu.text, { customHtml: menu.customHtml, options: opts });
-            } else {
-                appendMsg('bot', menu.text, { options: opts });
-            }
-        }
-
-        // --- LOGIKA JAM ---
-        function startClock() {
-            if(clockInterval) clearInterval(clockInterval);
-            const update = () => {
-                const now = new Date();
-                const timeStr = now.toLocaleTimeString('id-ID', {hour12: false});
-                const dateStr = now.toLocaleDateString('id-ID', {weekday: 'long', day: 'numeric', month: 'long', year: 'numeric'});
-                
-                const timeEl = document.getElementById('time-display');
-                const dateEl = document.getElementById('date-display');
-                const msgEl = document.getElementById('status-msg');
-                
-                if(timeEl) {
-                    timeEl.innerText = timeStr;
-                    dateEl.innerText = dateStr;
-                    
-                    const h = now.getHours();
-                    // Jam Kerja: 08:00 - 15:00
-                    if (h >= 8 && h < 15) {
-                        timeEl.style.color = "#333";
-                        msgEl.className = "status-msg open";
-                        msgEl.innerHTML = "✅ JAM PELAYANAN BUKA<br>Admin siap melayani anda.";
-                    } else {
-                        timeEl.style.color = "#c62828"; 
-                        msgEl.className = "status-msg closed";
-                        msgEl.innerHTML = "⛔ DILUAR JAM KERJA<br><span style='font-weight:400; font-size:10px;'>Aplikasi tetap dapat digunakan. Respon admin tertunda.</span>";
-                    }
-                }
-            };
-            update();
-            clockInterval = setInterval(update, 1000);
-        }
-
-        function appendMsg(sender, text, extra = {}) {
-            const div = document.createElement('div');
-            div.className = `msg ${sender}`;
-            let content = text ? text.replace(/\n/g, '<br>').replace(/\*\*(.*?)\*\*/g, '<b>$1</b>') : '';
-            if(extra.customHtml) content += (content ? '<br>' : '') + extra.customHtml;
-            div.innerHTML = content;
-            chatBox.appendChild(div);
-            if(!extra.isForm && extra.options) showBtn(extra.options);
-            setTimeout(() => div.scrollIntoView({ behavior: 'smooth' }), 100);
-        }
-
-        function showBtn(opts) {
-            const div = document.createElement('div');
-            opts.forEach(o => {
-                if(!o.url && !o.val) return;
-                const btn = document.createElement('div');
-                let className = 'btn';
-                let icon = 'fa-chevron-right';
-
-                if(o.text.includes("KEMBALI")) { className = 'btn btn-back'; icon = 'fa-arrow-left'; }
-                else if(o.text.includes("WHATSAPP")) { className = 'btn btn-wa'; icon = 'fa-whatsapp'; }
-                else if(o.text.includes("INSTAGRAM")) { className = 'btn btn-ig'; icon = 'fa-instagram'; }
-                else if(o.text.includes("FACEBOOK")) { className = 'btn btn-fb'; icon = 'fa-facebook'; }
-                else if(o.text.includes("TWITTER")) { className = 'btn btn-tw'; icon = 'fa-x-twitter'; }
-                else if(o.text.includes("YOUTUBE")) { className = 'btn btn-yt'; icon = 'fa-youtube'; }
-                else if(o.text.includes("TATAP MUKA")) icon = 'fa-user-friends';
-                else if(o.text.includes("VIDEO")) icon = 'fa-video';
-                else if(o.text.includes("PENGURUSAN")) icon = 'fa-folder-open';
-                else if(o.text.includes("TOKO")) icon = 'fa-shopping-cart';
-
-                btn.className = className;
-                btn.innerHTML = `<span>${o.text}</span> <i class="fas ${icon}"></i>`;
-                btn.onclick = () => {
-                    div.remove();
-                    if(!o.text.includes("KEMBALI")) appendMsg('user', o.text);
-                    if(o.type === 'link') window.open(o.url);
-                    else setTimeout(() => respond(o.val), 200);
-                };
-                div.appendChild(btn);
-            });
-            chatBox.appendChild(div);
-        }
-
-        // --- FORM STANDARD ---
-        function renderFormStandard(text, type) {
-            const formHtml = `
-            <div class="form-box">
-                <label style="font-weight:bold;">📸 Foto KTP (Wajib):</label>
-                <input id="f_ktp" type="file" accept="image/*" class="inp">
-                <input id="f_nama" class="inp" placeholder="Nama Pengunjung">
-                <input id="f_nik" class="inp" type="number" placeholder="NIK / No. KTP">
-                <input id="f_alamat" class="inp" placeholder="Alamat Lengkap">
-                <input id="f_telp" class="inp" type="tel" placeholder="No. HP / WA">
-                <input id="f_wbp" class="inp" placeholder="Nama WBP (Bin/Binti)">
-                <div style="display:flex; gap:10px;">
-                    <input id="f_tgl" class="inp" type="date" style="flex:2">
-                    <select id="f_jam" class="inp" style="flex:1">
-                        <option value="Pagi">Pagi</option>
-                        <option value="Siang">Siang</option>
-                    </select>
-                </div>
-                <button onclick="submitForm('${type}')" class="submit-btn">AMBIL ANTRIAN</button>
-                <button onclick="respond('start')" style="background:transparent; border:none; padding:10px; width:100%; margin-top:5px; color:#888;">Batal</button>
-            </div>`;
-            appendMsg('bot', text, { customHtml: formHtml });
-        }
-
-        window.submitForm = function(type) {
-            const f_ktp = document.getElementById('f_ktp').files[0];
-            const nama = document.getElementById('f_nama').value;
-            const nik = document.getElementById('f_nik').value;
-            const alamat = document.getElementById('f_alamat').value;
-            const telp = document.getElementById('f_telp').value;
-            const wbp = document.getElementById('f_wbp').value;
-            const tgl = document.getElementById('f_tgl').value;
-            const jam = document.getElementById('f_jam').value;
-            if(!f_ktp || !nama || !nik || !wbp || !tgl) return alert("Lengkapi data & foto KTP!");
-
-            const btn = document.querySelector('.submit-btn'); btn.innerHTML = "Memproses..."; btn.disabled = true;
-            const path = type === 'fisik' ? 'registrations' : 'online_registrations';
-            const prefix = type === 'fisik' ? 'A' : 'V';
-            const sess = jam === 'Pagi' ? 'P' : 'S';
-            const counterPath = `counters/${tgl}/${type}/${jam}`;
-
-            compressImage(f_ktp, (base64) => {
-                db.ref(counterPath).transaction(c => (c||0)+1, (e, comm, s) => {
-                    if(comm) {
-                        const no = `${prefix}-${sess}-${String(s.val()).padStart(3,'0')}`;
-                        const payload = { nama, nik, alamat, telp, wbp, tgl, jam, noAntrian: no, ktpUrl: base64, status: 'waiting', createdAt: firebase.database.ServerValue.TIMESTAMP };
-                        db.ref(path).push(payload).then(() => {
-                            chatBox.innerHTML = '';
-                            renderTicket(payload, type === 'fisik' ? 'TATAP MUKA' : 'VIDEO CALL');
-                            showBtn([{text:"KEMBALI KE MENU UTAMA", val:"start"}]);
-                        });
-                    } else { btn.disabled = false; alert("Gagal koneksi."); }
-                });
-            });
-        }
-
-        // --- PENGURUSAN ---
-        window.renderFormPengurusan = function() {
-            const fields = [{id:'u_ktp_wbp', l:'KTP WBP'}, {id:'u_kk_wbp', l:'KK WBP'}, {id:'u_ktp_penj', l:'KTP Penjamin'}, {id:'u_kk_penj', l:'KK Penjamin'}, {id:'u_surat_1', l:'Surat Pernyataan'}, {id:'u_surat_2', l:'Surat Jaminan'}, {id:'u_foto', l:'Foto Penjamin'}];
-            let uploadsHtml = '';
-            fields.forEach(f => { uploadsHtml += `<div style="border:1px dashed #ccc; padding:8px; margin-bottom:5px; border-radius:5px;"><span style="font-size:11px; font-weight:bold;">📂 ${f.l}</span><input type="file" id="${f.id}" accept="image/*" style="font-size:11px;"></div>`; });
-            const html = `<div class="form-box">
-                <label style="font-weight:bold;">Jenis Pengurusan:</label><select id="p_jenis" class="inp"><option value="PB">PB</option><option value="CB">CB</option><option value="CMB">CMB</option></select>
-                <input id="p_wbp" class="inp" placeholder="Nama WBP">
-                <input id="p_penjamin" class="inp" placeholder="Nama Penjamin">
-                <input id="p_nik" class="inp" type="number" placeholder="NIK Penjamin">
-                <input id="p_alamat" class="inp" placeholder="Alamat">
-                <input id="p_hub" class="inp" placeholder="Hubungan">
-                <input id="p_telp" class="inp" type="tel" placeholder="No HP/WA">
-                <div style="margin-top:10px; font-size:12px; font-weight:bold;">UNGGAH DOKUMEN:</div>${uploadsHtml}
-                <button onclick="submitPengurusan()" class="submit-btn">KIRIM PERMOHONAN</button>
-                <button onclick="respond('start')" style="background:transparent; border:none; padding:10px; width:100%; margin-top:5px; color:#888;">Batal</button>
-            </div>`;
-            appendMsg('bot', "📝 **FORMULIR INTEGRASI**", { customHtml: html });
-        }
-        window.submitPengurusan = async function() {
-             const btn = document.querySelector('.submit-btn'); btn.innerText = "Mengirim..."; btn.disabled = true;
-             // Simulate logic
-             setTimeout(() => {
-                chatBox.innerHTML = '';
-                appendMsg('bot', `✅ **PERMOHONAN TERKIRIM!**\nData berhasil masuk ke sistem.`);
-                showBtn([{text:"KEMBALI KE MENU UTAMA", val:"start"}]);
-             }, 1500);
-        }
-
-        // --- KRITIK ---
-        window.renderFormKritik = function() {
-            const html = `<div class="form-box">
-                <select id="k_puas" class="inp"><option value="Sangat Puas">😍 Sangat Puas</option><option value="Puas">🙂 Puas</option><option value="Kurang">☹️ Kurang</option></select>
-                <textarea id="k_pesan" class="inp" rows="4" placeholder="Kritik & Saran..."></textarea>
-                <button onclick="submitKritik()" class="submit-btn">KIRIM</button>
-                <button onclick="respond('start')" style="background:transparent; border:none; padding:10px; width:100%; margin-top:5px; color:#888;">Batal</button>
-            </div>`;
-            appendMsg('bot', "📢 **KRITIK & SARAN**", { customHtml: html });
-        }
-        window.submitKritik = function() {
-             const pesan = document.getElementById('k_pesan').value;
-             if(!pesan) return alert("Isi pesan");
-             db.ref('kritik_saran').push({pesan: pesan, kepuasan: document.getElementById('k_puas').value, tgl: new Date().toISOString().split('T')[0]}).then(() => {
-                 chatBox.innerHTML = '';
-                 appendMsg('bot', "✅ Masukan Anda telah diterima.");
-                 showBtn([{text:"KEMBALI KE MENU UTAMA", val:"start"}]);
-             });
-        }
-
-        // --- STATUS ---
-        window.askNikForStatus = function(type) {
-            appendMsg('bot', `🔍 **CEK STATUS**`, {
-                customHtml: `<div class="form-box"><input id="cek_nik" class="inp" type="number" placeholder="Masukkan NIK"><button onclick="doCheckStatus('${type}')" class="submit-btn">CARI DATA</button></div>`,
-                options: [{text:"Batal", val:"start"}]
-            });
-        }
-        window.doCheckStatus = function(type) {
-             const nik = document.getElementById('cek_nik').value;
-             if(!nik) return alert("Isi NIK");
-             let path = type === 'pengurusan' ? 'pengurusan' : 'registrations'; 
-             if(type==='online') path='online_registrations';
-             
-             db.ref(path).orderByChild('createdAt').limitToLast(20).once('value').then(s => {
-                 let found = null;
-                 if(s.exists()) { s.forEach(c => { const d=c.val(); if(String(d.nik) === String(nik)) found = d; }); }
-                 chatBox.innerHTML = '';
-                 if(found) {
-                     if(type === 'pengurusan') {
-                         appendMsg('bot', `📂 **STATUS PENGURUSAN**\nWBP: ${found.wbp}\nStatus: ${found.status}`);
-                     } else {
-                         renderTicket(found, type==='fisik'?'TATAP MUKA':'VIDEO CALL');
-                     }
-                 } else { appendMsg('bot', "❌ Data tidak ditemukan."); }
-                 showBtn([{text:"KEMBALI KE MENU UTAMA", val:"start"}]);
-             });
-        }
-
-        // --- RENDER TICKET (BOARDING PASS) ---
-        function renderTicket(data, label) {
-            let stBadge = data.status === 'accepted' ? '<span class="badge bg-acc">DISETUJUI</span>' : (data.status === 'rejected' ? '<span class="badge bg-rej">DITOLAK</span>' : '<span class="badge bg-wait">MENUNGGU VERIFIKASI</span>');
-            const ticketHtml = `
-            <div id="ticket-node" class="boarding-pass">
-                <div class="bp-header">LKD BOARDING PASS</div>
-                <div class="bp-status">${stBadge}</div>
-                <div class="bp-antrian"><div class="bp-antrian-label">NOMOR ANTRIAN</div><div class="bp-antrian-num">${data.noAntrian}</div></div>
-                <div class="bp-body">
-                    <div class="bp-row"><div><div class="bp-label">PENGUNJUNG</div><div class="bp-val" style="text-align:left;">${data.nama}</div></div><div><div class="bp-label">WBP TUJUAN</div><div class="bp-val">${data.wbp}</div></div></div>
-                    <div class="bp-row"><div><div class="bp-label">TANGGAL</div><div class="bp-val" style="text-align:left;">${data.tgl}</div></div><div><div class="bp-label">SESI</div><div class="bp-val">${data.jam}</div></div></div>
-                    <div class="bp-row"><div><div class="bp-label">LAYANAN</div><div class="bp-val" style="text-align:left;">${label}</div></div><div><div class="bp-label">NIK</div><div class="bp-val">${data.nik}</div></div></div>
-                </div>
-                <div class="bp-footer"><div>SCAN UNTUK VERIFIKASI</div><i class="fas fa-qrcode" style="font-size:30px;"></i></div>
-            </div>
-            <button onclick="downloadTicket()" class="submit-btn" style="background:#444; color:white;">📸 SIMPAN TIKET</button>`;
-            appendMsg('bot', "✅ **TIKET ANDA:**", { customHtml: ticketHtml });
-        }
-
-        function compressImage(file, cb) {
-            const reader = new FileReader(); reader.readAsDataURL(file);
-            reader.onload = function(e) {
-                const img = new Image(); img.src = e.target.result;
-                img.onload = function() {
-                    const canvas = document.createElement('canvas'); const ctx = canvas.getContext('2d');
-                    const maxW = 600; let w = img.width; let h = img.height;
-                    if(w > maxW) { h *= maxW/w; w = maxW; }
-                    canvas.width = w; canvas.height = h;
-                    ctx.drawImage(img, 0, 0, w, h);
-                    cb(canvas.toDataURL('image/jpeg', 0.6));
-                }
-            }
-        }
-        window.downloadTicket = function() {
-            html2canvas(document.getElementById('ticket-node'), {scale:2, backgroundColor:"#fff"}).then(canvas => {
-                document.getElementById('resultImg').src = canvas.toDataURL("image/jpeg");
-                document.getElementById('resultModal').style.display = 'flex';
-            });
-        }
-        window.closeResultModal = () => document.getElementById('resultModal').style.display = 'none';
     });
 
-    function getMenu(cfg) {
-        return {
-            'start': { 
-                text: null, 
-                options: [
-                    { text: "DAFTAR KUNJUNGAN (TATAP MUKA)", val: "daftar_fisik" },
-                    { text: "DAFTAR VIDEO CALL", val: "daftar_online" },
-                    { text: "PENGURUSAN (PB/CB/CMB)", val: "menu_urus" },
-                    { text: "TOKO LAPAS", val: "toko" },
-                    { text: "JADWAL & SYARAT", val: "info_gabung" },
-                    { text: "KRITIK & SARAN", val: "menu_kritik" },
-                    { text: "KONTAK & PENGADUAN", val: "kontak" }
-                ] 
-            },
-            'daftar_fisik': { text: "📝 **PENDAFTARAN TATAP MUKA**", options: [{ text: "ISI FORMULIR", val: "form_fisik" }, { text: "CEK STATUS ANTRIAN", val: "cek_status_fisik" }, { text: "KEMBALI KE MENU UTAMA", val: "start" }] },
-            'form_fisik': { text: "📝 **ISI DATA KUNJUNGAN:**", isForm: true, formType: "fisik" },
-            'daftar_online': { text: "💻 **PENDAFTARAN VIDEO CALL**", options: [{ text: "ISI FORMULIR", val: "form_online" }, { text: "CEK STATUS VC", val: "cek_status_online" }, { text: "KEMBALI KE MENU UTAMA", val: "start" }] },
-            'form_online': { text: "💻 **ISI DATA VIDEO CALL:**", isForm: true, formType: "online" },
-            'menu_urus': { text: "📂 **PENGURUSAN INTEGRASI**", options: [{ text: "AJUKAN PERMOHONAN", val: "form_urus" }, { text: "CEK STATUS", val: "cek_status_pengurusan" }, { text: "KEMBALI KE MENU UTAMA", val: "start" }] },
-            'form_urus': { text: "Menyiapkan formulir...", isForm: true, formType: "pengurusan" },
-            'toko': { text: "🛒 **TOKO LAPAS:**\n" + (cfg.toko_announce || "-"), options: [{ text: "BUKA APLIKASI TOKO", type: "link", url: cfg.toko_link }, { text: "KEMBALI KE MENU UTAMA", val: "start" }] },
-            'info_gabung': { text: "📅 **INFORMASI LAYANAN:**", options: [{ text: "LIHAT JADWAL", val: "sub_jadwal" }, { text: "SYARAT KUNJUNGAN", val: "sub_syarat_kunjungan" }, { text: "SYARAT PENGURUSAN", val: "sub_syarat_pb" }, { text: "KEMBALI KE MENU UTAMA", val: "start" }] },
-            'sub_jadwal': { text: "📅 **JADWAL:**", customHtml: `<div class="rich-content" style="background:white; padding:15px; border-radius:10px; border:1px solid #eee;">${cfg.sch_pidum||'-'}</div>`, backTo: 'info_gabung' },
-            'sub_syarat_kunjungan': { text: "👜 **SYARAT KUNJUNGAN:**", customHtml: `<div class="rich-content" style="background:white; padding:15px; border-radius:10px; border:1px solid #eee;">${cfg.txt_doc||'-'}</div>`, backTo: 'info_gabung' },
-            'sub_syarat_pb': { text: "📂 **SYARAT INTEGRASI:**", customHtml: `<div class="rich-content" style="background:white; padding:15px; border-radius:10px; border:1px solid #eee;">${cfg.txt_pb_cb||'-'}</div>`, backTo: 'info_gabung' },
-            'menu_kritik': { text: "Nilai layanan kami:", isForm: true, formType: "kritik" },
-            'kontak': { text: "📞 **KONTAK & PENGADUAN:**", options: [{ text: "WHATSAPP PENGADUAN", type: "link", url: `https://wa.me/${cfg.wa_pengaduan}` }, { text: "SALURAN INFORMASI", type: "link", url: cfg.wa_channel }, { text: "MEDIA SOSIAL", val: "sosmed" }, { text: "KEMBALI KE MENU UTAMA", val: "start" }] },
-            'sosmed': { text: "🌐 **MEDIA SOSIAL RESMI:**", options: [{ text: "INSTAGRAM", type: "link", url: cfg.soc_ig }, { text: "FACEBOOK", type: "link", url: cfg.soc_fb }, { text: "TWITTER / X", type: "link", url: cfg.soc_tw }, { text: "YOUTUBE", type: "link", url: cfg.soc_yt }, { text: "KEMBALI SEBELUMNYA", val: "kontak" }] }
-        };
+    function login() { auth.signInWithEmailAndPassword(document.getElementById('email').value, document.getElementById('pass').value).catch(e=>alert(e.message)); }
+    function logout() { auth.signOut(); }
+
+    function tab(id) {
+        ['set','fisik','online','urus','kritik'].forEach(x => document.getElementById('t-'+x).style.display='none');
+        ['b1','b2','b3','b4','b5'].forEach(x => document.getElementById(x).className='tab-btn');
+        document.getElementById('t-'+id).style.display='block';
+        document.getElementById(id=='set'?'b1':(id=='fisik'?'b2':(id=='online'?'b3':(id=='urus'?'b4':'b5')))).classList.add('active');
+        if(id=='fisik') realtimeLoad('registrations','tb_fisik','cnt_fisik');
+        if(id=='online') realtimeLoad('online_registrations','tb_online','cnt_online');
+        if(id=='urus') realtimeLoad('pengurusan','tb_urus','cnt_urus');
+        if(id=='kritik') realtimeLoad('kritik_saran','tb_kritik','cnt_kritik');
+    }
+
+    // --- EDITOR HELPERS (BARU) ---
+    window.fmt = function(id, cmd, val=null) {
+        document.getElementById(id).focus();
+        document.execCommand(cmd, false, val);
+    }
+    window.insImg = function(id) {
+        const url = prompt("Masukkan Link Gambar (URL):");
+        if(url) {
+            document.getElementById(id).focus();
+            document.execCommand('insertImage', false, url);
+        }
+    }
+
+    // --- LOAD & SAVE SETTINGS ---
+    const simpleFields = ['app_name','logo_url','header_bg','kop_1','kop_2','kop_3','kop_4','sch_pidum','sch_narkoba','sch_mon_am','sch_mon_pm','sch_fri','sch_sat','sch_sun','toko_announce','toko_link','wa_pengaduan','wa_channel','soc_ig','soc_fb','soc_tw','soc_yt'];
+    const htmlFields = {'announcement': 'announcement_edit', 'txt_doc': 'txt_doc_edit', 'txt_item': 'txt_item_edit', 'txt_pb_cb': 'txt_pb_cb_edit'};
+
+    function loadSettings() {
+        db.ref('app_config').once('value', s => {
+            if(s.exists()) {
+                const d = s.val();
+                simpleFields.forEach(f => { if(document.getElementById(f)) document.getElementById(f).value = d[f]||""; });
+                // Load HTML Content
+                for(let key in htmlFields) {
+                    if(document.getElementById(htmlFields[key])) document.getElementById(htmlFields[key]).innerHTML = d[key] || "";
+                }
+            }
+        });
+    }
+
+    function saveConf() {
+        const d = {};
+        simpleFields.forEach(f => { if(document.getElementById(f)) d[f] = document.getElementById(f).value; });
+        // Save HTML Content
+        for(let key in htmlFields) {
+            if(document.getElementById(htmlFields[key])) d[key] = document.getElementById(htmlFields[key]).innerHTML;
+        }
+        db.ref('app_config').update(d).then(() => alert("✅ Pengaturan Berhasil Disimpan!"));
+    }
+
+    // --- FUNGSI STANDAR (SAMA) ---
+    function realtimeLoad(path, tbodyId, cntId) {
+        const tb = document.getElementById(tbodyId);
+        const cnt = document.getElementById(cntId);
+        if(currentListener) db.ref().off();
+        tb.innerHTML = "<tr><td colspan='9' style='text-align:center; padding:20px;'><i class='fas fa-spinner fa-spin'></i> Memuat data...</td></tr>";
+        cnt.innerText = "Connecting...";
+        
+        const ref = db.ref(path).limitToLast(500);
+        currentListener = ref;
+        
+        ref.on('value', snapshot => { render(snapshot, tbodyId, path, cntId); });
+    }
+
+    function load(path, tbodyId, dateId) {
+        const d = document.getElementById(dateId).value;
+        if(!d) return alert("Pilih tanggal dulu!");
+        if(currentListener) db.ref().off();
+        document.getElementById(tbodyId).innerHTML = "<tr><td colspan='9' style='text-align:center; padding:20px;'>Mencari...</td></tr>";
+        db.ref(path).orderByChild('tgl').equalTo(d).once('value').then(snap => { render(snap, tbodyId, path, null); });
+    }
+
+    function deleteAllData(path) {
+        if(confirm("⚠️ HAPUS SEMUA DATA? Data tidak bisa dikembalikan!") && confirm("Yakin ingin melanjutkan?")) {
+            db.ref(path).remove().then(() => alert("✅ Data bersih."));
+        }
+    }
+
+    function render(snap, tbodyId, path, cntId) {
+        const tb = document.getElementById(tbodyId);
+        tb.innerHTML = "";
+        if(!snap.exists()) { 
+            tb.innerHTML = "<tr><td colspan='9' style='text-align:center; padding:20px; color:#999;'>Belum ada data.</td></tr>"; 
+            if(cntId) document.getElementById(cntId).innerText = "Total: 0";
+            return; 
+        }
+
+        const arr = [];
+        snap.forEach(c => {
+            const val = c.val();
+            const key = c.key;
+            DATA_CACHE[key] = val;
+            arr.push({k:key, ...val});
+        });
+        
+        if(cntId) document.getElementById(cntId).innerText = `Total: ${arr.length}`;
+
+        arr.reverse().forEach(v => {
+            try {
+                let row = `<tr data-key="${v.k}">`;
+                const btnAcc = `<button onclick="upd('${path}','${v.k}','accepted')" class="act-btn bg-acc"><i class="fas fa-check"></i></button>`;
+                const btnRej = `<button onclick="upd('${path}','${v.k}','rejected')" class="act-btn bg-rej"><i class="fas fa-times"></i></button>`;
+                const btnDel = `<button onclick="del('${path}','${v.k}')" class="act-btn bg-rej"><i class="fas fa-trash"></i></button>`;
+                const actions = `<div style="display:flex; justify-content:center;">${btnAcc}${btnRej}${btnDel}</div>`;
+                
+                let statusBadge = v.status === 'accepted' ? '<span class="badge bg-acc">DISETUJUI</span>' : (v.status === 'rejected' ? '<span class="badge bg-rej">DITOLAK</span>' : '<span class="badge bg-wait">MENUNGGU</span>');
+                const noteInput = `<input id="n-${v.k}" value="${v.note||''}" placeholder="Catatan..." onblur="saveNote('${path}','${v.k}',this.value)" style="font-size:11px; margin:0;">`;
+
+                if(path === 'kritik_saran') {
+                    row += `<td>${v.tgl}</td><td><b>${v.kepuasan}</b></td><td>${v.pesan}</td><td style="text-align:center">${btnDel}</td>`;
+                } else if (path === 'pengurusan') {
+                    let fileBtn = v.images ? `<button onclick='showFiles("${v.k}")' style="background:#17a2b8; color:white; border:none; padding:5px 8px; border-radius:4px; cursor:pointer; font-size:10px;"><i class="fas fa-folder-open"></i> BERKAS</button>` : '-';
+                    row += `<td>${v.tgl}</td><td>${v.jenis}</td><td><b>${v.wbp}</b></td><td>${v.penjamin}<br><small>${v.nik}</small></td><td>${v.hub}</td><td style="text-align:center">${fileBtn}</td><td style="text-align:center">${statusBadge}</td><td>${noteInput}</td><td>${actions}</td>`;
+                } else {
+                    let imgBtn = v.ktpUrl ? `<img src="${v.ktpUrl}" style="height:35px; border-radius:3px; cursor:pointer; border:1px solid #ccc;" onclick="showSingleImg('${v.k}')">` : '-';
+                    row += `<td style="font-weight:bold; color:#555; text-align:center;">${v.noAntrian||'-'}</td><td>${v.tgl}<br><small style="color:#666;">${v.jam||''}</small></td><td><b>${v.nama}</b><br><small>${v.telp}</small></td><td>${v.wbp}</td><td style="text-align:center">${imgBtn}</td><td style="text-align:center">${statusBadge}</td><td>${noteInput}</td><td>${actions}</td>`;
+                }
+                row += "</tr>";
+                tb.insertAdjacentHTML('beforeend', row);
+            } catch (e) { console.error(e); }
+        });
+    }
+
+    function upd(path, key, st) { db.ref(path+'/'+key).update({status:st}); }
+    function saveNote(path, key, val) { db.ref(path+'/'+key).update({note:val}); }
+    function del(path, key) { if(confirm("Hapus data ini?")) { db.ref(path+'/'+key).remove(); } }
+
+    window.showSingleImg = (key) => { const d = DATA_CACHE[key]; if(d && d.ktpUrl) { document.getElementById('imgView').src = d.ktpUrl; document.getElementById('imgModal').style.display = 'flex'; } }
+    window.showFiles = (key) => {
+        const d = DATA_CACHE[key]; const grid = document.getElementById('galleryGrid'); grid.innerHTML = '';
+        if(d && d.images) {
+            const labels = {'u_ktp_wbp': 'KTP WBP', 'u_kk_wbp': 'KK WBP', 'u_ktp_penj': 'KTP Penjamin', 'u_kk_penj': 'KK Penjamin', 'u_surat_1': 'Surat Pernyataan', 'u_surat_2': 'Surat Jaminan', 'u_foto': 'Foto Penjamin'};
+            for(let k in d.images) {
+                const div = document.createElement('div'); div.className = 'gallery-item';
+                div.innerHTML = `<span style="font-size:10px; margin-bottom:5px;">${labels[k] || k}</span><img src="${d.images[k]}" onclick="document.getElementById('imgView').src=this.src; document.getElementById('imgModal').style.display='flex';">`;
+                grid.appendChild(div);
+            }
+            document.getElementById('galleryModal').style.display='flex';
+        }
+    }
+    window.closeM = (id) => document.getElementById(id).style.display='none';
+
+    window.pdf = (tableId, title, nmId, nipId) => {
+        const { jsPDF } = window.jspdf; const doc = new jsPDF('l', 'mm', 'a4');
+        const petugas = document.getElementById(nmId).value; const nip = document.getElementById(nipId).value;
+        if(!petugas) return alert("Mohon isi Nama Petugas!");
+
+        const k1 = document.getElementById('kop_1').value.toUpperCase();
+        const k2 = document.getElementById('kop_2').value.toUpperCase();
+        const k3 = document.getElementById('kop_3').value.toUpperCase();
+        const k4 = document.getElementById('kop_4').value;
+
+        doc.setFont("times", "bold"); doc.setFontSize(14); doc.text(k1, 148, 15, {align:'center'});
+        doc.text(k2, 148, 22, {align:'center'});
+        doc.setFontSize(16); doc.text(k3, 148, 30, {align:'center'});
+        doc.setFontSize(11); doc.setFont("times", "normal"); doc.text(k4, 148, 37, {align:'center'});
+        doc.setLineWidth(0.5); doc.line(10, 42, 287, 42);
+
+        doc.setFont("helvetica", "bold"); doc.setFontSize(12); doc.text(title.toUpperCase(), 148, 52, {align:'center'});
+        doc.setFontSize(10); doc.setFont("helvetica", "normal"); doc.text("Dicetak Tanggal: " + new Date().toLocaleDateString('id-ID'), 148, 58, {align:'center'});
+
+        const table = document.getElementById(tableId);
+        const headers = []; const body = [];
+        for(let th of table.parentElement.querySelectorAll('thead th')) { if(th.innerText!=='Aksi' && th.innerText!=='KTP' && th.innerText!=='Berkas') headers.push(th.innerText); }
+        for (let row of table.rows) {
+            const rowData = [];
+            for (let i = 0; i < row.cells.length; i++) {
+                const cell = row.cells[i];
+                if(cell.innerHTML.includes('<button') || cell.innerHTML.includes('<img')) continue;
+                let text = cell.innerText.trim();
+                if(cell.querySelector('input')) text = cell.querySelector('input').value;
+                rowData.push(text);
+            }
+            if(rowData.length > 0) body.push(rowData);
+        }
+
+        doc.autoTable({ head: [headers], body: body, startY: 65, theme: 'grid', styles: { fontSize: 9, cellPadding: 3, valign: 'middle' }, headStyles: { fillColor: [85, 85, 85], textColor: 255, halign:'center' }, alternateRowStyles: { fillColor: [245, 245, 245] } });
+        let finalY = doc.lastAutoTable.finalY + 20; if(finalY > 170) { doc.addPage(); finalY = 20; }
+        const dateStr = new Date().toLocaleDateString('id-ID', {day: 'numeric', month: 'long', year: 'numeric'});
+        doc.setFont("times", "normal"); doc.text(`Arga Makmur, ${dateStr}`, 230, finalY);
+        doc.text("Petugas Layanan,", 230, finalY+6);
+        doc.setFont("times", "bold"); doc.text(`( ${petugas} )`, 230, finalY+25);
+        doc.setFont("times", "normal"); doc.text(`NIP. ${nip}`, 230, finalY+30);
+        doc.save(title.replace(/\s+/g, '_') + ".pdf");
     }
 </script>
 </body>
