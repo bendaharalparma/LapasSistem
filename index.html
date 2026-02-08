@@ -36,7 +36,7 @@
         /* HEADER 3D */
         .header {
             position: relative;
-            height: 240px;
+            height: 220px;
             background-color: #333;
             background-size: cover;
             background-position: center;
@@ -53,7 +53,7 @@
         }
         .header::before {
             content: ''; position: absolute; inset: 0;
-            background: linear-gradient(to bottom, rgba(0,0,0,0.4), rgba(0,0,0,0.7));
+            background: linear-gradient(to bottom, rgba(0,0,0,0.3), rgba(0,0,0,0.7));
             border-bottom-left-radius: 40px;
             border-bottom-right-radius: 40px;
             z-index: 1;
@@ -72,65 +72,50 @@
             text-shadow: 0 4px 10px rgba(0,0,0,0.9); 
         }
 
-        /* INFO PENTING: GLASSMORPHISM */
+        /* INFO PENTING (DI BAWAH BACKGROUND) */
         #announcement {
-            /* Latar Belakang Kaca Transparan */
-            background: rgba(255, 255, 255, 0.15); 
-            backdrop-filter: blur(15px);
-            -webkit-backdrop-filter: blur(15px);
+            /* Posisi relatif terhadap flow halaman, bukan absolute di atas header */
+            margin: -25px 20px 10px 20px; /* Minus margin top untuk sedikit overlap estetis */
+            position: relative;
+            z-index: 11; /* Di atas shadow header */
             
-            /* Border halus */
-            border: 1px solid rgba(255, 255, 255, 0.4);
-            border-left: 5px solid #FFD700; /* Aksen Emas di kiri */
-            
-            color: #fff; /* Teks Putih agar kontras di atas header gelap */
-            padding: 15px;
-            text-align: left;
+            background: linear-gradient(135deg, #FFD700 0%, #FDB931 100%);
+            color: #222;
+            padding: 15px 20px;
+            text-align: center;
             display: none;
             
-            /* Posisi di dalam Header tapi di bawah */
-            width: 90%;
-            margin-top: 15px;
-            border-radius: 12px;
-            box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
-            z-index: 5;
-            animation: slideUp 0.5s ease-out;
+            border-radius: 15px;
+            border: 2px solid #fff;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+            animation: slideDown 0.5s ease-out;
         }
-        /* Style khusus untuk isi pengumuman agar tegas */
-        #announcement strong { color: #FFD700; font-weight: 900; letter-spacing: 0.5px; }
-        #announcement div { color: #fff; font-weight: 600; text-shadow: 0 2px 4px rgba(0,0,0,0.5); }
-
-        @keyframes slideUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes slideDown { from { opacity: 0; transform: translateY(-10px); } to { opacity: 1; transform: translateY(0); } }
 
         /* CHAT AREA */
-        #chat-box { flex: 1; padding: 20px; overflow-y: auto; display: flex; flex-direction: column; gap: 15px; padding-bottom: 60px; }
+        #chat-box { flex: 1; padding: 10px 20px 20px 20px; overflow-y: auto; display: flex; flex-direction: column; gap: 15px; padding-bottom: 60px; }
         .msg { max-width: 95%; animation: popIn 0.3s ease; }
         
-        /* JAM REALTIME INDIKATOR */
+        /* JAM REALTIME */
         .clock-box {
             text-align: center;
-            padding: 20px;
+            padding: 15px;
             background: white;
-            border-radius: 20px;
+            border-radius: 15px;
             margin-bottom: 10px;
-            box-shadow: 0 10px 20px rgba(0,0,0,0.05);
+            box-shadow: 0 4px 10px rgba(0,0,0,0.05);
             border: 1px solid #eee;
         }
-        .time-display { font-family: 'Share Tech Mono', monospace; font-size: 38px; font-weight: bold; letter-spacing: 2px; transition: color 0.3s; }
-        .date-display { font-size: 12px; color: #777; font-weight: 600; text-transform: uppercase; margin-bottom: 8px; }
-        .status-msg { font-size: 12px; padding: 8px 12px; border-radius: 8px; display: inline-block; width: 100%; line-height: 1.4; font-weight: bold; }
+        .time-display { font-family: 'Share Tech Mono', monospace; font-size: 34px; font-weight: bold; color: #333; letter-spacing: 2px; }
+        .date-display { font-size: 11px; color: #777; font-weight: 600; text-transform: uppercase; margin-bottom: 5px; }
+        .status-msg { font-size: 11px; padding: 6px 10px; border-radius: 6px; display: inline-block; width: 100%; line-height: 1.4; }
         
-        /* Warna Jam */
-        .clock-green { color: #2e7d32; }
-        .clock-red { color: #c62828; }
-        
-        /* Status Background */
-        .bg-open { background: #e8f5e9; color: #2e7d32; border: 1px solid #c8e6c9; }
-        .bg-closed { background: #ffebee; color: #c62828; border: 1px solid #ffcdd2; }
+        .open { color: #155724; background: #d4edda; border: 1px solid #c3e6cb; font-weight: bold; }
+        .closed { color: #721c24; background: #fff5f5; border: 1px solid #ffcdd2; font-weight: bold; }
 
         /* TOMBOL MENU 3D */
         .btn {
-            background: linear-gradient(145deg, #ffffff, #f0f0f0);
+            background: linear-gradient(145deg, #ffffff, #e6e6e6);
             color: #444;
             padding: 18px 20px;
             border-radius: 15px;
@@ -141,15 +126,15 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            border: 1px solid #fff;
+            border: 1px solid white;
             margin-bottom: 12px;
-            box-shadow: 6px 6px 12px #d1d1d1, -6px -6px 12px #ffffff;
+            box-shadow: 5px 5px 10px #d1d1d1, -5px -5px 10px #ffffff;
             transition: transform 0.1s;
         }
-        .btn:active { transform: scale(0.98); box-shadow: inset 4px 4px 8px #d1d1d1, inset -4px -4px 8px #ffffff; }
-        .btn i { font-size: 20px; color: #555; }
+        .btn:active { transform: scale(0.98); }
+        .btn i { font-size: 18px; color: #555; }
 
-        /* TOMBOL KEMBALI (KUNING EMAS) */
+        /* TOMBOL KEMBALI */
         .btn-back {
             background: linear-gradient(135deg, #FFD700, #FDB931);
             color: #5a4a00;
@@ -159,43 +144,39 @@
         }
         .btn-back i { color: #5a4a00; margin-left: 8px; }
 
-        /* SOSMED BUTTONS (OFFICIAL COLORS) */
+        /* SOSMED BUTTONS */
         .btn-wa { background: #25D366; color: white; border:none; } .btn-wa i { color: white; }
         .btn-ig { background: linear-gradient(45deg, #f09433, #e6683c, #dc2743, #cc2366, #bc1888); color: white; border:none; } .btn-ig i { color: white; }
         .btn-fb { background: #1877F2; color: white; border:none; } .btn-fb i { color: white; }
         .btn-tw { background: #000000; color: white; border:none; } .btn-tw i { color: white; }
         .btn-yt { background: #FF0000; color: white; border:none; } .btn-yt i { color: white; }
 
-        /* BOARDING PASS TICKET STYLE (Untuk Hasil & Status) */
+        /* BOARDING PASS */
         .boarding-pass {
             background: white; border-radius: 16px; overflow: hidden;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.15); margin-top: 10px; border: 1px solid #ddd; position: relative;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.15); margin-top: 10px; border: 1px solid #eee; position: relative;
         }
         .bp-header { background: #333; color: #FFD700; padding: 15px; text-align: center; font-weight: 800; letter-spacing: 2px; font-size: 16px; border-bottom: 2px dashed #FFD700; }
-        .bp-body { padding: 20px; position: relative; }
-        
+        .bp-body { padding: 20px; }
         .bp-row { display: flex; justify-content: space-between; margin-bottom: 12px; border-bottom: 1px solid #f5f5f5; padding-bottom: 5px; }
-        .bp-label { font-size: 10px; color: #888; text-transform: uppercase; letter-spacing: 0.5px; }
+        .bp-label { font-size: 11px; color: #888; text-transform: uppercase; }
         .bp-val { font-size: 13px; font-weight: 700; color: #333; text-align: right; }
-        
-        .bp-antrian { text-align: center; margin: 20px 0; padding: 10px; background: #f0f2f5; border-radius: 10px; border: 1px solid #d1d1d1; }
-        .bp-antrian-label { font-size: 12px; color: #555; letter-spacing: 1px; text-transform: uppercase; font-weight: 600; }
-        .bp-antrian-num { font-size: 48px; font-weight: 800; color: #333; line-height: 1; margin-top: 5px; font-family: 'Share Tech Mono', monospace; }
-        
-        .bp-footer { background: #f9f9f9; padding: 15px; text-align: center; font-size: 10px; color: #777; border-top: 2px dashed #ccc; display: flex; justify-content: space-between; align-items: center; }
-        /* Notch Effect */
-        .boarding-pass::before, .boarding-pass::after { content: ''; position: absolute; top: 58px; width: 20px; height: 20px; background: #eef2f5; border-radius: 50%; z-index: 5; }
-        .boarding-pass::before { left: -10px; box-shadow: inset -2px 0 3px rgba(0,0,0,0.1); } 
-        .boarding-pass::after { right: -10px; box-shadow: inset 2px 0 3px rgba(0,0,0,0.1); }
+        .bp-antrian { text-align: center; margin: 20px 0; padding: 10px; background: #f8f9fa; border-radius: 8px; border: 1px solid #ddd; }
+        .bp-antrian-label { font-size: 12px; color: #555; letter-spacing: 1px; }
+        .bp-antrian-num { font-size: 42px; font-weight: 800; color: #333; line-height: 1; margin-top: 5px; font-family: 'Share Tech Mono', monospace; }
+        .bp-status { text-align: center; margin-bottom: 15px; }
+        .bp-footer { background: #f4f4f4; padding: 15px; text-align: center; font-size: 10px; color: #777; border-top: 2px dashed #ccc; display: flex; justify-content: space-between; align-items: center; }
+        .boarding-pass::before, .boarding-pass::after { content: ''; position: absolute; top: 58px; width: 20px; height: 20px; background: #f8f9fa; border-radius: 50%; }
+        .boarding-pass::before { left: -10px; } .boarding-pass::after { right: -10px; }
 
         /* FORM STYLE */
-        .form-box { background: white; padding: 20px; border-radius: 15px; box-shadow: 0 5px 15px rgba(0,0,0,0.05); border: 1px solid #eee; }
-        .inp { width: 100%; padding: 14px; margin-bottom: 10px; border: 1px solid #ccc; border-radius: 8px; font-size: 14px; background: #fff; transition: 0.3s; }
-        .inp:focus { border-color: #333; box-shadow: 0 0 0 3px rgba(51,51,51,0.1); outline: none; }
-        .submit-btn { background: linear-gradient(to right, #333, #111); color: #FFD700; border: none; padding: 16px; border-radius: 10px; font-weight: 800; width: 100%; cursor: pointer; margin-top: 10px; box-shadow: 0 4px 10px rgba(0,0,0,0.3); }
+        .form-box { background: white; padding: 20px; border-radius: 15px; box-shadow: 0 5px 15px rgba(0,0,0,0.05); }
+        .inp { width: 100%; padding: 14px; margin-bottom: 10px; border: 1px solid #ddd; border-radius: 8px; font-size: 14px; background: #fafafa; }
+        .inp:focus { border-color: #333; background: #fff; outline: none; }
+        .submit-btn { background: linear-gradient(to right, #333, #000); color: #FFD700; border: none; padding: 16px; border-radius: 10px; font-weight: 800; width: 100%; cursor: pointer; margin-top: 10px; box-shadow: 0 4px 10px rgba(0,0,0,0.3); }
 
         #resultModal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.9); flex-direction: column; justify-content: center; align-items: center; padding: 20px; z-index: 999; }
-        #resultImg { max-width: 100%; max-height: 70vh; border-radius: 10px; box-shadow: 0 0 30px rgba(255,255,255,0.2); }
+        #resultImg { max-width: 100%; max-height: 70vh; border-radius: 10px; }
         .close-modal { position: absolute; top: 20px; right: 20px; color: white; font-size: 30px; cursor: pointer; background: none; border: none; }
         
         .badge { padding: 5px 10px; border-radius: 4px; font-size: 11px; font-weight: bold; text-transform: uppercase; }
@@ -204,9 +185,12 @@
         @keyframes popIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
         #loader { position: absolute; inset: 0; background: white; display: flex; flex-direction: column; justify-content: center; align-items: center; z-index: 99; }
         
-        /* Rich Text Content */
+        /* Table & Rich Text */
+        .spec-table { width: 100%; border-collapse: collapse; font-size: 12px; margin-bottom: 10px; border-radius: 8px; overflow: hidden; border: 1px solid #eee; background: white; }
+        .spec-table th { background: #555; color: white; padding: 10px; text-align: left; }
+        .spec-table td { padding: 10px; border-bottom: 1px solid #eee; }
         .rich-content { font-size: 13px; line-height: 1.6; color: #333; }
-        .rich-content ul, .rich-content ol { padding-left: 20px; margin: 5px 0; }
+        .rich-content ul { padding-left: 20px; margin: 5px 0; }
         .rich-content img { max-width: 100%; border-radius: 5px; margin: 5px 0; }
     </style>
 </head>
@@ -226,8 +210,9 @@
             <div class="logo-area"><img id="logo_img" src="" alt="Logo" loading="lazy"></div>
             <h1 class="app-name" id="app_title">Loading...</h1>
         </div>
-        <div id="announcement"></div>
     </div>
+    
+    <div id="announcement"></div>
     
     <div id="chat-box"></div>
     <div style="text-align:center; padding:15px; font-size:11px; color:#aaa; margin-top: auto;">&copy; 2026 Sistem Lapas Digital</div>
@@ -264,8 +249,9 @@
             const ann = document.getElementById('announcement');
             if(cfg.announcement && cfg.announcement.trim() !== "") { 
                 ann.style.display = 'block'; 
-                // Render HTML content (Support Bold & Images from Admin)
-                ann.innerHTML = "<strong>📢 INFO PENTING:</strong><div style='margin-top:5px; font-weight:600; font-size:13px;'>" + cfg.announcement + "</div>"; 
+                // Tampilan Info Penting Lebih Tegas
+                ann.innerHTML = "<div style='font-size:14px; font-weight:900; letter-spacing:1px; margin-bottom:5px; text-decoration:underline; text-underline-offset:3px;'>📢 INFO PENTING:</div>" + 
+                                "<div style='font-weight:700; font-size:13px; color:#000; line-height:1.5;'>" + cfg.announcement + "</div>"; 
             } else { ann.style.display = 'none'; }
             
             document.getElementById('loader').style.display = 'none';
@@ -278,12 +264,17 @@
         window.respond = function(key) {
             if (key === 'start') {
                 chatBox.innerHTML = '';
-                // JAM REALTIME
+                // Render Realtime Clock
                 const clockDiv = document.createElement('div');
                 clockDiv.className = 'clock-box';
                 clockDiv.innerHTML = `<div id="time-display" class="time-display">00:00:00</div><div id="date-display" class="date-display">-</div><div id="status-msg" class="status-msg"></div>`;
                 chatBox.appendChild(clockDiv);
                 startClock();
+                
+                // **PERBAIKAN UTAMA**: Memanggil tombol menu secara eksplisit setelah jam
+                const menuData = getMenu(config)['start'];
+                showBtn(menuData.options);
+                return;
             } else {
                 if(clockInterval) clearInterval(clockInterval); 
             }
@@ -312,7 +303,7 @@
             }
         }
 
-        // --- LOGIKA JAM KERJA (08:00 - 15:00) ---
+        // --- LOGIKA JAM ---
         function startClock() {
             if(clockInterval) clearInterval(clockInterval);
             const update = () => {
@@ -329,16 +320,15 @@
                     dateEl.innerText = dateStr;
                     
                     const h = now.getHours();
+                    // Jam Kerja: 08:00 - 15:00
                     if (h >= 8 && h < 15) {
-                        // JAM KERJA
-                        timeEl.className = "time-display clock-green";
-                        msgEl.className = "status-msg bg-open";
-                        msgEl.innerHTML = "<i class='fas fa-check-circle'></i> ADMIN SIAP MELAYANI ANDA";
+                        timeEl.style.color = "#333";
+                        msgEl.className = "status-msg open";
+                        msgEl.innerHTML = "✅ JAM PELAYANAN BUKA<br>Admin siap melayani anda.";
                     } else {
-                        // LUAR JAM KERJA (Tetap Bisa Akses)
-                        timeEl.className = "time-display clock-red";
-                        msgEl.className = "status-msg bg-closed";
-                        msgEl.innerHTML = "<i class='fas fa-clock'></i> SUDAH DILUAR JAM KERJA<br><span style='font-weight:400; font-size:10px;'>Admin akan sesegera mungkin melayani anda. Menu tetap dapat diakses.</span>";
+                        timeEl.style.color = "#c62828"; 
+                        msgEl.className = "status-msg closed";
+                        msgEl.innerHTML = "⛔ DILUAR JAM KERJA<br><span style='font-weight:400; font-size:10px;'>Aplikasi tetap dapat digunakan. Respon admin tertunda.</span>";
                     }
                 }
             };
@@ -365,7 +355,6 @@
                 let className = 'btn';
                 let icon = 'fa-chevron-right';
 
-                // Styling Khusus Ikon
                 if(o.text.includes("KEMBALI")) { className = 'btn btn-back'; icon = 'fa-arrow-left'; }
                 else if(o.text.includes("WHATSAPP")) { className = 'btn btn-wa'; icon = 'fa-whatsapp'; }
                 else if(o.text.includes("INSTAGRAM")) { className = 'btn btn-ig'; icon = 'fa-instagram'; }
@@ -467,7 +456,7 @@
         }
         window.submitPengurusan = async function() {
              const btn = document.querySelector('.submit-btn'); btn.innerText = "Mengirim..."; btn.disabled = true;
-             // ... logic upload same ...
+             // Simulate logic
              setTimeout(() => {
                 chatBox.innerHTML = '';
                 appendMsg('bot', `✅ **PERMOHONAN TERKIRIM!**\nData berhasil masuk ke sistem.`);
@@ -523,7 +512,7 @@
              });
         }
 
-        // --- BOARDING PASS RENDER ---
+        // --- RENDER TICKET (BOARDING PASS) ---
         function renderTicket(data, label) {
             let stBadge = data.status === 'accepted' ? '<span class="badge bg-acc">DISETUJUI</span>' : (data.status === 'rejected' ? '<span class="badge bg-rej">DITOLAK</span>' : '<span class="badge bg-wait">MENUNGGU VERIFIKASI</span>');
             const ticketHtml = `
@@ -567,7 +556,18 @@
 
     function getMenu(cfg) {
         return {
-            'start': { text: null }, 
+            'start': { 
+                text: null, 
+                options: [
+                    { text: "DAFTAR KUNJUNGAN (TATAP MUKA)", val: "daftar_fisik" },
+                    { text: "DAFTAR VIDEO CALL", val: "daftar_online" },
+                    { text: "PENGURUSAN (PB/CB/CMB)", val: "menu_urus" },
+                    { text: "TOKO LAPAS", val: "toko" },
+                    { text: "JADWAL & SYARAT", val: "info_gabung" },
+                    { text: "KRITIK & SARAN", val: "menu_kritik" },
+                    { text: "KONTAK & PENGADUAN", val: "kontak" }
+                ] 
+            },
             'daftar_fisik': { text: "📝 **PENDAFTARAN TATAP MUKA**", options: [{ text: "ISI FORMULIR", val: "form_fisik" }, { text: "CEK STATUS ANTRIAN", val: "cek_status_fisik" }, { text: "KEMBALI KE MENU UTAMA", val: "start" }] },
             'form_fisik': { text: "📝 **ISI DATA KUNJUNGAN:**", isForm: true, formType: "fisik" },
             'daftar_online': { text: "💻 **PENDAFTARAN VIDEO CALL**", options: [{ text: "ISI FORMULIR", val: "form_online" }, { text: "CEK STATUS VC", val: "cek_status_online" }, { text: "KEMBALI KE MENU UTAMA", val: "start" }] },
