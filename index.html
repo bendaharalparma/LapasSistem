@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <meta name="theme-color" content="#555555">
+    <meta name="theme-color" content="#333333">
     <title>Layanan Lapas Digital</title>
     
     <script defer src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
@@ -17,8 +17,6 @@
         :root { 
             --primary: #555555; 
             --accent: #FFD700; 
-            --glass-border: rgba(255, 255, 255, 0.4);
-            --glass-bg: rgba(255, 255, 255, 0.25);
         }
         body {
             font-family: 'Poppins', sans-serif;
@@ -42,7 +40,7 @@
         /* HEADER 3D */
         .header {
             position: relative;
-            height: 220px;
+            height: 200px;
             background-color: #333;
             background-size: cover;
             background-position: center;
@@ -51,8 +49,8 @@
             align-items: center;
             justify-content: center;
             color: white;
-            border-bottom-left-radius: 40px;
-            border-bottom-right-radius: 40px;
+            border-bottom-left-radius: 35px;
+            border-bottom-right-radius: 35px;
             z-index: 10;
             padding: 20px;
             box-shadow: 0 10px 20px rgba(0,0,0,0.3);
@@ -61,46 +59,47 @@
             content: '';
             position: absolute;
             bottom: 0; left: 0; right: 0;
-            height: 80%;
-            background: linear-gradient(to top, rgba(50,50,50,0.9) 0%, rgba(50,50,50,0) 100%);
-            border-bottom-left-radius: 40px;
-            border-bottom-right-radius: 40px;
+            height: 90%;
+            background: linear-gradient(to top, rgba(0,0,0,0.8) 0%, rgba(0,0,0,0) 100%);
+            border-bottom-left-radius: 35px;
+            border-bottom-right-radius: 35px;
         }
         .header-content { position: relative; z-index: 2; text-align: center; width: 100%; display: flex; flex-direction: column; align-items: center; }
         
         /* LOGO */
         .logo-area {
-            width: auto; height: 90px; margin: 0 auto 10px; padding: 0;
+            width: auto; height: 80px; margin: 0 auto 5px; padding: 0;
             display: flex; justify-content: center; align-items: center;
-            filter: drop-shadow(0 8px 6px rgba(0,0,0,0.6));
+            filter: drop-shadow(0 5px 5px rgba(0,0,0,0.5));
             transform: perspective(500px) translateZ(20px);
         }
         .logo-area img { height: 100%; width: auto; object-fit: contain; }
         .app-name {
-            font-weight: 800; font-size: 24px; margin: 0;
+            font-weight: 800; font-size: 22px; margin: 0;
             text-transform: uppercase; letter-spacing: 1px;
-            text-shadow: 0 4px 10px rgba(0,0,0,0.8); line-height: 1.2;
+            text-shadow: 0 2px 5px rgba(0,0,0,0.8); line-height: 1.2;
         }
 
-        /* GLASSMORPHISM ANNOUNCEMENT */
+        /* INFO PENTING 3D EMAS */
         #announcement {
-            background: var(--glass-bg);
-            backdrop-filter: blur(12px);
-            -webkit-backdrop-filter: blur(12px);
-            border: 1px solid var(--glass-border);
-            color: #b71c1c; /* Merah Gelap Kontras */
-            padding: 20px;
-            font-size: 14px;
+            /* Latar Belakang Emas 3D */
+            background: linear-gradient(145deg, #FFD700, #FFC107); 
+            color: #3e2723; /* Warna Teks Kontras Gelap */
+            padding: 15px 20px;
+            font-size: 13px;
             text-align: center;
             display: none;
             font-weight: 800; /* Sangat Tegas */
             text-transform: uppercase;
-            box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.15);
+            /* Efek Bayangan 3D */
+            box-shadow: 0 8px 15px rgba(0,0,0,0.2), inset 0 2px 3px rgba(255,255,255,0.4);
             position: relative;
             z-index: 11;
-            margin: -35px 20px 10px 20px; /* Menumpuk ke atas Header */
-            border-radius: 20px;
-            line-height: 1.5;
+            /* Posisi menumpuk tepat di bawah header */
+            margin: -30px 15px 10px 15px; 
+            border-radius: 15px;
+            line-height: 1.4;
+            border: 2px solid #fff; /* Border putih untuk mempertegas */
         }
 
         /* CHAT BOX */
@@ -168,15 +167,12 @@
         .schedule-card { border: 1px solid #eee; border-radius: 10px; overflow: hidden; margin-top: 5px; background: white; }
         .sch-row { display: flex; justify-content: space-between; padding: 12px 15px; border-bottom: 1px solid #f9f9f9; font-size: 12px; }
 
-        /* JAM REALTIME */
+        /* JAM REALTIME MINIMALIS */
         #realtime-clock-box {
-            text-align: center;
-            margin-bottom: 10px;
-            padding-bottom: 10px;
-            border-bottom: 1px dashed #ddd;
+            text-align: center; margin-bottom: 15px;
         }
-        .clock-time { font-size: 14px; font-weight: 800; margin-bottom: 4px; }
-        .clock-status { font-size: 11px; font-style: italic; color: #666; }
+        .clock-time { font-size: 16px; font-weight: 800; margin-bottom: 5px; }
+        .clock-status { font-size: 12px; font-weight: 500; color: #555; }
     </style>
 </head>
 <body>
@@ -232,8 +228,8 @@
             const ann = document.getElementById('announcement');
             if(cfg.announcement && cfg.announcement.trim() !== "") { 
                 ann.style.display = 'block'; 
-                // Render Announcement with Glassmorphism style
-                ann.innerHTML = "📢 <b>INFO PENTING:</b><br><div style='margin-top:8px; font-weight:700; color:#333;'>" + cfg.announcement + "</div>"; 
+                // Render Announcement Teks Tegas
+                ann.innerHTML = "📢 INFO PENTING:<br><div style='margin-top:5px; color:#3e2723;'>" + cfg.announcement + "</div>"; 
             } else { ann.style.display = 'none'; }
             
             document.getElementById('loader').style.display = 'none';
@@ -242,7 +238,7 @@
 
         const chatBox = document.getElementById('chat-box');
         
-        // --- LOGIKA JAM REALTIME ---
+        // --- LOGIKA JAM REALTIME MINIMALIS ---
         function getGreetingHtml() {
             const now = new Date();
             const days = ['Minggu','Senin','Selasa','Rabu','Kamis','Jumat','Sabtu'];
@@ -252,34 +248,28 @@
             const timeStr = now.toLocaleTimeString('id-ID', {hour: '2-digit', minute:'2-digit'});
             const hour = now.getHours();
             
-            // Logika Jam Kerja (08.00 - 15.00)
+            // Logika Jam Kerja (08.00 - 15.00 WIB)
             const isOpen = hour >= 8 && hour < 15;
-            const color = isOpen ? '#2e7d32' : '#c62828'; // Hijau : Merah
-            const statusMsg = isOpen ? "✅ Admin siap melayani anda" : "⛔ Admin akan sesegera mungkin melayani anda";
             
+            const color = isOpen ? '#2e7d32' : '#c62828'; // Hijau : Merah
+            // Teks Status sesuai permintaan
+            const statusMsg = isOpen ? "✅ Admin siap melayani Anda" : "⛔ Diluar jam kerja, Admin akan sesegera mungkin melayani Anda";
+            
+            // Tampilan Minimalis tanpa tulisan "Silakan pilih..."
             return `
             <div id="realtime-clock-box">
                 <div class="clock-time" style="color:${color};">
                     <i class="far fa-clock"></i> ${dateStr} - ${timeStr} WIB
                 </div>
                 <div class="clock-status">${statusMsg}</div>
-            </div>
-            Silakan pilih menu layanan dibawah ini:`;
+            </div>`;
         }
 
         window.startChat = function() { 
             chatBox.innerHTML = '';
-            // Render menu awal dengan jam realtime
             const menu = getMenu(config)['start'];
-            
-            // Insert Jam Realtime ke dalam text menu start
-            // Update realtime setiap detik jika user di menu awal (opsional, disini static saat load)
             const greeting = getGreetingHtml();
-            
             appendMsg('bot', greeting, { options: menu.options });
-            
-            // Interval update jam sederhana jika pesan paling atas adalah bot (menu utama)
-            // (Opsional agar jam bergerak tanpa refresh)
         }
 
         window.respond = function(key) {
@@ -332,7 +322,6 @@
                 btn.className = isBack ? 'btn btn-back' : 'btn';
                 
                 let icon = 'fa-chevron-right';
-                // Ikon Mapping
                 if(o.text.includes("TATAP MUKA")) icon = 'fa-user-friends';
                 else if(o.text.includes("VIDEO")) icon = 'fa-video';
                 else if(o.text.includes("PENGURUSAN")) icon = 'fa-folder-open';
@@ -340,7 +329,7 @@
                 else if(o.text.includes("JADWAL")) icon = 'fa-calendar-alt';
                 else if(o.text.includes("KRITIK")) icon = 'fa-comment-dots';
                 else if(o.text.includes("KONTAK")) icon = 'fa-address-book';
-                // Sosial Media Brand Icons
+                // Brand Icons
                 else if(o.text.includes("WHATSAPP")) icon = 'fa-whatsapp';
                 else if(o.text.includes("INSTAGRAM")) icon = 'fa-instagram';
                 else if(o.text.includes("FACEBOOK")) icon = 'fa-facebook';
@@ -348,7 +337,6 @@
                 else if(o.text.includes("YOUTUBE")) icon = 'fa-youtube';
                 else if(isBack) icon = 'fa-arrow-left';
 
-                // Gunakan class fab untuk brand icons
                 const faClass = (['fa-whatsapp','fa-instagram','fa-facebook','fa-twitter','fa-youtube'].includes(icon)) ? 'fab' : 'fas';
 
                 btn.innerHTML = `<span>${o.text}</span> <i class="${faClass} ${icon}"></i>`;
@@ -462,7 +450,6 @@
                        db.ref(path).push(payload).then(() => {
                             chatBox.innerHTML = '';
                             renderTicket(payload, type === 'fisik' ? 'TATAP MUKA' : 'VIDEO CALL');
-                            // TAMBAH TOMBOL KEMBALI SETELAH SUKSES
                             showBtn([{text:"KEMBALI KE MENU UTAMA", val:"start"}]);
                         });
                     } else { btn.disabled = false; alert("Gagal koneksi."); }
@@ -611,7 +598,6 @@
 
         return {
             'start': {
-                // Teks ini akan diganti dinamis oleh fungsi getGreetingHtml() di JS
                 text: "Loading Menu...",
                 options: [
                     { text: "DAFTAR KUNJUNGAN (TATAP MUKA)", val: "daftar_fisik" },
