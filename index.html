@@ -15,360 +15,644 @@
     <style>
         * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
         :root { 
-             --primary: #555555; 
-             --accent: #FFD700; 
-             --success: #2e7d32;
-             --danger: #d32f2f;
+            --primary: #555555; 
+            --accent: #FFD700; 
+            --glass-border: rgba(255, 255, 255, 0.4);
+            --glass-bg: rgba(255, 255, 255, 0.25);
         }
         body {
-             font-family: 'Poppins', sans-serif;
-             background: #eef2f5;
-             margin: 0;
-             display: flex;
-             justify-content: center;
-             min-height: 100vh;
+            font-family: 'Poppins', sans-serif;
+            background: #eef2f5;
+            margin: 0;
+            display: flex;
+            justify-content: center;
+            min-height: 100vh;
         }
         .app-container {
-             width: 100%;
-             max-width: 480px;
-             background: #fff;
-             min-height: 100vh;
-             box-shadow: 0 0 30px rgba(0,0,0,0.2);
-             display: flex;
-             flex-direction: column;
-             position: relative;
+            width: 100%;
+            max-width: 480px;
+            background: #fff;
+            min-height: 100vh;
+            box-shadow: 0 0 30px rgba(0,0,0,0.2);
+            display: flex;
+            flex-direction: column;
+            position: relative;
         }
         
         /* HEADER 3D */
         .header {
-             position: relative;
-             height: 240px;
-             background-color: #333;
-             background-size: cover;
-             background-position: center;
-             display: flex;
-             flex-direction: column;
-             align-items: center;
-             justify-content: flex-start; /* Ubah ke start agar logo tidak tertutup glass */
-             color: white;
-             z-index: 10;
-             padding: 20px;
-             overflow: hidden;
-             box-shadow: 0 10px 20px rgba(0,0,0,0.3);
+            position: relative;
+            height: 220px;
+            background-color: #333;
+            background-size: cover;
+            background-position: center;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            border-bottom-left-radius: 40px;
+            border-bottom-right-radius: 40px;
+            z-index: 10;
+            padding: 20px;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.3);
         }
-
-        .header-content { position: relative; z-index: 2; text-align: center; width: 100%; padding-top: 10px; }
+        .header::after {
+            content: '';
+            position: absolute;
+            bottom: 0; left: 0; right: 0;
+            height: 80%;
+            background: linear-gradient(to top, rgba(50,50,50,0.9) 0%, rgba(50,50,50,0) 100%);
+            border-bottom-left-radius: 40px;
+            border-bottom-right-radius: 40px;
+        }
+        .header-content { position: relative; z-index: 2; text-align: center; width: 100%; display: flex; flex-direction: column; align-items: center; }
         
+        /* LOGO */
         .logo-area {
-             height: 80px;
-             margin-bottom: 5px;
-             filter: drop-shadow(0 8px 6px rgba(0,0,0,0.6));
+            width: auto; height: 90px; margin: 0 auto 10px; padding: 0;
+            display: flex; justify-content: center; align-items: center;
+            filter: drop-shadow(0 8px 6px rgba(0,0,0,0.6));
+            transform: perspective(500px) translateZ(20px);
         }
-        .logo-area img { height: 100%; object-fit: contain; }
-        
+        .logo-area img { height: 100%; width: auto; object-fit: contain; }
         .app-name {
-             font-weight: 800;
-             font-size: 22px;
-             text-transform: uppercase;
-             letter-spacing: 1px;
-             text-shadow: 0 4px 10px rgba(0,0,0,0.8);
+            font-weight: 800; font-size: 24px; margin: 0;
+            text-transform: uppercase; letter-spacing: 1px;
+            text-shadow: 0 4px 10px rgba(0,0,0,0.8); line-height: 1.2;
         }
 
         /* GLASSMORPHISM ANNOUNCEMENT */
         #announcement {
-            position: absolute;
-            bottom: 0;
-            left: 0;
-            right: 0;
-            background: rgba(255, 255, 255, 0.2);
-            backdrop-filter: blur(10px);
-            -webkit-backdrop-filter: blur(10px);
-            padding: 15px 20px;
-            display: none;
-            border-top: 1px solid rgba(255,255,255,0.3);
-            z-index: 11;
-        }
-        #announcement .ann-title {
-            color: #FFFFFF;
-            font-weight: 900;
+            background: var(--glass-bg);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid var(--glass-border);
+            color: #b71c1c; /* Merah Gelap Kontras */
+            padding: 20px;
             font-size: 14px;
+            text-align: center;
+            display: none;
+            font-weight: 800; /* Sangat Tegas */
             text-transform: uppercase;
-            text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
-            margin-bottom: 2px;
-            display: block;
-        }
-        #announcement .ann-body {
-            color: #FFFFFF;
-            font-weight: 700;
-            font-size: 12px;
-            line-height: 1.3;
+            box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.15);
+            position: relative;
+            z-index: 11;
+            margin: -35px 20px 10px 20px; /* Menumpuk ke atas Header */
+            border-radius: 20px;
+            line-height: 1.5;
         }
 
         /* CHAT BOX */
-        #chat-box { flex: 1; padding: 20px; overflow-y: auto; display: flex; flex-direction: column; gap: 12px; background: #fff; padding-bottom: 50px; }
-        .msg { max-width: 90%; padding: 14px 18px; border-radius: 16px; font-size: 14px; line-height: 1.5; animation: popIn 0.3s ease; }
+        #chat-box { flex: 1; padding: 20px; overflow-y: auto; display: flex; flex-direction: column; gap: 12px; background: #fff; scroll-behavior: smooth; padding-bottom: 50px; }
+        .msg { max-width: 90%; padding: 14px 18px; border-radius: 16px; font-size: 14px; line-height: 1.5; animation: popIn 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
         .bot { background: #f0f2f5; align-self: flex-start; border-top-left-radius: 4px; color: #333; }
-        .user { background: #555; align-self: flex-end; border-top-right-radius: 4px; color: white; }
+        .user { background: #555; align-self: flex-end; border-top-right-radius: 4px; color: white; border: 1px solid #444; }
         
-        /* STATUS TIME STYLES */
-        .status-container { font-size: 11px; margin-bottom: 10px; font-weight: 600; text-align: center;}
-        .time-now { font-weight: 800; font-size: 13px; display: block;}
-        .status-text { display: block; margin-top: 2px;}
-
-        /* BUTTONS */
+        /* TOMBOL MENU */
         .btn {
             background: linear-gradient(145deg, #f0f0f0, #dcdcdc);
-            color: #444; padding: 16px 20px; border-radius: 15px; font-size: 14px; font-weight: 700;
-            cursor: pointer; width: 100%; display: flex; justify-content: space-between; align-items: center;
-            border: 1px solid white; margin-bottom: 12px; box-shadow: 5px 5px 10px #bebebe, -5px -5px 10px #ffffff;
+            color: #444; padding: 18px 20px; border-radius: 15px;
+            font-size: 14px; font-weight: 700; cursor: pointer;
+            width: 100%; display: flex; justify-content: space-between; align-items: center;
+            border: 1px solid white; margin-bottom: 12px;
+            box-shadow: 5px 5px 10px #bebebe, -5px -5px 10px #ffffff;
+            transition: transform 0.1s;
         }
-        .btn-back { background: linear-gradient(145deg, #FFD700, #FDB931); justify-content: center; color: #5a4a00; border: none; }
+        .btn:active { transform: scale(0.98); box-shadow: inset 5px 5px 10px #bebebe, inset -5px -5px 10px #ffffff; }
+        .btn-back {
+            background: linear-gradient(145deg, #FFD700, #FDB931);
+            justify-content: center; color: #5a4a00; margin-top: 15px; border: none;
+            box-shadow: 0 4px 10px rgba(255, 215, 0, 0.4);
+        }
+        .btn-back i { color: #5a4a00; margin-left: 5px; }
 
-        /* FORM & OTHERS */
-        .form-box { display: flex; flex-direction: column; gap: 10px; background: rgba(0,0,0,0.02); padding: 15px; border-radius: 15px; border: 1px solid #eee; }
-        .inp { padding: 12px; border: 1px solid #ccc; border-radius: 8px; width: 100%; outline: none; background: #fff; }
-        .submit-btn { background: linear-gradient(to right, #444, #222); color: white; border: none; padding: 16px; border-radius: 10px; font-weight: bold; width: 100%; cursor: pointer; }
+        /* FORM */
+        .form-box { display: flex; flex-direction: column; gap: 12px; margin-top: 5px; background: rgba(0,0,0,0.02); padding: 15px; border-radius: 15px; border: 1px solid #eee; }
+        .inp { padding: 12px; border: 1px solid #ccc; border-radius: 8px; font-size: 15px; width: 100%; outline: none; transition: 0.3s; background: #fff; }
+        .inp:focus { border-color: var(--primary); box-shadow: 0 0 0 2px rgba(85,85,85,0.1); }
+        .upload-group { border: 2px dashed #ccc; padding: 10px; border-radius: 8px; background: #fff; margin-bottom: 5px; }
+        .upload-label { font-size: 12px; font-weight: 600; color: #555; display: block; margin-bottom: 5px; }
         
+        .submit-btn {
+            background: linear-gradient(to right, #444, #222);
+            color: white; border: none; padding: 16px; border-radius: 10px;
+            font-weight: bold; margin-top: 10px; cursor: pointer; font-size: 14px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2); width: 100%;
+        }
+
+        /* TICKET */
+        .ticket-card { border: 2px dashed var(--primary); padding: 20px; border-radius: 15px; text-align: center; margin-top: 10px; background: #fff; position: relative; box-shadow: 0 5px 20px rgba(0,0,0,0.05); }
+        .ticket-number { font-size: 36px; font-weight: 800; color: #333; margin: 15px 0; letter-spacing: 2px; }
+        .ticket-note { background: #fff3cd; color: #856404; padding: 10px; font-size: 12px; margin-top: 10px; border-radius: 6px; text-align: left; border-left: 4px solid #ffeeba; }
+        
+        /* CONTENT */
+        .rich-content { background: white; padding: 15px; border-radius: 10px; border: 1px solid #eee; font-size: 13px; line-height: 1.6; color: #333; text-align: left; }
+        .rich-content img { max-width: 100%; border-radius: 5px; margin: 5px 0; }
+        
+        /* UTILS */
         #resultModal { display: none; position: fixed; z-index: 100; inset: 0; background: rgba(0,0,0,0.9); flex-direction: column; justify-content: center; align-items: center; padding: 20px; }
-        #resultImg { max-width: 100%; max-height: 70vh; border-radius: 10px; }
-        .close-modal { position: absolute; top: 20px; right: 20px; color: white; font-size: 30px; border: none; background: none; }
-        
-        .ticket-card { border: 2px dashed var(--primary); padding: 20px; border-radius: 15px; text-align: center; background: #fff; }
-        .ticket-number { font-size: 32px; font-weight: 800; margin: 10px 0; }
-        
-        .spec-table { width: 100%; border-collapse: collapse; font-size: 12px; margin-bottom: 10px; border: 1px solid #eee; }
-        .spec-table th { background: var(--primary); color: white; padding: 8px; }
-        .spec-table td { padding: 8px; border-bottom: 1px solid #eee; }
-
+        #resultImg { max-width: 100%; max-height: 70vh; border-radius: 10px; box-shadow: 0 0 30px rgba(255,255,255,0.2); }
+        .close-modal { position: absolute; top: 20px; right: 20px; color: white; font-size: 30px; cursor: pointer; background: none; border: none; }
+        .badge { padding: 4px 8px; border-radius: 4px; font-weight: bold; font-size: 10px; }
+        .bg-green { background: #e8f5e9; color: #2e7d32; } 
+        .bg-blue { background: #e3f2fd; color: #1565c0; } 
+        .bg-red { background: #ffebee; color: #c62828; } 
+        .bg-gray { background: #eee; color: #555; }
         @keyframes popIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
-        #loader { position: absolute; inset: 0; background: white; display: flex; justify-content: center; align-items: center; z-index: 99; }
+        #loader { position: absolute; inset: 0; background: white; display: flex; flex-direction: column; justify-content: center; align-items: center; z-index: 99; }
+        
+        .spec-table { width: 100%; border-collapse: collapse; font-size: 12px; margin-bottom: 10px; border-radius: 8px; overflow: hidden; border: 1px solid #eee; background: white; }
+        .spec-table th { background: var(--primary); color: white; padding: 10px; text-align: left; }
+        .spec-table td { padding: 10px; border-bottom: 1px solid #eee; }
+        .schedule-card { border: 1px solid #eee; border-radius: 10px; overflow: hidden; margin-top: 5px; background: white; }
+        .sch-row { display: flex; justify-content: space-between; padding: 12px 15px; border-bottom: 1px solid #f9f9f9; font-size: 12px; }
+
+        /* JAM REALTIME */
+        #realtime-clock-box {
+            text-align: center;
+            margin-bottom: 10px;
+            padding-bottom: 10px;
+            border-bottom: 1px dashed #ddd;
+        }
+        .clock-time { font-size: 14px; font-weight: 800; margin-bottom: 4px; }
+        .clock-status { font-size: 11px; font-style: italic; color: #666; }
     </style>
 </head>
 <body>
 
 <div id="resultModal">
-   <button class="close-modal" onclick="closeResultModal()">&times;</button>
-   <img id="resultImg" src="" alt="Tiket">
-   <div style="color:white; text-align:center; margin-top:10px; font-size:12px;">Tekan tahan gambar untuk menyimpan</div>
+    <button class="close-modal" onclick="closeResultModal()">&times;</button>
+    <img id="resultImg" src="" alt="Tiket">
+    <div style="color:white; text-align:center; margin-top:10px; font-size:12px;">Tekan tahan gambar untuk menyimpan</div>
 </div>
 
 <div class="app-container">
-   <div id="loader"><i class="fas fa-circle-notch fa-spin fa-2x" style="color:#555;"></i></div>
-   
-   <div class="header" id="header_bg">
-       <div class="header-content">
-            <div class="logo-area"><img id="logo_img" src="" alt="Logo"></div>
+    <div id="loader"><i class="fas fa-circle-notch fa-spin fa-2x" style="color:#555;"></i></div>
+    
+    <div class="header" id="header_bg">
+        <div class="header-content">
+            <div class="logo-area"><img id="logo_img" src="" alt="Logo" loading="lazy"></div>
             <h1 class="app-name" id="app_title">Loading...</h1>
-       </div>
-       <div id="announcement"></div>
-   </div>
-   
-   <div id="chat-box"></div>
-   <div style="text-align:center; padding:10px; font-size:11px; color:#aaa;">&copy; 2026 Sistem Lapas Digital</div>
+        </div>
+    </div>
+    
+    <div id="announcement"></div>
+    <div id="chat-box"></div>
+    <div style="text-align:center; padding:15px; font-size:11px; color:#aaa; margin-top: auto;">&copy; 2026 Sistem Lapas Digital</div>
 </div>
 
 <script>
-   const firebaseConfig = {
-       apiKey: "AIzaSyDvpFZtiG_fXLOf8okjafNm7gqbJZr2pSY",
-       authDomain: "lapassistem.firebaseapp.com",
-       databaseURL: "https://lapassistem-default-rtdb.asia-southeast1.firebasedatabase.app",
-       projectId: "lapassistem",
-       storageBucket: "lapassistem.firebasestorage.app",
-       messagingSenderId: "951059663532",
-       appId: "1:951059663532:web:716bc3010eecc741a4ed09"
-   };
+    const firebaseConfig = {
+        apiKey: "AIzaSyDvpFZtiG_fXLOf8okjafNm7gqbJZr2pSY",
+        authDomain: "lapassistem.firebaseapp.com",
+        databaseURL: "https://lapassistem-default-rtdb.asia-southeast1.firebasedatabase.app",
+        projectId: "lapassistem",
+        storageBucket: "lapassistem.firebasestorage.app",
+        messagingSenderId: "951059663532",
+        appId: "1:951059663532:web:716bc3010eecc741a4ed09",
+        measurementId: "G-25HSNZ35ZH"
+    };
 
-   window.addEventListener('load', () => {
-       if (!firebase.apps.length) firebase.initializeApp(firebaseConfig);
-       const db = firebase.database();
-       let config = {};
+    window.addEventListener('load', () => {
+        if (!firebase.apps.length) firebase.initializeApp(firebaseConfig);
+        const db = firebase.database();
+        let config = {};
 
-       db.ref('app_config').on('value', (snap) => {
-            if(snap.exists()) {
-                config = snap.val();
-                updateUI(config);
+        db.ref('app_config').on('value', (snap) => {
+            if(snap.exists()) config = snap.val();
+            updateUI(config);
+        });
+
+        function updateUI(cfg) {
+            document.getElementById('app_title').innerText = cfg.app_name || "Lapas App";
+            document.getElementById('logo_img').src = cfg.logo_url || "";
+            if(cfg.header_bg) document.getElementById('header_bg').style.backgroundImage = `url('${cfg.header_bg}')`;
+            
+            const ann = document.getElementById('announcement');
+            if(cfg.announcement && cfg.announcement.trim() !== "") { 
+                ann.style.display = 'block'; 
+                // Render Announcement with Glassmorphism style
+                ann.innerHTML = "📢 <b>INFO PENTING:</b><br><div style='margin-top:8px; font-weight:700; color:#333;'>" + cfg.announcement + "</div>"; 
+            } else { ann.style.display = 'none'; }
+            
+            document.getElementById('loader').style.display = 'none';
+            startChat();
+        }
+
+        const chatBox = document.getElementById('chat-box');
+        
+        // --- LOGIKA JAM REALTIME ---
+        function getGreetingHtml() {
+            const now = new Date();
+            const days = ['Minggu','Senin','Selasa','Rabu','Kamis','Jumat','Sabtu'];
+            const months = ['Januari','Februari','Maret','April','Mei','Juni','Juli','Agustus','September','Oktober','November','Desember'];
+            
+            const dateStr = `${days[now.getDay()]}, ${now.getDate()} ${months[now.getMonth()]} ${now.getFullYear()}`;
+            const timeStr = now.toLocaleTimeString('id-ID', {hour: '2-digit', minute:'2-digit'});
+            const hour = now.getHours();
+            
+            // Logika Jam Kerja (08.00 - 15.00)
+            const isOpen = hour >= 8 && hour < 15;
+            const color = isOpen ? '#2e7d32' : '#c62828'; // Hijau : Merah
+            const statusMsg = isOpen ? "✅ Admin siap melayani anda" : "⛔ Admin akan sesegera mungkin melayani anda";
+            
+            return `
+            <div id="realtime-clock-box">
+                <div class="clock-time" style="color:${color};">
+                    <i class="far fa-clock"></i> ${dateStr} - ${timeStr} WIB
+                </div>
+                <div class="clock-status">${statusMsg}</div>
+            </div>
+            Silakan pilih menu layanan dibawah ini:`;
+        }
+
+        window.startChat = function() { 
+            chatBox.innerHTML = '';
+            // Render menu awal dengan jam realtime
+            const menu = getMenu(config)['start'];
+            
+            // Insert Jam Realtime ke dalam text menu start
+            // Update realtime setiap detik jika user di menu awal (opsional, disini static saat load)
+            const greeting = getGreetingHtml();
+            
+            appendMsg('bot', greeting, { options: menu.options });
+            
+            // Interval update jam sederhana jika pesan paling atas adalah bot (menu utama)
+            // (Opsional agar jam bergerak tanpa refresh)
+        }
+
+        window.respond = function(key) {
+            if (key === 'start') {
+                startChat();
+                return;
             }
-       });
+            
+            if (key.startsWith('cek_status_')) {
+                const type = key.split('_')[2];
+                askNikForStatus(type);
+                return;
+            }
 
-       function updateUI(cfg) {
-           document.getElementById('app_title').innerText = cfg.app_name || "Lapas App";
-           document.getElementById('logo_img').src = cfg.logo_url || "";
-           if(cfg.header_bg) document.getElementById('header_bg').style.backgroundImage = `url('${cfg.header_bg}')`;
-           
-           const ann = document.getElementById('announcement');
-           if(cfg.announcement && cfg.announcement.trim() !== "") { 
-               ann.style.display = 'block'; 
-               ann.innerHTML = `<span class="ann-title">📢 INFO PENTING</span><div class="ann-body">${cfg.announcement}</div>`; 
-           } else { ann.style.display = 'none'; }
-           
-           document.getElementById('loader').style.display = 'none';
-           startChat();
-       }
+            const menu = getMenu(config)[key];
+            if(!menu) return;
 
-       const chatBox = document.getElementById('chat-box');
-       window.startChat = function() {
-           chatBox.innerHTML = '';
-           respond('start');
-       }
+            let opts = menu.options || [];
+            if(menu.back) opts.push({text:"KEMBALI KE MENU UTAMA", val:"start"});
+            if(menu.backTo) opts.push({text:"KEMBALI SEBELUMNYA", val: menu.backTo});
 
-       function getRealTimeStatus() {
-           const now = new Date();
-           const jam = now.getHours();
-           const menit = String(now.getMinutes()).padStart(2, '0');
-           const hari = ["Minggu", "Senin", "Selasa", "Rabu", "Kamis", "Jumat", "Sabtu"][now.getDay()];
-           const tgl = now.getDate();
-           const bln = ["Jan", "Feb", "Mar", "Apr", "Mei", "Jun", "Jul", "Agu", "Sep", "Okt", "Nov", "Des"][now.getMonth()];
-           
-           const isWorking = (jam >= 8 && jam < 15); // Jam kerja 08:00 - 15:00
-           const color = isWorking ? 'var(--success)' : 'var(--danger)';
-           const subText = isWorking ? "Admin siap melayani anda" : "Admin akan sesegera mungkin melayani anda";
+            if(menu.isForm) {
+                if(menu.formType === 'pengurusan') renderFormPengurusan();
+                else if(menu.formType === 'kritik') renderFormKritik();
+                else renderFormStandard(menu.text, menu.formType);
+            } else if (menu.customHtml) {
+                appendMsg('bot', menu.text, { customHtml: menu.customHtml, options: opts });
+            } else {
+                appendMsg('bot', menu.text, { options: opts });
+            }
+        }
 
-           return `
-           <div class="status-container" style="color: ${color}">
-                <span class="time-now">${hari}, ${tgl} ${bln} | ${jam}:${menit}</span>
-                <span class="status-text">${subText}</span>
-           </div>`;
-       }
+        function appendMsg(sender, text, extra = {}) {
+            const div = document.createElement('div');
+            div.className = `msg ${sender}`;
+            let content = text.replace(/\n/g, '<br>').replace(/\*\*(.*?)\*\*/g, '<b>$1</b>');
+            if(extra.customHtml) content += `<br>${extra.customHtml}`;
+            div.innerHTML = content;
+            chatBox.appendChild(div);
+            if(!extra.isForm && extra.options) showBtn(extra.options);
+            setTimeout(() => div.scrollIntoView({ behavior: 'smooth' }), 100);
+        }
 
-       window.respond = function(key) {
-           if (key.startsWith('cek_status_')) {
-               askNikForStatus(key.split('_')[2]);
-               return;
-           }
+        function showBtn(opts) {
+            const div = document.createElement('div');
+            opts.forEach(o => {
+                if(!o.url && !o.val) return;
+                const btn = document.createElement('div');
+                const isBack = o.text.includes("KEMBALI");
+                btn.className = isBack ? 'btn btn-back' : 'btn';
+                
+                let icon = 'fa-chevron-right';
+                // Ikon Mapping
+                if(o.text.includes("TATAP MUKA")) icon = 'fa-user-friends';
+                else if(o.text.includes("VIDEO")) icon = 'fa-video';
+                else if(o.text.includes("PENGURUSAN")) icon = 'fa-folder-open';
+                else if(o.text.includes("TOKO")) icon = 'fa-shopping-cart';
+                else if(o.text.includes("JADWAL")) icon = 'fa-calendar-alt';
+                else if(o.text.includes("KRITIK")) icon = 'fa-comment-dots';
+                else if(o.text.includes("KONTAK")) icon = 'fa-address-book';
+                // Sosial Media Brand Icons
+                else if(o.text.includes("WHATSAPP")) icon = 'fa-whatsapp';
+                else if(o.text.includes("INSTAGRAM")) icon = 'fa-instagram';
+                else if(o.text.includes("FACEBOOK")) icon = 'fa-facebook';
+                else if(o.text.includes("TWITTER")) icon = 'fa-twitter';
+                else if(o.text.includes("YOUTUBE")) icon = 'fa-youtube';
+                else if(isBack) icon = 'fa-arrow-left';
 
-           const menu = getMenu(config)[key];
-           if(!menu) return;
+                // Gunakan class fab untuk brand icons
+                const faClass = (['fa-whatsapp','fa-instagram','fa-facebook','fa-twitter','fa-youtube'].includes(icon)) ? 'fab' : 'fas';
 
-           let opts = menu.options || [];
-           if(menu.back) opts.push({text:"KEMBALI KE MENU UTAMA", val:"start"});
-           if(menu.backTo) opts.push({text:"KEMBALI SEBELUMNYA", val: menu.backTo});
+                btn.innerHTML = `<span>${o.text}</span> <i class="${faClass} ${icon}"></i>`;
+                btn.onclick = () => {
+                    div.remove();
+                    if(!isBack) appendMsg('user', o.text);
+                    if(o.type === 'link') window.open(o.url);
+                    else setTimeout(() => respond(o.val), 200);
+                };
+                div.appendChild(btn);
+            });
+            chatBox.appendChild(div);
+        }
 
-           let headerHtml = (key === 'start') ? getRealTimeStatus() : '';
-
-           if(menu.isForm) {
-               if(menu.formType === 'pengurusan') renderFormPengurusan();
-               else if(menu.formType === 'kritik') renderFormKritik();
-               else renderFormStandard(menu.text, menu.formType);
-           } else {
-               appendMsg('bot', headerHtml + menu.text, { customHtml: menu.customHtml, options: opts });
-           }
-       }
-
-       function appendMsg(sender, text, extra = {}) {
-           const div = document.createElement('div');
-           div.className = `msg ${sender}`;
-           div.innerHTML = text.replace(/\n/g, '<br>').replace(/\*\*(.*?)\*\*/g, '<b>$1</b>');
-           if(extra.customHtml) div.innerHTML += `<br>${extra.customHtml}`;
-           chatBox.appendChild(div);
-           if(!extra.isForm && extra.options) showBtn(extra.options);
-           setTimeout(() => div.scrollIntoView({ behavior: 'smooth' }), 100);
-       }
-
-       function showBtn(opts) {
-           const div = document.createElement('div');
-           opts.forEach(o => {
-               const btn = document.createElement('div');
-               const isBack = o.text.includes("KEMBALI");
-               btn.className = isBack ? 'btn btn-back' : 'btn';
-               
-               let icon = 'fa-chevron-right';
-               if(o.text.includes("TATAP MUKA")) icon = 'fa-user-friends';
-               else if(o.text.includes("VIDEO")) icon = 'fa-video';
-               else if(o.text.includes("PENGURUSAN")) icon = 'fa-folder-open';
-               else if(o.text.includes("TOKO")) icon = 'fa-shopping-cart';
-               else if(o.text.includes("JADWAL")) icon = 'fa-calendar-alt';
-               else if(o.text.includes("WHATSAPP")) icon = 'fa-whatsapp';
-               else if(o.text.includes("INSTAGRAM")) icon = 'fa-instagram';
-               else if(isBack) icon = 'fa-arrow-left';
-
-               btn.innerHTML = `<span>${o.text}</span> <i class="fas ${icon}"></i>`;
-               btn.onclick = () => {
-                   div.remove();
-                   if(!isBack) appendMsg('user', o.text);
-                   if(o.type === 'link') window.open(o.url);
-                   else setTimeout(() => respond(o.val), 200);
-               };
-               div.appendChild(btn);
-           });
-           chatBox.appendChild(div);
-       }
-
-       // Form Submissions with Back Button added
-       window.submitForm = function(type) {
-           // ... (Logika validasi & submit tetap sama)
-           alert("Data Berhasil Terkirim!"); // Simulasi sukses
-           chatBox.innerHTML = '';
-           appendMsg('bot', "✅ **Pendaftaran Berhasil Dikirim!**");
-           showBtn([{text:"KEMBALI KE MENU UTAMA", val:"start"}]);
-       }
-
-       window.submitPengurusan = function() {
-           // ... (Logika upload tetap sama)
-           chatBox.innerHTML = '';
-           appendMsg('bot', "✅ **Permohonan Integrasi Berhasil Dikirim!**");
-           showBtn([{text:"KEMBALI KE MENU UTAMA", val:"start"}]);
-       }
-
-       window.submitKritik = function() {
-           chatBox.innerHTML = '';
-           appendMsg('bot', "🙏 **Terima kasih atas masukannya!**");
-           showBtn([{text:"KEMBALI KE MENU UTAMA", val:"start"}]);
-       }
-
-       function renderFormStandard(text, type) {
-           const html = `<div class="form-box">
+        function renderFormStandard(text, type) {
+            const formHtml = `
+            <div class="form-box">
+                <label style="font-size:12px; font-weight:bold;">📸 Foto KTP (Wajib):</label>
+                <input id="f_ktp" type="file" accept="image/*" class="inp" style="padding:5px;">
                 <input id="f_nama" class="inp" placeholder="Nama Pengunjung">
-                <input id="f_nik" class="inp" type="number" placeholder="NIK KTP">
+                <input id="f_nik" class="inp" type="number" placeholder="NIK / No. KTP">
+                <input id="f_alamat" class="inp" placeholder="Alamat Lengkap">
+                <input id="f_telp" class="inp" type="tel" placeholder="No. HP / WA">
                 <input id="f_wbp" class="inp" placeholder="Nama WBP (Bin/Binti)">
-                <input id="f_tgl" class="inp" type="date">
-                <button onclick="submitForm('${type}')" class="submit-btn">KIRIM</button>
-                <button onclick="startChat()" style="background:none; border:none; color:#666; font-size:12px;">Batal</button>
-           </div>`;
-           appendMsg('bot', text, { customHtml: html, isForm: true });
-       }
+                <div style="display:flex; gap:10px;">
+                    <input id="f_tgl" class="inp" type="date" style="flex:2">
+                    <select id="f_jam" class="inp" style="flex:1">
+                        <option value="Pagi">Pagi</option>
+                        <option value="Siang">Siang</option>
+                    </select>
+                </div>
+                <button onclick="submitForm('${type}')" class="submit-btn">AMBIL ANTRIAN</button>
+                <button onclick="respond('start')" style="background:transparent; border:none; padding:10px; width:100%; margin-top:5px; color:#666;">Batal</button>
+            </div>`;
+            appendMsg('bot', text, { customHtml: formHtml });
+        }
 
-       function renderFormKritik() {
-           const html = `<div class="form-box">
-                <textarea id="k_pesan" class="inp" rows="3" placeholder="Kritik & Saran..."></textarea>
+        window.renderFormPengurusan = function() {
+            const fields = [
+                {id:'u_ktp_wbp', l:'KTP WBP'}, {id:'u_kk_wbp', l:'KK WBP'},
+                {id:'u_ktp_penj', l:'KTP Penjamin'}, {id:'u_kk_penj', l:'KK Penjamin'},
+                {id:'u_surat_1', l:'Surat Pernyataan'}, {id:'u_surat_2', l:'Surat Jaminan'},
+                {id:'u_foto', l:'Foto Diri Penjamin'}
+            ];
+            let uploadsHtml = '';
+            fields.forEach(f => {
+                uploadsHtml += `<div class="upload-group"><span class="upload-label">📂 ${f.l}</span><input type="file" id="${f.id}" accept="image/*" style="font-size:12px;"></div>`;
+            });
+            const html = `
+            <div class="form-box">
+                <div style="background:#e3f2fd; padding:10px; font-size:11px; border-radius:5px; margin-bottom:10px;">⚠️ Pastikan semua foto jelas.</div>
+                <label style="font-size:12px; font-weight:bold;">Jenis Pengurusan:</label>
+                <select id="p_jenis" class="inp">
+                    <option value="PB">PB (Pembebasan Bersyarat)</option>
+                    <option value="CB">CB (Cuti Bersyarat)</option>
+                    <option value="CMB">CMB (Cuti Menjelang Bebas)</option>
+                </select>
+                <input id="p_wbp" class="inp" placeholder="Nama WBP">
+                <input id="p_penjamin" class="inp" placeholder="Nama Penjamin">
+                <input id="p_nik" class="inp" type="number" placeholder="NIK Penjamin">
+                <input id="p_alamat" class="inp" placeholder="Alamat">
+                <input id="p_hub" class="inp" placeholder="Hubungan dgn WBP">
+                <input id="p_telp" class="inp" type="tel" placeholder="No HP / WA">
+                <div style="margin-top:10px; font-weight:bold; font-size:12px;">UNGGAH DOKUMEN:</div>
+                ${uploadsHtml}
+                <button onclick="submitPengurusan()" class="submit-btn">KIRIM PERMOHONAN</button>
+                <button onclick="respond('start')" style="background:transparent; border:none; padding:10px; width:100%; margin-top:5px; color:#666;">Batal</button>
+            </div>`;
+            appendMsg('bot', "📝 **FORMULIR PENGURUSAN INTEGRASI**", { customHtml: html });
+        }
+
+        window.renderFormKritik = function() {
+            const html = `
+            <div class="form-box">
+                <label style="font-size:12px;">Tingkat Kepuasan:</label>
+                <select id="k_puas" class="inp">
+                    <option value="Sangat Puas">😍 Sangat Puas</option>
+                    <option value="Puas">🙂 Puas</option>
+                    <option value="Cukup">😐 Cukup</option>
+                    <option value="Kurang">☹️ Kurang</option>
+                </select>
+                <textarea id="k_pesan" class="inp" rows="4" placeholder="Tulis kritik & saran..."></textarea>
                 <button onclick="submitKritik()" class="submit-btn">KIRIM MASUKAN</button>
-                <button onclick="startChat()" style="background:none; border:none; color:#666; font-size:12px;">Batal</button>
-           </div>`;
-           appendMsg('bot', "Silakan berikan penilaian Anda:", { customHtml: html, isForm: true });
-       }
+                <button onclick="respond('start')" style="background:transparent; border:none; padding:10px; width:100%; margin-top:5px; color:#666;">Batal</button>
+            </div>`;
+            appendMsg('bot', "📢 **KRITIK & SARAN**", { customHtml: html });
+        }
 
-       function getMenu(cfg) {
-           const htmlJadwal = `<table class="spec-table"><tr><th>Tahanan</th><th>Hari</th></tr><tr><td>PIDUM</td><td>${cfg.sch_pidum || '-'}</td></tr><tr><td>NARKOBA</td><td>${cfg.sch_narkoba || '-'}</td></tr></table>`;
-           return {
-               'start': { text: "", options: [
-                   { text: "DAFTAR KUNJUNGAN (TATAP MUKA)", val: "daftar_fisik" },
-                   { text: "DAFTAR VIDEO CALL", val: "daftar_online" },
-                   { text: "PENGURUSAN (PB/CB/CMB)", val: "menu_urus" },
-                   { text: "TOKO LAPAS", val: "toko" },
-                   { text: "JADWAL & SYARAT", val: "info_gabung" },
-                   { text: "KRITIK & SARAN", val: "menu_kritik" },
-                   { text: "KONTAK & PENGADUAN", val: "kontak" }
-               ]},
-               'daftar_fisik': { text: "📝 **PENDAFTARAN TATAP MUKA**", options: [{ text: "ISI FORMULIR", val: "form_fisik" }, { text: "CEK STATUS", val: "cek_status_fisik" }, { text: "KEMBALI KE MENU UTAMA", val: "start" }] },
-               'form_fisik': { text: "📝 **ISI DATA KUNJUNGAN:**", isForm: true, formType: "fisik" },
-               'daftar_online': { text: "💻 **PENDAFTARAN VIDEO CALL**", options: [{ text: "ISI FORMULIR", val: "form_online" }, { text: "CEK STATUS", val: "cek_status_online" }, { text: "KEMBALI KE MENU UTAMA", val: "start" }] },
-               'form_online': { text: "💻 **ISI DATA VIDEO CALL:**", isForm: true, formType: "online" },
-               'menu_urus': { text: "📂 **LAYANAN PENGURUSAN**", options: [{ text: "AJUKAN BARU", val: "form_urus" }, { text: "CEK STATUS", val: "cek_status_pengurusan" }, { text: "KEMBALI KE MENU UTAMA", val: "start" }] },
-               'form_urus': { text: "Menyiapkan formulir...", isForm: true, formType: "pengurusan" },
-               'toko': { text: "🛒 **TOKO LAPAS:**\n" + (cfg.toko_announce || "-"), options: [{ text: "BUKA APLIKASI TOKO", type: "link", url: cfg.toko_link }, { text: "KEMBALI KE MENU UTAMA", val: "start" }] },
-               'info_gabung': { text: "📅 **INFORMASI LAYANAN:**", options: [{ text: "JADWAL LAYANAN", val: "sub_jadwal" }, { text: "SYARAT KUNJUNGAN", val: "sub_syarat_kunj" }, { text: "KEMBALI KE MENU UTAMA", val: "start" }] },
-               'sub_jadwal': { text: "📅 **JADWAL LAYANAN:**", customHtml: htmlJadwal, backTo: 'info_gabung' },
-               'menu_kritik': { text: "", isForm: true, formType: "kritik" },
-               'kontak': { text: "📞 **PUSAT PENGADUAN:**", options: [{ text: "WHATSAPP", type: "link", url: `https://wa.me/${cfg.wa_pengaduan}` }, { text: "MEDIA SOSIAL", val: "sosmed" }, { text: "KEMBALI KE MENU UTAMA", val: "start" }] },
-               'sosmed': { text: "🌐 **MEDIA SOSIAL RESMI:**", options: [
-                   { text: "INSTAGRAM", type: "link", url: cfg.soc_ig || "#" },
-                   { text: "FACEBOOK", type: "link", url: cfg.soc_fb || "#" },
-                   { text: "YOUTUBE", type: "link", url: cfg.soc_yt || "#" },
-                   { text: "KEMBALI SEBELUMNYA", val: "kontak" }
-               ]}
-           };
-       }
-   });
-   function closeResultModal() { document.getElementById('resultModal').style.display = 'none'; }
+        window.submitForm = function(type) {
+            const f_ktp = document.getElementById('f_ktp').files[0];
+            const nama = document.getElementById('f_nama').value;
+            const nik = document.getElementById('f_nik').value;
+            const alamat = document.getElementById('f_alamat').value;
+            const telp = document.getElementById('f_telp').value;
+            const wbp = document.getElementById('f_wbp').value;
+            const tgl = document.getElementById('f_tgl').value;
+            const jam = document.getElementById('f_jam').value;
+            if(!f_ktp || !nama || !nik || !wbp || !tgl) return alert("Lengkapi data & foto KTP!");
+
+            const btn = document.querySelector('.submit-btn'); btn.innerHTML = "Mengirim..."; btn.disabled = true;
+            const path = type === 'fisik' ? 'registrations' : 'online_registrations';
+            const prefix = type === 'fisik' ? 'A' : 'V';
+            const sess = jam === 'Pagi' ? 'P' : 'S';
+            const counterPath = `counters/${tgl}/${type}/${jam}`;
+
+            compressImage(f_ktp, (base64) => {
+               db.ref(counterPath).transaction(c => (c||0)+1, (e, comm, s) => {
+                    if(comm) {
+                        const no = `${prefix}-${sess}-${String(s.val()).padStart(3,'0')}`;
+                        const payload = { nama, nik, alamat, telp, wbp, tgl, jam, noAntrian: no, ktpUrl: base64, status: 'waiting', createdAt: firebase.database.ServerValue.TIMESTAMP };
+                       db.ref(path).push(payload).then(() => {
+                            chatBox.innerHTML = '';
+                            renderTicket(payload, type === 'fisik' ? 'TATAP MUKA' : 'VIDEO CALL');
+                            // TAMBAH TOMBOL KEMBALI SETELAH SUKSES
+                            showBtn([{text:"KEMBALI KE MENU UTAMA", val:"start"}]);
+                        });
+                    } else { btn.disabled = false; alert("Gagal koneksi."); }
+                });
+            });
+        }
+
+        window.submitPengurusan = async function() {
+            const ids = ['u_ktp_wbp','u_kk_wbp','u_ktp_penj','u_kk_penj','u_surat_1','u_surat_2','u_foto'];
+            const inputs = {}; let missing = false;
+            inputs.jenis = document.getElementById('p_jenis').value;
+            inputs.wbp = document.getElementById('p_wbp').value;
+            inputs.penjamin = document.getElementById('p_penjamin').value;
+            inputs.nik = document.getElementById('p_nik').value;
+            inputs.alamat = document.getElementById('p_alamat').value;
+            inputs.hub = document.getElementById('p_hub').value;
+            inputs.telp = document.getElementById('p_telp').value;
+
+            if(!inputs.wbp || !inputs.penjamin || !inputs.nik) return alert("Lengkapi data!");
+            for(let id of ids) { if(!document.getElementById(id).files[0]) missing = true; }
+            if(missing) return alert("Unggah semua 7 dokumen!");
+
+            const btn = document.querySelector('.submit-btn'); const oldTxt = btn.innerText;
+            btn.innerText = "Mengunggah..."; btn.disabled = true;
+
+            try {
+                const images = {};
+                for(let id of ids) {
+                    const file = document.getElementById(id).files[0];
+                    images[id] = await new Promise(resolve => compressImage(file, resolve));
+                }
+                const payload = { ...inputs, images: images, status: 'waiting', tgl: new Date().toISOString().split('T')[0], createdAt: firebase.database.ServerValue.TIMESTAMP };
+                await db.ref('pengurusan').push(payload);
+                chatBox.innerHTML = '';
+                appendMsg('bot', `✅ **PERMOHONAN TERKIRIM!**\nPengajuan **${inputs.jenis}** untuk **${inputs.wbp}** telah diterima.`);
+                showBtn([{text:"KEMBALI KE MENU UTAMA", val:"start"}]);
+            } catch(e) { alert("Gagal: " + e.message); btn.innerText = oldTxt; btn.disabled = false; }
+        }
+
+        window.submitKritik = function() {
+            const puas = document.getElementById('k_puas').value;
+            const pesan = document.getElementById('k_pesan').value;
+            if(!pesan) return alert("Isi pesan.");
+            db.ref('kritik_saran').push({kepuasan: puas, pesan: pesan, tgl: new Date().toISOString().split('T')[0], createdAt: firebase.database.ServerValue.TIMESTAMP}).then(() => {
+                chatBox.innerHTML = '';
+                appendMsg('bot', "🙏 **TERIMA KASIH!**\nMasukan Anda telah kami terima.");
+                showBtn([{text:"KEMBALI KE MENU UTAMA", val:"start"}]);
+            });
+        }
+
+        window.askNikForStatus = function(type) {
+            appendMsg('bot', `🔍 **CEK STATUS ${type.toUpperCase().replace('_', ' ')}**\nMasukkan NIK Penjamin/Pengunjung:`, {
+                customHtml: `<div class="form-box"><input id="cek_nik" class="inp" type="number" placeholder="NIK"><button onclick="doCheckStatus('${type}')" class="submit-btn">CARI DATA</button></div>`,
+                options: [{text:"Batal", val:"start"}]
+            });
+        }
+
+        window.doCheckStatus = function(type) {
+            const nik = document.getElementById('cek_nik').value;
+            if(!nik) return alert("Isi NIK!");
+            let path = type === 'pengurusan' ? 'pengurusan' : (type === 'online' ? 'online_registrations' : 'registrations');
+            
+            const btn = document.querySelector('.submit-btn'); btn.innerText = "Mencari..."; btn.disabled = true;
+            db.ref(path).orderByChild('createdAt').limitToLast(50).once('value').then(s => {
+                let found = null;
+                if(s.exists()) {
+                    s.forEach(c => {
+                        const d = c.val();
+                        if(String(d.nik) === String(nik) || (d.inputs && String(d.inputs.nik) === String(nik))) found = d;
+                    });
+                }
+                chatBox.innerHTML = '';
+                if(found) {
+                    if(type === 'pengurusan') {
+                        let stBadge = found.status === 'accepted' ? '✅ DISETUJUI' : (found.status === 'rejected' ? '❌ DITOLAK' : '🕒 MENUNGGU');
+                        appendMsg('bot', `📄 **STATUS PENGURUSAN**\n\nJenis: **${found.jenis}**\nWBP: **${found.wbp}**\nStatus: **${stBadge}**\nCatatan: "${found.note || '-'}"`);
+                    } else {
+                        renderTicket(found, type === 'fisik' ? 'TATAP MUKA' : 'VIDEO CALL');
+                    }
+                } else { appendMsg('bot', "❌ **DATA TIDAK DITEMUKAN**"); }
+                showBtn([{text:"KEMBALI KE MENU UTAMA", val:"start"}]);
+            });
+        }
+
+        function compressImage(file, cb) {
+            const reader = new FileReader(); reader.readAsDataURL(file);
+            reader.onload = function(e) {
+                const img = new Image(); img.src = e.target.result;
+                img.onload = function() {
+                    const canvas = document.createElement('canvas'); const ctx = canvas.getContext('2d');
+                    const maxW = 600; let w = img.width; let h = img.height;
+                    if(w > maxW) { h *= maxW/w; w = maxW; }
+                    canvas.width = w; canvas.height = h;
+                    ctx.drawImage(img, 0, 0, w, h);
+                    cb(canvas.toDataURL('image/jpeg', 0.6));
+                }
+            }
+        }
+
+        function renderTicket(data, label) {
+            let stBadge = data.status === 'accepted' ? '<span class="badge bg-green">✅ DISETUJUI</span>' : (data.status === 'rejected' ? '<span class="badge bg-red">❌ DITOLAK</span>' : '<span class="badge bg-gray">MENUNGGU VERIFIKASI</span>');
+            const noteHtml = data.note ? `<div class="ticket-note"><b>✉️ Pesan:</b> "${data.note}"</div>` : '';
+            const ticketHtml = `
+            <div id="ticket-node" class="ticket-card">
+                <div style="font-weight:bold; color:var(--primary); border-bottom:2px dashed #eee; padding-bottom:10px;">TIKET ANTRIAN ${label}</div>
+                <div style="font-size:12px; color:#555; margin-top:5px;">STATUS: ${stBadge}</div>
+                <div class="ticket-number">${data.noAntrian}</div>
+                <div style="font-size:12px; text-align:left; border-top:2px dashed #eee; padding-top:10px;">
+                    <table style="width:100%">
+                        <tr><td>Nama</td><td>: <b>${data.nama}</b></td></tr>
+                        <tr><td>Tujuan</td><td>: ${data.wbp}</td></tr>
+                        <tr><td>Jadwal</td><td>: ${data.tgl} (${data.jam})</td></tr>
+                    </table>
+                </div>
+                ${noteHtml}
+                <div style="margin-top:10px;"><img src="${data.ktpUrl}" style="max-height:60px; border-radius:4px;"></div>
+            </div>
+            <button onclick="downloadTicket()" style="margin-top:10px; width:100%; padding:14px; background:#333; color:white; border:none; border-radius:8px; font-weight:bold;">📸 SIMPAN TIKET</button>`;
+            appendMsg('bot', "✅ **TIKET ANDA:**", { customHtml: ticketHtml });
+        }
+        window.downloadTicket = function() {
+            html2canvas(document.getElementById('ticket-node'), {scale:2, backgroundColor:"#fff"}).then(canvas => {
+                document.getElementById('resultImg').src = canvas.toDataURL("image/jpeg");
+                document.getElementById('resultModal').style.display = 'flex';
+            });
+        }
+        window.closeResultModal = () => document.getElementById('resultModal').style.display = 'none';
+    });
+
+    function getMenu(cfg) {
+        const renderSafe = (content) => content ? content : "-";
+        const htmlJadwal = `
+        <div style="margin-bottom:8px; font-weight:600; font-size:12px; color:var(--primary);">KATEGORI LAYANAN:</div>
+        <table class="spec-table">
+           <tr><th>Jenis Tahanan</th><th>Hari Layanan</th></tr>
+           <tr><td><b>PIDUM</b></td><td>${cfg.sch_pidum || 'Senin & Rabu'}</td></tr>
+           <tr><td><b>NARKOBA</b></td><td>${cfg.sch_narkoba || 'Selasa & Kamis'}</td></tr>
+        </table>
+        <div class="schedule-card">
+            <div class="sch-row"><span>Pagi</span><span class="badge bg-green">${cfg.sch_mon_am || '-'}</span></div>
+            <div class="sch-row"><span>Siang</span><span class="badge bg-green">${cfg.sch_mon_pm || '-'}</span></div>
+            <div class="sch-row"><span>Jumat</span><span class="badge bg-green">${cfg.sch_fri || '-'}</span></div>
+            <div class="sch-row"><span>Sabtu</span><span class="badge bg-blue">${cfg.sch_sat || '-'}</span></div>
+            <div class="sch-row"><span>Minggu</span><span class="badge bg-red">${cfg.sch_sun || 'TUTUP'}</span></div>
+        </div>`;
+
+        return {
+            'start': {
+                // Teks ini akan diganti dinamis oleh fungsi getGreetingHtml() di JS
+                text: "Loading Menu...",
+                options: [
+                    { text: "DAFTAR KUNJUNGAN (TATAP MUKA)", val: "daftar_fisik" },
+                    { text: "DAFTAR VIDEO CALL", val: "daftar_online" },
+                    { text: "PENGURUSAN (PB/CB/CMB)", val: "menu_urus" },
+                    { text: "TOKO LAPAS", val: "toko" },
+                    { text: "JADWAL & SYARAT KUNJUNGAN", val: "info_gabung" },
+                    { text: "KRITIK & SARAN", val: "menu_kritik" },
+                    { text: "KONTAK & PENGADUAN", val: "kontak" }
+                ]
+            },
+            'daftar_fisik': { text: "📝 **PENDAFTARAN TATAP MUKA**", options: [{ text: "ISI FORMULIR", val: "form_fisik" }, { text: "CEK STATUS", val: "cek_status_fisik" }, { text: "KEMBALI KE MENU UTAMA", val: "start" }] },
+            'form_fisik': { text: "📝 **ISI DATA KUNJUNGAN:**", isForm: true, formType: "fisik" },
+            'daftar_online': { text: "💻 **PENDAFTARAN VIDEO CALL**", options: [{ text: "ISI FORMULIR", val: "form_online" }, { text: "CEK STATUS", val: "cek_status_online" }, { text: "KEMBALI KE MENU UTAMA", val: "start" }] },
+            'form_online': { text: "💻 **ISI DATA VIDEO CALL:**", isForm: true, formType: "online" },
+            'menu_urus': { text: "📂 **LAYANAN PENGURUSAN INTEGRASI**", options: [{ text: "AJUKAN PERMOHONAN BARU", val: "form_urus" }, { text: "CEK STATUS PENGAJUAN", val: "cek_status_pengurusan" }, { text: "KEMBALI KE MENU UTAMA", val: "start" }] },
+            'form_urus': { text: "Menyiapkan formulir...", isForm: true, formType: "pengurusan" },
+            'toko': { text: "🛒 **TOKO LAPAS:**\n" + (cfg.toko_announce || "-"), options: [{ text: "BUKA APLIKASI TOKO", type: "link", url: cfg.toko_link }, { text: "KEMBALI KE MENU UTAMA", val: "start" }] },
+            'info_gabung': { text: "📅 **PILIH INFORMASI LAYANAN:**", options: [{ text: "LIHAT JADWAL KUNJUNGAN", val: "sub_jadwal" }, { text: "SYARAT KUNJUNGAN & BARANG", val: "sub_syarat_kunjungan" }, { text: "SYARAT PENGURUSAN PB/CB/CMB", val: "sub_syarat_pb" }, { text: "KEMBALI KE MENU UTAMA", val: "start" }] },
+            'sub_jadwal': { text: "📅 **JADWAL LAYANAN:**", customHtml: htmlJadwal, backTo: 'info_gabung' },
+            'sub_syarat_kunjungan': { 
+                text: "👜 **INFORMASI KUNJUNGAN:**", 
+                customHtml: `
+                <div class="rich-content">
+                    <h3 style="margin:0 0 5px 0; border-bottom:1px solid #ddd; padding-bottom:5px;">📄 Dokumen</h3>
+                    ${renderSafe(cfg.txt_doc)}
+                    <h3 style="margin:15px 0 5px 0; border-bottom:1px solid #ddd; padding-bottom:5px;">📦 Aturan Barang</h3>
+                    ${renderSafe(cfg.txt_item)}
+                </div>`, 
+                backTo: 'info_gabung' 
+            },
+            'sub_syarat_pb': { 
+                text: "📂 **SYARAT PENGURUSAN PB/CB/CMB:**", 
+                customHtml: `<div class="rich-content">${renderSafe(cfg.txt_pb_cb)}</div>`, 
+                backTo: 'info_gabung' 
+            },
+            'menu_kritik': { text: "Silakan berikan penilaian Anda:", isForm: true, formType: "kritik" },
+            'kontak': { text: "📞 **PUSAT PENGADUAN:**", options: [{ text: "WHATSAPP PENGADUAN", type: "link", url: `https://wa.me/${cfg.wa_pengaduan}` }, { text: "SALURAN INFORMASI", type: "link", url: cfg.wa_channel }, { text: "MEDIA SOSIAL", val: "sosmed" }, { text: "KEMBALI KE MENU UTAMA", val: "start" }] },
+            'sosmed': { text: "🌐 **MEDIA SOSIAL:**", options: [{ text: "INSTAGRAM", type: "link", url: cfg.soc_ig }, { text: "FACEBOOK", type: "link", url: cfg.soc_fb }, { text: "TWITTER / X", type: "link", url: cfg.soc_tw }, { text: "YOUTUBE", type: "link", url: cfg.soc_yt }, { text: "KEMBALI SEBELUMNYA", val: "kontak" }] }
+        };
+    }
 </script>
 </body>
 </html>
