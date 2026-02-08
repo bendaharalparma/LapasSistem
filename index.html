@@ -3,36 +3,43 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <meta name="theme-color" content="#8B0000">
+    <meta name="theme-color" content="#1565c0">
     <title>Layanan Lapas Digital</title>
     
     <script defer src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
     <script defer src="https://www.gstatic.com/firebasejs/10.7.1/firebase-database-compat.js"></script>
     
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
     
     <style>
         :root {
-            --primary: #8B0000;
-            --primary-dark: #5e0000;
-            --primary-light: #fff5f5;
-            --accent: #FFD700;
+            /* --- PALET WARNA BARU (TEMA BIRU) --- */
+            --primary: #1565c0;       /* Biru Utama */
+            --primary-dark: #0d47a1;  /* Biru Gelap untuk gradient/teks */
+            --primary-light: #e3f2fd; /* Biru Sangat Muda untuk bubble user */
+            
+            --accent-back: #f57c00;   /* Oranye untuk tombol Kembali */
+            --accent-back-light: #fff3e0;
+            
             --text-dark: #1e293b;
             --text-light: #64748b;
-            --bg-body: #f1f5f9;
+            --bg-body: #eceff1;       /* Latar belakang abu kebiruan */
             --white: #ffffff;
-            --shadow-sm: 0 2px 4px rgba(0,0,0,0.05);
-            --shadow-md: 0 4px 12px rgba(0,0,0,0.08);
-            --radius-lg: 20px;
-            --radius-md: 12px;
+            
+            /* --- BAYANGAN UNTUK EFEK TIMBUL --- */
+            --shadow-raised: 0 4px 6px -1px rgba(21, 101, 192, 0.1), 0 2px 4px -1px rgba(0,0,0,0.06);
+            --shadow-raised-hover: 0 10px 15px -3px rgba(21, 101, 192, 0.15), 0 4px 6px -2px rgba(0,0,0,0.05);
+            
+            --radius-lg: 24px;
+            --radius-md: 14px;
         }
 
         * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
         
         body {
-            font-family: 'Plus Jakarta Sans', sans-serif;
+            font-family: 'Inter', sans-serif;
             background: var(--bg-body);
             margin: 0;
             display: flex;
@@ -41,23 +48,22 @@
             color: var(--text-dark);
         }
 
-        /* Container Aplikasi */
         .app-container {
             width: 100%;
             max-width: 480px;
             background: var(--white);
             min-height: 100vh;
-            box-shadow: 0 0 40px rgba(0,0,0,0.1);
+            box-shadow: 0 0 50px rgba(0,0,0,0.08);
             display: flex;
             flex-direction: column;
             position: relative;
             overflow: hidden;
         }
 
-        /* HEADER MODERN */
+        /* HEADER DENGAN GRADASI BIRU */
         .header {
             position: relative;
-            height: 220px;
+            height: 230px;
             background-color: var(--primary);
             background-size: cover;
             background-position: center;
@@ -66,21 +72,23 @@
             align-items: center;
             justify-content: flex-end;
             color: white;
-            border-bottom-left-radius: 35px;
-            border-bottom-right-radius: 35px;
+            border-bottom-left-radius: 40px;
+            border-bottom-right-radius: 40px;
             z-index: 10;
-            padding: 20px 20px 40px 20px;
-            box-shadow: 0 10px 30px rgba(139, 0, 0, 0.3);
+            padding: 20px 20px 50px 20px;
+            box-shadow: 0 15px 30px rgba(21, 101, 192, 0.25);
             transition: all 0.5s ease;
         }
 
+        /* Overlay Gradasi Biru */
         .header::before {
             content: '';
             position: absolute;
             inset: 0;
-            background: linear-gradient(to bottom, rgba(0,0,0,0.3), rgba(139, 0, 0, 0.9));
-            border-bottom-left-radius: 35px;
-            border-bottom-right-radius: 35px;
+            /* Gradasi dari biru agak transparan ke biru gelap pekat */
+            background: linear-gradient(to bottom, rgba(21, 101, 192, 0.3), rgba(13, 71, 161, 0.95));
+            border-bottom-left-radius: 40px;
+            border-bottom-right-radius: 40px;
             z-index: 1;
         }
 
@@ -95,146 +103,170 @@
         }
 
         .logo-area {
-            width: 80px;
-            height: 80px;
+            width: 85px;
+            height: 85px;
             background: white;
-            border-radius: 50%;
-            padding: 5px;
+            border-radius: 24px; /* Bentuk squircle modern */
+            padding: 8px;
             margin-bottom: 15px;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.15);
             display: flex;
             justify-content: center;
             align-items: center;
+            transform: rotate(-3deg); /* Sedikit miring agar dinamis */
         }
 
-        .logo-area img {
-            width: 100%;
-            height: 100%;
-            object-fit: contain;
-            border-radius: 50%;
-        }
+        .logo-area img { width: 100%; height: 100%; object-fit: contain; }
 
         .app-name {
             font-weight: 800;
-            font-size: 22px;
+            font-size: 24px;
             margin: 0;
             letter-spacing: -0.5px;
-            text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+            text-shadow: 0 2px 10px rgba(0,0,0,0.3);
         }
 
         .tagline {
-            font-size: 12px;
-            opacity: 0.9;
-            margin-top: 5px;
-            background: rgba(255,255,255,0.2);
-            padding: 4px 12px;
-            border-radius: 20px;
-            backdrop-filter: blur(4px);
+            font-size: 13px;
+            font-weight: 500;
+            opacity: 0.95;
+            margin-top: 8px;
+            background: rgba(255,255,255,0.15);
+            padding: 6px 16px;
+            border-radius: 30px;
+            backdrop-filter: blur(5px);
+            border: 1px solid rgba(255,255,255,0.2);
         }
 
         /* CHAT AREA */
         #chat-box {
             flex: 1;
-            padding: 20px;
+            padding: 25px 20px;
             overflow-y: auto;
             display: flex;
             flex-direction: column;
-            gap: 15px;
+            gap: 18px;
             background: var(--white);
             scroll-behavior: smooth;
-            padding-bottom: 80px;
+            padding-bottom: 90px;
         }
 
         /* BUBBLE PESAN */
         .msg {
-            max-width: 92%;
-            padding: 15px 18px;
-            border-radius: 18px;
+            max-width: 90%;
+            padding: 16px 20px;
+            border-radius: 20px;
             font-size: 14px;
             line-height: 1.6;
             position: relative;
-            animation: slideUp 0.3s ease;
-            box-shadow: var(--shadow-sm);
+            animation: slideUp 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
         }
 
         .bot {
-            background: var(--white);
+            background: #f1f5f9;
             align-self: flex-start;
-            border-top-left-radius: 4px;
+            border-bottom-left-radius: 5px;
             color: var(--text-dark);
-            border: 1px solid #e2e8f0;
+            box-shadow: var(--shadow-raised);
         }
 
+        /* User bubble menyesuaikan tema biru */
         .user {
             background: var(--primary-light);
             align-self: flex-end;
-            border-top-right-radius: 4px;
-            color: var(--primary);
-            border: 1px solid #ffcdd2;
+            border-bottom-right-radius: 5px;
+            color: var(--primary-dark);
             font-weight: 600;
+            box-shadow: var(--shadow-raised);
+            border: 1px solid #bbdefb;
         }
 
-        /* TOMBOL MENU */
+        /* --- TOMBOL MENU YANG LEBIH TIMBUL DAN MENARIK --- */
         .btn {
-            background: var(--white);
-            color: var(--text-dark);
-            padding: 16px 20px;
-            border-radius: 16px;
-            font-size: 14px;
-            font-weight: 600;
+            /* Latar belakang sedikit gradient agar terlihat 3D */
+            background: linear-gradient(to bottom, #ffffff, #f8fafc);
+            color: var(--primary); /* Teks warna biru utama */
+            padding: 18px 22px;
+            border-radius: 18px;
+            font-size: 15px;
+            font-weight: 700;
             cursor: pointer;
             width: 100%;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            border: 1px solid #f1f5f9;
-            margin-bottom: 10px;
-            transition: all 0.2s cubic-bezier(0.25, 0.8, 0.25, 1);
-            box-shadow: 0 4px 6px rgba(0,0,0,0.02);
+            /* Border bawah tebal untuk efek 3D */
+            border: none;
+            border-bottom: 4px solid #cfd8dc; 
+            margin-bottom: 12px;
+            transition: all 0.25s cubic-bezier(0.34, 1.56, 0.64, 1); /* Efek pegas saat hover */
+            box-shadow: var(--shadow-raised);
             position: relative;
             overflow: hidden;
+            z-index: 1;
         }
 
+        /* Aksen garis di kiri saat hover */
         .btn::before {
             content: '';
             position: absolute;
-            left: 0; top: 0; bottom: 0; width: 4px;
+            left: 0; top: 0; bottom: 0; width: 6px;
             background: var(--primary);
             opacity: 0;
             transition: opacity 0.2s;
+            z-index: 0;
         }
 
-        .btn:active, .btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 8px 15px rgba(0,0,0,0.05);
-            border-color: #ffcdd2;
+        .btn:hover {
+            transform: translateY(-4px); /* Naik lebih tinggi */
+            box-shadow: var(--shadow-raised-hover);
+            border-bottom-color: var(--primary); /* Border bawah menyala biru */
+            color: var(--primary-dark);
         }
 
-        .btn:active::before { opacity: 1; }
+        .btn:active {
+            transform: translateY(-1px); /* Efek ditekan */
+            border-bottom-width: 2px;
+            box-shadow: var(--shadow-raised);
+        }
 
+        .btn:hover::before { opacity: 1; }
+        .btn span, .btn i { position: relative; z-index: 2; }
+
+        /* --- TOMBOL KEMBALI YANG BERBEDA --- */
         .btn-back {
-            background: #f8fafc;
-            color: #64748b;
-            justify-content: center;
-            border: 1px dashed #cbd5e1;
-            margin-top: 15px;
+            /* Warna latar berbeda */
+            background: linear-gradient(to bottom, #fffaf5, #fff3e0);
+            color: var(--accent-back) !important; /* Warna teks oranye */
+            border-bottom: 4px solid #ffe0b2; /* Border bawah oranye pudar */
+            margin-top: 20px;
         }
+        
+        .btn-back i { color: var(--accent-back) !important; opacity: 1 !important; }
+
+        .btn-back:hover {
+            border-bottom-color: var(--accent-back); /* Border bawah oranye menyala */
+            color: #e65100 !important;
+        }
+        
+        .btn-back::before { background: var(--accent-back); }
+
 
         /* FORMULIR */
         .form-box {
             display: flex;
             flex-direction: column;
-            gap: 15px;
+            gap: 16px;
             background: var(--white);
-            padding: 5px;
+            padding: 10px;
             border-radius: var(--radius-md);
         }
 
         .inp {
-            padding: 14px 16px;
+            padding: 15px 18px;
             border: 2px solid #e2e8f0;
-            border-radius: 12px;
-            font-size: 14px;
+            border-radius: 14px;
+            font-size: 15px;
             width: 100%;
             outline: none;
             transition: 0.3s;
@@ -246,15 +278,15 @@
         .inp:focus {
             border-color: var(--primary);
             background: var(--white);
-            box-shadow: 0 0 0 4px rgba(139, 0, 0, 0.1);
+            box-shadow: 0 0 0 4px rgba(21, 101, 192, 0.1);
         }
 
-        textarea.inp { resize: vertical; min-height: 100px; }
+        textarea.inp { resize: vertical; min-height: 110px; }
 
         .upload-group {
             border: 2px dashed #cbd5e1;
-            padding: 15px;
-            border-radius: 12px;
+            padding: 20px;
+            border-radius: 16px;
             background: #f8fafc;
             text-align: center;
             transition: all 0.3s;
@@ -267,105 +299,115 @@
         }
 
         .upload-label {
-            font-size: 12px;
+            font-size: 13px;
             font-weight: 700;
-            color: var(--text-light);
+            color: var(--primary);
             display: block;
             margin-bottom: 8px;
         }
 
-        /* TOMBOL SUBMIT */
+        /* TOMBOL SUBMIT (Gradasi Biru) */
         .submit-btn {
-            background: linear-gradient(135deg, #2e7d32, #1b5e20);
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
             color: white;
             border: none;
-            padding: 16px;
-            border-radius: 14px;
-            font-weight: 700;
+            padding: 18px;
+            border-radius: 16px;
+            font-weight: 800;
             margin-top: 10px;
             cursor: pointer;
-            font-size: 15px;
+            font-size: 16px;
             width: 100%;
-            box-shadow: 0 10px 20px rgba(46, 125, 50, 0.2);
-            transition: transform 0.2s;
+            box-shadow: 0 10px 25px -5px rgba(21, 101, 192, 0.4);
+            transition: transform 0.2s, box-shadow 0.2s;
             display: flex;
             align-items: center;
             justify-content: center;
-            gap: 8px;
+            gap: 10px;
+            letter-spacing: 0.5px;
         }
 
+        .submit-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 15px 30px -5px rgba(21, 101, 192, 0.5);
+        }
         .submit-btn:active { transform: scale(0.98); }
         .submit-btn:disabled { background: #cbd5e1; box-shadow: none; cursor: not-allowed; }
 
-        /* TICKET STYLE */
+        /* TICKET STYLE (Aksen Biru) */
         .ticket-card {
             border: none;
             padding: 0;
-            border-radius: 16px;
-            margin-top: 15px;
+            border-radius: 20px;
+            margin-top: 20px;
             background: var(--white);
-            box-shadow: var(--shadow-md);
+            box-shadow: var(--shadow-raised-hover);
             position: relative;
             overflow: hidden;
         }
 
         .ticket-header {
-            background: var(--primary);
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
             color: white;
-            padding: 15px;
+            padding: 18px;
             text-align: center;
-            font-weight: 700;
-            border-bottom: 2px dashed rgba(255,255,255,0.3);
+            font-weight: 800;
+            letter-spacing: 1px;
+            border-bottom: 3px dashed rgba(255,255,255,0.3);
         }
 
         .ticket-body {
-            padding: 20px;
+            padding: 25px;
             text-align: center;
             position: relative;
         }
 
+        /* Lubang tiket */
         .ticket-body::before, .ticket-body::after {
             content: '';
             position: absolute;
-            top: -10px;
-            width: 20px;
-            height: 20px;
-            background: var(--bg-body);
+            top: -12px;
+            width: 24px;
+            height: 24px;
+            background: var(--bg-body); /* Warna latar body */
             border-radius: 50%;
+            box-shadow: inset 0 2px 4px rgba(0,0,0,0.1);
         }
-        .ticket-body::before { left: -10px; }
-        .ticket-body::after { right: -10px; }
+        .ticket-body::before { left: -12px; }
+        .ticket-body::after { right: -12px; }
 
         .ticket-number {
-            font-size: 42px;
-            font-weight: 800;
-            color: var(--primary);
-            margin: 10px 0;
-            letter-spacing: 4px;
+            font-size: 48px;
+            font-weight: 900;
+            color: var(--primary-dark);
+            margin: 15px 0;
+            letter-spacing: 3px;
             font-family: monospace;
+            text-shadow: 2px 2px 0px rgba(21, 101, 192, 0.1);
         }
 
         .ticket-info-table {
             width: 100%;
-            font-size: 13px;
+            font-size: 14px;
             text-align: left;
-            margin-top: 15px;
-            border-top: 1px dashed #e2e8f0;
-            padding-top: 15px;
+            margin-top: 20px;
+            border-top: 2px dashed #e2e8f0;
+            padding-top: 20px;
         }
         
-        .ticket-info-table td { padding: 4px 0; color: var(--text-light); }
-        .ticket-info-table td:nth-child(2) { color: var(--text-dark); font-weight: 600; padding-left: 10px; }
+        .ticket-info-table td { padding: 6px 0; color: var(--text-light); }
+        .ticket-info-table td:nth-child(2) { color: var(--text-dark); font-weight: 700; padding-left: 15px; }
 
         .ticket-note {
-            background: #fff8e1;
-            border-left: 4px solid #ffc107;
-            color: #b7791f;
-            padding: 10px 12px;
-            font-size: 12px;
-            margin-top: 15px;
-            border-radius: 6px;
+            background: #e3f2fd;
+            border-left: 5px solid var(--primary);
+            color: var(--primary-dark);
+            padding: 12px 15px;
+            font-size: 13px;
+            margin-top: 20px;
+            border-radius: 8px;
             text-align: left;
+            font-weight: 500;
         }
 
         /* MODAL */
@@ -374,21 +416,21 @@
             position: fixed;
             z-index: 1000;
             inset: 0;
-            background: rgba(0,0,0,0.9);
-            backdrop-filter: blur(8px);
+            background: rgba(13, 71, 161, 0.8); /* Backdrop biru gelap transparan */
+            backdrop-filter: blur(10px);
             flex-direction: column;
             justify-content: center;
             align-items: center;
-            padding: 20px;
+            padding: 30px;
             animation: fadeIn 0.3s;
         }
 
         #resultImg {
             max-width: 100%;
-            max-height: 70vh;
-            border-radius: 12px;
-            box-shadow: 0 0 40px rgba(0,0,0,0.5);
-            border: 5px solid white;
+            max-height: 75vh;
+            border-radius: 20px;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.5);
+            border: 6px solid white;
         }
 
         .close-modal {
@@ -397,16 +439,18 @@
             right: 30px;
             color: white;
             font-size: 24px;
-            background: rgba(255,255,255,0.2);
-            width: 40px; height: 40px;
+            background: rgba(255,255,255,0.25);
+            width: 45px; height: 45px;
             border-radius: 50%;
             display: flex; align-items: center; justify-content: center;
             border: none;
             cursor: pointer;
+            transition: 0.2s;
         }
+        .close-modal:hover { background: rgba(255,255,255,0.4); }
 
         /* BADGES & TABLES */
-        .badge { padding: 4px 10px; border-radius: 20px; font-weight: 700; font-size: 11px; letter-spacing: 0.5px; }
+        .badge { padding: 6px 12px; border-radius: 30px; font-weight: 800; font-size: 11px; letter-spacing: 0.5px; text-transform: uppercase; }
         .bg-green { background: #dcfce7; color: #166534; } 
         .bg-blue { background: #dbeafe; color: #1e40af; } 
         .bg-red { background: #fee2e2; color: #991b1b; } 
@@ -416,49 +460,53 @@
             width: 100%;
             border-collapse: separate;
             border-spacing: 0;
-            font-size: 13px;
+            font-size: 14px;
             margin-bottom: 15px;
-            border-radius: 12px;
+            border-radius: 16px;
             overflow: hidden;
             border: 1px solid #e2e8f0;
+            box-shadow: var(--shadow-raised);
         }
-        .spec-table th { background: var(--primary); color: white; padding: 12px; text-align: left; font-weight: 600; }
-        .spec-table td { padding: 12px; border-bottom: 1px solid #e2e8f0; background: white; }
+        .spec-table th { background: var(--primary); color: white; padding: 15px; text-align: left; font-weight: 700; }
+        .spec-table td { padding: 15px; border-bottom: 1px solid #e2e8f0; background: white; }
         .spec-table tr:last-child td { border-bottom: none; }
 
         .schedule-card {
-            border: 1px solid #e2e8f0;
-            border-radius: 12px;
+            border: none;
+            border-radius: 16px;
             background: white;
             overflow: hidden;
-            box-shadow: var(--shadow-sm);
+            box-shadow: var(--shadow-raised);
         }
 
         .sch-row {
             display: flex;
             justify-content: space-between;
-            padding: 12px 15px;
-            border-bottom: 1px solid #f8fafc;
-            font-size: 13px;
+            padding: 15px 18px;
+            border-bottom: 1px solid #f1f5f9;
+            font-size: 14px;
             color: var(--text-dark);
+            font-weight: 500;
         }
         .sch-row:last-child { border-bottom: none; }
 
-        /* ANNOUNCEMENT */
+        /* ANNOUNCEMENT (Aksen Kuning/Emas agar kontras dengan biru) */
         #announcement {
             background: #fffbeb;
-            color: #92400e;
-            padding: 15px;
-            font-size: 13px;
+            color: #b45309;
+            padding: 18px;
+            font-size: 14px;
             text-align: center;
             display: none;
-            border-bottom: 1px solid #fcd34d;
+            border-bottom: 3px solid #fcd34d;
             animation: slideDown 0.5s ease;
+            font-weight: 600;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
         }
 
         /* ANIMATIONS */
-        @keyframes slideUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
-        @keyframes slideDown { from { opacity: 0; transform: translateY(-20px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes slideUp { from { opacity: 0; transform: translateY(30px) scale(0.95); } to { opacity: 1; transform: translateY(0) scale(1); } }
+        @keyframes slideDown { from { opacity: 0; transform: translateY(-30px); } to { opacity: 1; transform: translateY(0); } }
         @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
 
         #loader {
@@ -474,9 +522,16 @@
 
         /* UTILS */
         .copy-footer {
-            text-align: center; padding: 15px; font-size: 11px; 
-            color: #94a3b8; background: #f8fafc; margin-top: auto;
+            text-align: center; padding: 20px; font-size: 12px; 
+            color: var(--text-light); background: #f8fafc; margin-top: auto;
+            font-weight: 500;
         }
+        
+        /* Scrollbar cantik */
+        #chat-box::-webkit-scrollbar { width: 6px; }
+        #chat-box::-webkit-scrollbar-track { background: #f1f1f1; }
+        #chat-box::-webkit-scrollbar-thumb { background: #bdbdbd; border-radius: 10px; }
+        #chat-box::-webkit-scrollbar-thumb:hover { background: var(--primary); }
     </style>
 </head>
 <body>
@@ -484,15 +539,15 @@
 <div id="resultModal">
     <button class="close-modal" onclick="closeResultModal()"><i class="fas fa-times"></i></button>
     <img id="resultImg" src="" alt="Tiket">
-    <div style="color:white; text-align:center; margin-top:15px; font-size:13px; font-weight:500;">
-        <i class="fas fa-download"></i> Tekan & tahan gambar untuk menyimpan
+    <div style="color:white; text-align:center; margin-top:20px; font-size:14px; font-weight:600; text-shadow: 0 2px 4px rgba(0,0,0,0.3);">
+        <i class="fas fa-download" style="margin-right:8px;"></i> Tekan & tahan gambar untuk menyimpan tiket
     </div>
 </div>
 
 <div class="app-container">
     <div id="loader">
-        <i class="fas fa-circle-notch fa-spin fa-3x" style="color:#8B0000;"></i>
-        <p style="margin-top:10px; font-size:12px; color:#666;">Memuat Aplikasi...</p>
+        <i class="fas fa-circle-notch fa-spin fa-3x" style="color:#1565c0;"></i>
+        <p style="margin-top:15px; font-size:14px; font-weight:600; color:#1565c0;">Memuat Aplikasi...</p>
     </div>
     
     <div class="header" id="header_bg">
@@ -509,7 +564,7 @@
     <div id="chat-box"></div>
     
     <div class="copy-footer">
-        &copy; 2026 Sistem Lapas Digital | v2.0 Smart Service
+        &copy; 2026 Sistem Lapas Digital | v2.1 Smart Service
     </div>
 </div>
 
@@ -589,7 +644,7 @@
             const div = document.createElement('div');
             div.className = `msg ${sender}`;
             let content = text.replace(/\n/g, '<br>').replace(/\*\*(.*?)\*\*/g, '<b>$1</b>');
-            if(extra.customHtml) content += `<div style="margin-top:10px;">${extra.customHtml}</div>`;
+            if(extra.customHtml) content += `<div style="margin-top:15px;">${extra.customHtml}</div>`;
             div.innerHTML = content;
             chatBox.appendChild(div);
             if(!extra.isForm && extra.options) showBtn(extra.options);
@@ -598,6 +653,7 @@
 
         function showBtn(opts) {
             const div = document.createElement('div');
+            div.style.marginTop = "10px";
             opts.forEach(o => {
                 if(!o.url && !o.val) return;
                 const btn = document.createElement('div');
@@ -606,9 +662,19 @@
                 if(o.text.includes("DAFTAR")) iconClass = "fas fa-clipboard-list";
                 if(o.text.includes("VIDEO")) iconClass = "fas fa-video";
                 if(o.text.includes("TOKO")) iconClass = "fas fa-shopping-cart";
+                if(o.text.includes("Jadwal")) iconClass = "fas fa-calendar-alt";
+                if(o.text.includes("Kritik")) iconClass = "fas fa-comment-dots";
+                if(o.text.includes("Kontak")) iconClass = "fas fa-headset";
                 
-                btn.className = o.text.includes("KEMBALI") ? 'btn btn-back' : 'btn';
-                btn.innerHTML = `<span>${o.text}</span> <i class="${iconClass}" style="opacity:0.6;"></i>`;
+                btn.className = o.text.includes("Kembali") ? 'btn btn-back' : 'btn';
+                
+                // Icon untuk tombol kembali berbeda
+                if(o.text.includes("Kembali")) {
+                     btn.innerHTML = `<i class="${iconClass}"></i> <span>${o.text}</span>`;
+                } else {
+                     btn.innerHTML = `<span>${o.text}</span> <i class="${iconClass}" style="opacity:0.8; font-size:18px;"></i>`;
+                }
+               
                 
                 btn.onclick = () => {
                     div.remove();
@@ -631,15 +697,15 @@
             const formHtml = `
             <div class="form-box">
                 <div class="upload-group" onclick="document.getElementById('f_ktp').click()">
-                    <span class="upload-label"><i class="fas fa-camera fa-2x" style="color:#8B0000; margin-bottom:5px;"></i><br>Tekan untuk Foto KTP (Wajib)</span>
-                    <input id="f_ktp" type="file" accept="image/*" style="display:none" onchange="this.previousElementSibling.innerHTML = '✅ Foto Terpilih: ' + this.files[0].name">
+                    <span class="upload-label"><i class="fas fa-camera fa-2x" style="margin-bottom:8px;"></i><br>Tekan untuk Foto KTP (Wajib)</span>
+                    <input id="f_ktp" type="file" accept="image/*" style="display:none" onchange="this.previousElementSibling.innerHTML = '<i class=\'fas fa-check-circle fa-2x\' style=\'color:var(--primary)\'></i><br>✅ Foto KTP Terpilih'">
                 </div>
                 <input id="f_nama" class="inp" placeholder="Nama Pengunjung">
                 <input id="f_nik" class="inp" type="number" placeholder="NIK / No. KTP">
                 <input id="f_alamat" class="inp" placeholder="Alamat Lengkap">
                 <input id="f_telp" class="inp" type="tel" placeholder="No. HP / WhatsApp">
                 <input id="f_wbp" class="inp" placeholder="Nama WBP (Bin/Binti)">
-                <div style="display:flex; gap:10px;">
+                <div style="display:flex; gap:12px;">
                     <input id="f_tgl" class="inp" type="date" style="flex:2">
                     <select id="f_jam" class="inp" style="flex:1">
                         <option value="Pagi">Pagi</option>
@@ -647,7 +713,7 @@
                     </select>
                 </div>
                 <button onclick="submitForm('${type}')" class="submit-btn"><i class="fas fa-paper-plane"></i> AMBIL ANTRIAN</button>
-                <button onclick="respond('start')" class="btn btn-back" style="width:100%; justify-content:center;">Batal</button>
+                <button onclick="respond('start')" class="btn btn-back" style="width:100%; justify-content:center;"><i class="fas fa-times"></i> Batal</button>
             </div>`;
             appendMsg('bot', text, { customHtml: formHtml });
         }
@@ -667,20 +733,21 @@
             let uploadsHtml = '';
             fields.forEach(f => {
                 uploadsHtml += `
-                <div class="upload-group" style="padding:10px; margin-bottom:8px;">
-                    <span class="upload-label">📂 ${f.l}</span>
-                    <input type="file" id="${f.id}" accept="image/*" class="inp" style="padding:5px; font-size:12px;">
+                <div class="upload-group" style="padding:15px; margin-bottom:10px; display:flex; align-items:center; justify-content:space-between;" onclick="document.getElementById('${f.id}').click()">
+                    <span class="upload-label" style="margin:0; text-align:left;"><i class="fas fa-file-upload" style="margin-right:8px;"></i> ${f.l}</span>
+                    <input type="file" id="${f.id}" accept="image/*" style="display:none" onchange="this.previousElementSibling.innerHTML = '✅ ${f.l} Terpilih'">
+                    <i class="fas fa-chevron-right" style="color:#cbd5e1;"></i>
                 </div>`;
             });
 
             const html = `
             <div class="form-box">
-                <div style="background:#dbeafe; padding:12px; font-size:12px; border-radius:8px; border-left:4px solid #1e40af; color:#1e3a8a;">
-                   <i class="fas fa-info-circle"></i> Pastikan semua foto dokumen terlihat jelas dan tidak buram.
+                <div style="background:#e3f2fd; padding:15px; font-size:13px; border-radius:12px; border-left:5px solid var(--primary); color:var(--primary-dark); font-weight:500;">
+                   <i class="fas fa-info-circle fa-lg" style="margin-right:5px;"></i> Pastikan semua foto dokumen terlihat jelas dan tidak buram.
                 </div>
                 
                 <div style="margin-top:10px;">
-                    <label style="font-size:12px; font-weight:700; color:#475569;">Jenis Layanan:</label>
+                    <label style="font-size:13px; font-weight:700; color:var(--text-dark); margin-bottom:5px; display:block;">Jenis Layanan:</label>
                     <select id="p_jenis" class="inp">
                         <option value="PB">PB (Pembebasan Bersyarat)</option>
                         <option value="CB">CB (Cuti Bersyarat)</option>
@@ -695,11 +762,11 @@
                 <input id="p_hub" class="inp" placeholder="Hubungan dengan WBP">
                 <input id="p_telp" class="inp" type="tel" placeholder="No HP / WA">
                 
-                <div style="margin-top:15px; font-weight:700; font-size:13px; color:var(--primary); border-bottom:1px solid #ddd; padding-bottom:5px;">UNGGAH DOKUMEN:</div>
+                <div style="margin-top:20px; font-weight:800; font-size:14px; color:var(--primary); border-bottom:2px dashed #e2e8f0; padding-bottom:10px; letter-spacing:0.5px;">UNGGAH DOKUMEN:</div>
                 ${uploadsHtml}
                 
-                <button onclick="submitPengurusan()" class="submit-btn"><i class="fas fa-upload"></i> KIRIM PERMOHONAN</button>
-                <button onclick="respond('start')" class="btn btn-back">Batal</button>
+                <button onclick="submitPengurusan()" class="submit-btn"><i class="fas fa-cloud-upload-alt"></i> KIRIM PERMOHONAN</button>
+                <button onclick="respond('start')" class="btn btn-back"><i class="fas fa-times"></i> Batal</button>
             </div>`;
             appendMsg('bot', "📝 **FORMULIR PENGURUSAN PB/CB/CMB:**", { customHtml: html });
         }
@@ -708,8 +775,8 @@
         window.renderFormKritik = function() {
             const html = `
             <div class="form-box">
-                <label style="font-size:12px; font-weight:600;">Seberapa puas Anda?</label>
-                <select id="k_puas" class="inp">
+                <label style="font-size:14px; font-weight:700;">Seberapa puas Anda?</label>
+                <select id="k_puas" class="inp" style="font-size:16px;">
                     <option value="Sangat Puas">😍 Sangat Puas</option>
                     <option value="Puas">🙂 Puas</option>
                     <option value="Cukup">😐 Cukup</option>
@@ -717,7 +784,7 @@
                 </select>
                 <textarea id="k_pesan" class="inp" rows="4" placeholder="Tulis kritik & saran Anda disini..."></textarea>
                 <button onclick="submitKritik()" class="submit-btn"><i class="fas fa-paper-plane"></i> KIRIM MASUKAN</button>
-                <button onclick="respond('start')" class="btn btn-back">Batal</button>
+                <button onclick="respond('start')" class="btn btn-back"><i class="fas fa-times"></i> Batal</button>
             </div>`;
             appendMsg('bot', "📢 **KRITIK & SARAN:**", { customHtml: html });
         }
@@ -825,9 +892,9 @@
         window.askNikForStatus = function(type) {
             appendMsg('bot', `🔍 **CEK STATUS ${type.toUpperCase().replace('_', ' ')}**\nMasukkan NIK Penjamin/Pengunjung:`, {
                 customHtml: `<div class="form-box">
-                    <input id="cek_nik" class="inp" type="number" placeholder="Ketik NIK disini...">
+                    <input id="cek_nik" class="inp" type="number" placeholder="Ketik NIK disini..." style="font-size:16px; font-weight:bold;">
                     <button onclick="doCheckStatus('${type}')" class="submit-btn"><i class="fas fa-search"></i> CARI DATA</button>
-                    <button onclick="respond('start')" class="btn btn-back">Batal</button>
+                    <button onclick="respond('start')" class="btn btn-back"><i class="fas fa-times"></i> Batal</button>
                 </div>`
             });
         }
@@ -876,12 +943,12 @@
                 img.onload = function() {
                     const canvas = document.createElement('canvas');
                     const ctx = canvas.getContext('2d');
-                    const maxW = 600; 
+                    const maxW = 800; // Sedikit diperbesar
                     let w = img.width; let h = img.height;
                     if(w > maxW) { h *= maxW/w; w = maxW; }
                     canvas.width = w; canvas.height = h;
                     ctx.drawImage(img, 0, 0, w, h);
-                    cb(canvas.toDataURL('image/jpeg', 0.5));
+                    cb(canvas.toDataURL('image/jpeg', 0.6)); // Kualitas sedikit dinaikkan
                 }
             }
         }
@@ -893,12 +960,12 @@
             const ticketHtml = `
             <div id="ticket-node" class="ticket-card">
                 <div class="ticket-header">
-                     ${label}
+                     <i class="fas fa-ticket-alt" style="margin-right:10px;"></i> ${label}
                 </div>
                 <div class="ticket-body">
-                    <div style="font-size:12px; color:#64748b; margin-bottom:5px;">NOMOR ANTRIAN</div>
+                    <div style="font-size:13px; color:var(--text-light); margin-bottom:5px; font-weight:600; letter-spacing:1px;">NOMOR ANTRIAN</div>
                     <div class="ticket-number">${data.noAntrian}</div>
-                    <div style="margin-bottom:15px;">${stBadge}</div>
+                    <div style="margin-bottom:20px;">${stBadge}</div>
                     
                     <table class="ticket-info-table">
                         <tr><td>NAMA</td><td>: ${data.nama}</td></tr>
@@ -908,12 +975,12 @@
                     </table>
                     
                     ${noteHtml}
-                    <div style="margin-top:15px; border-top:1px dashed #eee; padding-top:10px;">
-                        <img src="${data.ktpUrl}" style="height:40px; border-radius:4px; opacity:0.8;">
+                    <div style="margin-top:20px; border-top:2px dashed #e2e8f0; padding-top:15px;">
+                        <img src="${data.ktpUrl}" style="height:50px; border-radius:8px; opacity:0.9; box-shadow:var(--shadow-raised);">
                     </div>
                 </div>
             </div>
-            <button onclick="downloadTicket()" class="submit-btn" style="background:#1e293b;"><i class="fas fa-download"></i> SIMPAN TIKET</button>`;
+            <button onclick="downloadTicket()" class="submit-btn" style="background:var(--text-dark);"><i class="fas fa-download"></i> SIMPAN TIKET</button>`;
             appendMsg('bot', "✅ **TIKET ANTRIAN ANDA:**", { customHtml: ticketHtml });
         }
 
@@ -928,7 +995,7 @@
 
     function getMenu(cfg) {
         const htmlJadwal = `
-        <div style="margin-bottom:10px; font-weight:700; font-size:13px; color:#8B0000;">KATEGORI LAYANAN:</div>
+        <div style="margin-bottom:15px; font-weight:800; font-size:14px; color:var(--primary); letter-spacing:0.5px;">KATEGORI LAYANAN:</div>
         <table class="spec-table">
            <tr><th>Jenis</th><th>Hari Layanan</th></tr>
            <tr><td><b>PIDUM</b></td><td>${cfg.sch_pidum || 'Senin & Rabu'}</td></tr>
@@ -944,7 +1011,8 @@
 
         return {
             'start': {
-                text: cfg.welcome_msg || "Halo! Selamat datang di Layanan Lapas Digital. Ada yang bisa kami bantu hari ini?",
+                // --- PESAN SAMBUTAN BARU YANG LEBIH MENARIK ---
+                text: cfg.welcome_msg || "👋 **Hai! Selamat Datang.**\nSiap melayani kebutuhan Anda dengan cepat dan mudah. Silakan pilih menu dibawah:",
                 options: [
                     { text: "Daftar Tatap Muka", val: "daftar_fisik" },
                     { text: "Daftar Video Call", val: "daftar_online" },
@@ -955,20 +1023,20 @@
                     { text: "Kontak Admin", val: "kontak" }
                 ]
             },
-            'daftar_fisik': { text: "📝 **PENDAFTARAN TATAP MUKA**\nSilakan pilih menu dibawah:", options: [{ text: "Isi Formulir Baru", val: "form_fisik" }, { text: "Cek Status Antrian", val: "cek_status_fisik" }, { text: "Kembali", val: "start" }] },
+            'daftar_fisik': { text: "📝 **PENDAFTARAN TATAP MUKA**\nSilakan pilih menu dibawah:", options: [{ text: "Isi Formulir Baru", val: "form_fisik", icon:"fa-edit" }, { text: "Cek Status Antrian", val: "cek_status_fisik", icon:"fa-search" }, { text: "Kembali", val: "start" }] },
             'form_fisik': { text: "📝 **DATA KUNJUNGAN**\nMohon lengkapi formulir berikut:", isForm: true, formType: "fisik" },
-            'daftar_online': { text: "💻 **PENDAFTARAN VIDEO CALL**\nSilakan pilih menu dibawah:", options: [{ text: "Isi Formulir Baru", val: "form_online" }, { text: "Cek Status Antrian", val: "cek_status_online" }, { text: "Kembali", val: "start" }] },
+            'daftar_online': { text: "💻 **PENDAFTARAN VIDEO CALL**\nSilakan pilih menu dibawah:", options: [{ text: "Isi Formulir Baru", val: "form_online", icon:"fa-edit" }, { text: "Cek Status Antrian", val: "cek_status_online", icon:"fa-search" }, { text: "Kembali", val: "start" }] },
             'form_online': { text: "💻 **DATA VIDEO CALL**\nMohon lengkapi formulir berikut:", isForm: true, formType: "online" },
-            'menu_urus': { text: "📂 **LAYANAN INTEGRASI**\n(PB / CB / CMB)\nAjukan permohonan atau cek status Anda disini.", options: [{ text: "Ajukan Permohonan", val: "form_urus" }, { text: "Cek Status Pengajuan", val: "cek_status_pengurusan" }, { text: "Kembali", val: "start" }] },
+            'menu_urus': { text: "📂 **LAYANAN INTEGRASI**\n(PB / CB / CMB)\nAjukan permohonan atau cek status Anda disini.", options: [{ text: "Ajukan Permohonan", val: "form_urus", icon:"fa-file-import" }, { text: "Cek Status Pengajuan", val: "cek_status_pengurusan", icon:"fa-search" }, { text: "Kembali", val: "start" }] },
             'form_urus': { text: "Menyiapkan formulir...", isForm: true, formType: "pengurusan" },
-            'toko': { text: "🛒 **TOKO LAPAS:**\n" + (cfg.toko_announce || "Beli kebutuhan WBP dari rumah."), options: [{ text: "Buka Aplikasi Toko", type: "link", url: cfg.toko_link }, { text: "Kembali", val: "start" }] },
-            'info_gabung': { text: "📅 **PUSAT INFORMASI:**", options: [{ text: "Lihat Jadwal", val: "sub_jadwal" }, { text: "Syarat & Barang", val: "sub_syarat_kunjungan" }, { text: "Syarat PB/CB/CMB", val: "sub_syarat_pb" }, { text: "Kembali", val: "start" }] },
+            'toko': { text: "🛒 **TOKO LAPAS:**\n" + (cfg.toko_announce || "Beli kebutuhan WBP dari rumah."), options: [{ text: "Buka Aplikasi Toko", type: "link", url: cfg.toko_link, icon:"fa-external-link-alt" }, { text: "Kembali", val: "start" }] },
+            'info_gabung': { text: "📅 **PUSAT INFORMASI:**", options: [{ text: "Lihat Jadwal", val: "sub_jadwal", icon:"fa-calendar-day" }, { text: "Syarat & Barang", val: "sub_syarat_kunjungan", icon:"fa-briefcase" }, { text: "Syarat PB/CB/CMB", val: "sub_syarat_pb", icon:"fa-file-contract" }, { text: "Kembali", val: "start" }] },
             'sub_jadwal': { text: "📅 **JADWAL LAYANAN:**", customHtml: htmlJadwal, backTo: 'info_gabung' },
             'sub_syarat_kunjungan': { text: "👜 **SYARAT KUNJUNGAN:**\n\n**📄 DOKUMEN:**\n" + (cfg.txt_doc || "-") + "\n\n**📦 ATURAN BARANG:**\n" + (cfg.txt_item || "-"), backTo: 'info_gabung' },
             'sub_syarat_pb': { text: "📂 **SYARAT PENGURUSAN PB/CB/CMB:**\n\n" + (cfg.txt_pb_cb || "Hubungi admin untuk info detail."), backTo: 'info_gabung' },
             'menu_kritik': { text: "Kami menghargai masukan Anda untuk pelayanan yang lebih baik.", isForm: true, formType: "kritik" },
-            'kontak': { text: "📞 **PUSAT BANTUAN:**", options: [{ text: "Chat WhatsApp", type: "link", url: `https://wa.me/${cfg.wa_pengaduan}` }, { text: "Saluran Informasi", type: "link", url: cfg.wa_channel }, { text: "Media Sosial", val: "sosmed" }, { text: "Kembali", val: "start" }] },
-            'sosmed': { text: "🌐 **MEDIA SOSIAL KAMI:**", options: [{ text: "Instagram", type: "link", url: cfg.soc_ig }, { text: "Facebook", type: "link", url: cfg.soc_fb }, { text: "Twitter / X", type: "link", url: cfg.soc_tw }, { text: "Kembali", val: "kontak" }] }
+            'kontak': { text: "📞 **PUSAT BANTUAN:**", options: [{ text: "Chat WhatsApp", type: "link", url: `https://wa.me/${cfg.wa_pengaduan}`, icon:"fa-whatsapp" }, { text: "Saluran Informasi", type: "link", url: cfg.wa_channel, icon:"fa-bullhorn" }, { text: "Media Sosial", val: "sosmed", icon:"fa-share-alt" }, { text: "Kembali", val: "start" }] },
+            'sosmed': { text: "🌐 **MEDIA SOSIAL KAMI:**", options: [{ text: "Instagram", type: "link", url: cfg.soc_ig, icon:"fa-instagram" }, { text: "Facebook", type: "link", url: cfg.soc_fb, icon:"fa-facebook" }, { text: "Twitter / X", type: "link", url: cfg.soc_tw, icon:"fa-twitter" }, { text: "Kembali", val: "kontak" }] }
         };
     }
 </script>
