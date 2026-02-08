@@ -36,7 +36,7 @@
         /* HEADER 3D */
         .header {
             position: relative;
-            height: 230px;
+            height: 240px;
             background-color: #333;
             background-size: cover;
             background-position: center;
@@ -50,12 +50,10 @@
             z-index: 10;
             padding: 20px;
             box-shadow: 0 10px 20px rgba(0,0,0,0.25);
-            overflow: visible; /* Biarkan Info Penting overlap */
         }
-        /* Overlay Gelap Transparan di Header */
         .header::before {
             content: ''; position: absolute; inset: 0;
-            background: linear-gradient(to bottom, rgba(0,0,0,0.3), rgba(0,0,0,0.6));
+            background: linear-gradient(to bottom, rgba(0,0,0,0.4), rgba(0,0,0,0.7));
             border-bottom-left-radius: 40px;
             border-bottom-right-radius: 40px;
             z-index: 1;
@@ -74,59 +72,65 @@
             text-shadow: 0 4px 10px rgba(0,0,0,0.9); 
         }
 
-        /* INFO PENTING (MENYATU DENGAN BACKGROUND - GLASSMORPHISM) */
+        /* INFO PENTING: GLASSMORPHISM */
         #announcement {
-            /* Latar Belakang Kaca Emas */
-            background: rgba(255, 223, 0, 0.2); 
+            /* Latar Belakang Kaca Transparan */
+            background: rgba(255, 255, 255, 0.15); 
             backdrop-filter: blur(15px);
             -webkit-backdrop-filter: blur(15px);
             
-            /* Border halus agar menyatu */
-            border: 1px solid rgba(255, 255, 255, 0.5);
-            border-bottom: 3px solid #FFD700;
+            /* Border halus */
+            border: 1px solid rgba(255, 255, 255, 0.4);
+            border-left: 5px solid #FFD700; /* Aksen Emas di kiri */
             
-            color: #222;
-            padding: 15px 20px;
-            text-align: center;
+            color: #fff; /* Teks Putih agar kontras di atas header gelap */
+            padding: 15px;
+            text-align: left;
             display: none;
             
-            /* Posisi Overlap ke Header */
-            position: absolute;
-            bottom: -25px; 
-            left: 20px; right: 20px;
-            z-index: 15;
-            
-            border-radius: 15px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.15);
-            animation: slideDown 0.5s ease-out;
+            /* Posisi di dalam Header tapi di bawah */
+            width: 90%;
+            margin-top: 15px;
+            border-radius: 12px;
+            box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
+            z-index: 5;
+            animation: slideUp 0.5s ease-out;
         }
-        @keyframes slideDown { from { opacity: 0; transform: translateY(-10px); } to { opacity: 1; transform: translateY(0); } }
+        /* Style khusus untuk isi pengumuman agar tegas */
+        #announcement strong { color: #FFD700; font-weight: 900; letter-spacing: 0.5px; }
+        #announcement div { color: #fff; font-weight: 600; text-shadow: 0 2px 4px rgba(0,0,0,0.5); }
 
-        /* CHAT AREA (Margin top diperbesar agar tidak tertutup Info) */
-        #chat-box { flex: 1; padding: 40px 20px 20px 20px; overflow-y: auto; display: flex; flex-direction: column; gap: 15px; padding-bottom: 60px; }
+        @keyframes slideUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+
+        /* CHAT AREA */
+        #chat-box { flex: 1; padding: 20px; overflow-y: auto; display: flex; flex-direction: column; gap: 15px; padding-bottom: 60px; }
         .msg { max-width: 95%; animation: popIn 0.3s ease; }
         
-        /* JAM REALTIME */
+        /* JAM REALTIME INDIKATOR */
         .clock-box {
             text-align: center;
-            padding: 15px;
+            padding: 20px;
             background: white;
-            border-radius: 15px;
+            border-radius: 20px;
             margin-bottom: 10px;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.05);
             border: 1px solid #eee;
         }
-        .time-display { font-family: 'Share Tech Mono', monospace; font-size: 34px; font-weight: bold; color: #333; letter-spacing: 2px; }
-        .date-display { font-size: 11px; color: #777; font-weight: 600; text-transform: uppercase; margin-bottom: 5px; }
-        .status-msg { font-size: 11px; padding: 6px 10px; border-radius: 6px; display: inline-block; width: 100%; line-height: 1.4; }
+        .time-display { font-family: 'Share Tech Mono', monospace; font-size: 38px; font-weight: bold; letter-spacing: 2px; transition: color 0.3s; }
+        .date-display { font-size: 12px; color: #777; font-weight: 600; text-transform: uppercase; margin-bottom: 8px; }
+        .status-msg { font-size: 12px; padding: 8px 12px; border-radius: 8px; display: inline-block; width: 100%; line-height: 1.4; font-weight: bold; }
         
-        .open { color: #155724; background: #d4edda; border: 1px solid #c3e6cb; font-weight: bold; }
-        /* Style Tertutup tapi Tetap Bisa Akses */
-        .closed { color: #721c24; background: #fff5f5; border: 1px solid #ffcdd2; font-weight: bold; }
+        /* Warna Jam */
+        .clock-green { color: #2e7d32; }
+        .clock-red { color: #c62828; }
+        
+        /* Status Background */
+        .bg-open { background: #e8f5e9; color: #2e7d32; border: 1px solid #c8e6c9; }
+        .bg-closed { background: #ffebee; color: #c62828; border: 1px solid #ffcdd2; }
 
         /* TOMBOL MENU 3D */
         .btn {
-            background: linear-gradient(145deg, #ffffff, #e6e6e6);
+            background: linear-gradient(145deg, #ffffff, #f0f0f0);
             color: #444;
             padding: 18px 20px;
             border-radius: 15px;
@@ -137,13 +141,13 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            border: 1px solid white;
+            border: 1px solid #fff;
             margin-bottom: 12px;
-            box-shadow: 5px 5px 10px #d1d1d1, -5px -5px 10px #ffffff;
+            box-shadow: 6px 6px 12px #d1d1d1, -6px -6px 12px #ffffff;
             transition: transform 0.1s;
         }
-        .btn:active { transform: scale(0.98); }
-        .btn i { font-size: 18px; color: #555; }
+        .btn:active { transform: scale(0.98); box-shadow: inset 4px 4px 8px #d1d1d1, inset -4px -4px 8px #ffffff; }
+        .btn i { font-size: 20px; color: #555; }
 
         /* TOMBOL KEMBALI (KUNING EMAS) */
         .btn-back {
@@ -155,39 +159,43 @@
         }
         .btn-back i { color: #5a4a00; margin-left: 8px; }
 
-        /* SOSMED BUTTONS */
-        .btn-wa { background: linear-gradient(135deg, #25D366, #128C7E); color: white; border:none; } .btn-wa i { color: white; }
+        /* SOSMED BUTTONS (OFFICIAL COLORS) */
+        .btn-wa { background: #25D366; color: white; border:none; } .btn-wa i { color: white; }
         .btn-ig { background: linear-gradient(45deg, #f09433, #e6683c, #dc2743, #cc2366, #bc1888); color: white; border:none; } .btn-ig i { color: white; }
-        .btn-fb { background: linear-gradient(135deg, #1877F2, #165EAB); color: white; border:none; } .btn-fb i { color: white; }
-        .btn-tw { background: linear-gradient(135deg, #000000, #333333); color: white; border:none; } .btn-tw i { color: white; }
-        .btn-yt { background: linear-gradient(135deg, #FF0000, #CC0000); color: white; border:none; } .btn-yt i { color: white; }
+        .btn-fb { background: #1877F2; color: white; border:none; } .btn-fb i { color: white; }
+        .btn-tw { background: #000000; color: white; border:none; } .btn-tw i { color: white; }
+        .btn-yt { background: #FF0000; color: white; border:none; } .btn-yt i { color: white; }
 
-        /* BOARDING PASS TICKET STYLE */
+        /* BOARDING PASS TICKET STYLE (Untuk Hasil & Status) */
         .boarding-pass {
             background: white; border-radius: 16px; overflow: hidden;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.15); margin-top: 10px; border: 1px solid #eee; position: relative;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.15); margin-top: 10px; border: 1px solid #ddd; position: relative;
         }
         .bp-header { background: #333; color: #FFD700; padding: 15px; text-align: center; font-weight: 800; letter-spacing: 2px; font-size: 16px; border-bottom: 2px dashed #FFD700; }
-        .bp-body { padding: 20px; }
+        .bp-body { padding: 20px; position: relative; }
+        
         .bp-row { display: flex; justify-content: space-between; margin-bottom: 12px; border-bottom: 1px solid #f5f5f5; padding-bottom: 5px; }
-        .bp-label { font-size: 11px; color: #888; text-transform: uppercase; }
+        .bp-label { font-size: 10px; color: #888; text-transform: uppercase; letter-spacing: 0.5px; }
         .bp-val { font-size: 13px; font-weight: 700; color: #333; text-align: right; }
-        .bp-antrian { text-align: center; margin: 20px 0; padding: 10px; background: #f8f9fa; border-radius: 8px; border: 1px solid #ddd; }
-        .bp-antrian-label { font-size: 12px; color: #555; letter-spacing: 1px; }
-        .bp-antrian-num { font-size: 42px; font-weight: 800; color: #333; line-height: 1; margin-top: 5px; font-family: 'Share Tech Mono', monospace; }
-        .bp-status { text-align: center; margin-bottom: 15px; }
-        .bp-footer { background: #f4f4f4; padding: 15px; text-align: center; font-size: 10px; color: #777; border-top: 2px dashed #ccc; display: flex; justify-content: space-between; align-items: center; }
-        .boarding-pass::before, .boarding-pass::after { content: ''; position: absolute; top: 58px; width: 20px; height: 20px; background: #f8f9fa; border-radius: 50%; }
-        .boarding-pass::before { left: -10px; } .boarding-pass::after { right: -10px; }
+        
+        .bp-antrian { text-align: center; margin: 20px 0; padding: 10px; background: #f0f2f5; border-radius: 10px; border: 1px solid #d1d1d1; }
+        .bp-antrian-label { font-size: 12px; color: #555; letter-spacing: 1px; text-transform: uppercase; font-weight: 600; }
+        .bp-antrian-num { font-size: 48px; font-weight: 800; color: #333; line-height: 1; margin-top: 5px; font-family: 'Share Tech Mono', monospace; }
+        
+        .bp-footer { background: #f9f9f9; padding: 15px; text-align: center; font-size: 10px; color: #777; border-top: 2px dashed #ccc; display: flex; justify-content: space-between; align-items: center; }
+        /* Notch Effect */
+        .boarding-pass::before, .boarding-pass::after { content: ''; position: absolute; top: 58px; width: 20px; height: 20px; background: #eef2f5; border-radius: 50%; z-index: 5; }
+        .boarding-pass::before { left: -10px; box-shadow: inset -2px 0 3px rgba(0,0,0,0.1); } 
+        .boarding-pass::after { right: -10px; box-shadow: inset 2px 0 3px rgba(0,0,0,0.1); }
 
         /* FORM STYLE */
-        .form-box { background: white; padding: 20px; border-radius: 15px; box-shadow: 0 5px 15px rgba(0,0,0,0.05); }
-        .inp { width: 100%; padding: 14px; margin-bottom: 10px; border: 1px solid #ddd; border-radius: 8px; font-size: 14px; background: #fafafa; }
-        .inp:focus { border-color: #333; background: #fff; outline: none; }
-        .submit-btn { background: linear-gradient(to right, #333, #000); color: #FFD700; border: none; padding: 16px; border-radius: 10px; font-weight: 800; width: 100%; cursor: pointer; margin-top: 10px; box-shadow: 0 4px 10px rgba(0,0,0,0.3); }
+        .form-box { background: white; padding: 20px; border-radius: 15px; box-shadow: 0 5px 15px rgba(0,0,0,0.05); border: 1px solid #eee; }
+        .inp { width: 100%; padding: 14px; margin-bottom: 10px; border: 1px solid #ccc; border-radius: 8px; font-size: 14px; background: #fff; transition: 0.3s; }
+        .inp:focus { border-color: #333; box-shadow: 0 0 0 3px rgba(51,51,51,0.1); outline: none; }
+        .submit-btn { background: linear-gradient(to right, #333, #111); color: #FFD700; border: none; padding: 16px; border-radius: 10px; font-weight: 800; width: 100%; cursor: pointer; margin-top: 10px; box-shadow: 0 4px 10px rgba(0,0,0,0.3); }
 
         #resultModal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.9); flex-direction: column; justify-content: center; align-items: center; padding: 20px; z-index: 999; }
-        #resultImg { max-width: 100%; max-height: 70vh; border-radius: 10px; }
+        #resultImg { max-width: 100%; max-height: 70vh; border-radius: 10px; box-shadow: 0 0 30px rgba(255,255,255,0.2); }
         .close-modal { position: absolute; top: 20px; right: 20px; color: white; font-size: 30px; cursor: pointer; background: none; border: none; }
         
         .badge { padding: 5px 10px; border-radius: 4px; font-size: 11px; font-weight: bold; text-transform: uppercase; }
@@ -196,10 +204,10 @@
         @keyframes popIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
         #loader { position: absolute; inset: 0; background: white; display: flex; flex-direction: column; justify-content: center; align-items: center; z-index: 99; }
         
-        /* Table Styles */
-        .spec-table { width: 100%; border-collapse: collapse; font-size: 12px; margin-bottom: 10px; border-radius: 8px; overflow: hidden; border: 1px solid #eee; background: white; }
-        .spec-table th { background: #555; color: white; padding: 10px; text-align: left; }
-        .spec-table td { padding: 10px; border-bottom: 1px solid #eee; }
+        /* Rich Text Content */
+        .rich-content { font-size: 13px; line-height: 1.6; color: #333; }
+        .rich-content ul, .rich-content ol { padding-left: 20px; margin: 5px 0; }
+        .rich-content img { max-width: 100%; border-radius: 5px; margin: 5px 0; }
     </style>
 </head>
 <body>
@@ -214,12 +222,11 @@
     <div id="loader"><i class="fas fa-circle-notch fa-spin fa-2x" style="color:#333;"></i></div>
     
     <div class="header" id="header_bg">
-        <div id="announcement"></div>
-        
         <div class="header-content">
             <div class="logo-area"><img id="logo_img" src="" alt="Logo" loading="lazy"></div>
             <h1 class="app-name" id="app_title">Loading...</h1>
         </div>
+        <div id="announcement"></div>
     </div>
     
     <div id="chat-box"></div>
@@ -257,9 +264,8 @@
             const ann = document.getElementById('announcement');
             if(cfg.announcement && cfg.announcement.trim() !== "") { 
                 ann.style.display = 'block'; 
-                // Tulisan Lebih Tegas
-                ann.innerHTML = "<div style='font-size:13px; font-weight:800; letter-spacing:1px; margin-bottom:5px; text-decoration:underline; text-underline-offset:3px;'>📢 INFO PENTING:</div>" + 
-                                "<div style='font-weight:700; font-size:13px; line-height:1.4; color:#000;'>" + cfg.announcement + "</div>"; 
+                // Render HTML content (Support Bold & Images from Admin)
+                ann.innerHTML = "<strong>📢 INFO PENTING:</strong><div style='margin-top:5px; font-weight:600; font-size:13px;'>" + cfg.announcement + "</div>"; 
             } else { ann.style.display = 'none'; }
             
             document.getElementById('loader').style.display = 'none';
@@ -272,7 +278,7 @@
         window.respond = function(key) {
             if (key === 'start') {
                 chatBox.innerHTML = '';
-                // Render Realtime Clock dengan Status Jam Kerja
+                // JAM REALTIME
                 const clockDiv = document.createElement('div');
                 clockDiv.className = 'clock-box';
                 clockDiv.innerHTML = `<div id="time-display" class="time-display">00:00:00</div><div id="date-display" class="date-display">-</div><div id="status-msg" class="status-msg"></div>`;
@@ -306,7 +312,7 @@
             }
         }
 
-        // --- LOGIKA JAM REALTIME & JAM KERJA ---
+        // --- LOGIKA JAM KERJA (08:00 - 15:00) ---
         function startClock() {
             if(clockInterval) clearInterval(clockInterval);
             const update = () => {
@@ -323,16 +329,16 @@
                     dateEl.innerText = dateStr;
                     
                     const h = now.getHours();
-                    // JAM KERJA: 08:00 - 15:00
                     if (h >= 8 && h < 15) {
-                        timeEl.style.color = "#333";
-                        msgEl.className = "status-msg open";
-                        msgEl.innerHTML = "✅ JAM PELAYANAN: BUKA";
+                        // JAM KERJA
+                        timeEl.className = "time-display clock-green";
+                        msgEl.className = "status-msg bg-open";
+                        msgEl.innerHTML = "<i class='fas fa-check-circle'></i> ADMIN SIAP MELAYANI ANDA";
                     } else {
-                        // Di luar jam kerja: MERAH, Tapi Pesan Mengatakan "Tetap Bisa Diakses"
-                        timeEl.style.color = "#c62828"; 
-                        msgEl.className = "status-msg closed";
-                        msgEl.innerHTML = "⛔ DILUAR JAM KERJA<br><span style='font-weight:400; font-size:10px;'>Aplikasi tetap dapat diakses. Respon admin akan tertunda.</span>";
+                        // LUAR JAM KERJA (Tetap Bisa Akses)
+                        timeEl.className = "time-display clock-red";
+                        msgEl.className = "status-msg bg-closed";
+                        msgEl.innerHTML = "<i class='fas fa-clock'></i> SUDAH DILUAR JAM KERJA<br><span style='font-weight:400; font-size:10px;'>Admin akan sesegera mungkin melayani anda. Menu tetap dapat diakses.</span>";
                     }
                 }
             };
@@ -359,6 +365,7 @@
                 let className = 'btn';
                 let icon = 'fa-chevron-right';
 
+                // Styling Khusus Ikon
                 if(o.text.includes("KEMBALI")) { className = 'btn btn-back'; icon = 'fa-arrow-left'; }
                 else if(o.text.includes("WHATSAPP")) { className = 'btn btn-wa'; icon = 'fa-whatsapp'; }
                 else if(o.text.includes("INSTAGRAM")) { className = 'btn btn-ig'; icon = 'fa-instagram'; }
@@ -460,7 +467,7 @@
         }
         window.submitPengurusan = async function() {
              const btn = document.querySelector('.submit-btn'); btn.innerText = "Mengirim..."; btn.disabled = true;
-             // ... (Logic upload same as before) ...
+             // ... logic upload same ...
              setTimeout(() => {
                 chatBox.innerHTML = '';
                 appendMsg('bot', `✅ **PERMOHONAN TERKIRIM!**\nData berhasil masuk ke sistem.`);
@@ -569,9 +576,9 @@
             'form_urus': { text: "Menyiapkan formulir...", isForm: true, formType: "pengurusan" },
             'toko': { text: "🛒 **TOKO LAPAS:**\n" + (cfg.toko_announce || "-"), options: [{ text: "BUKA APLIKASI TOKO", type: "link", url: cfg.toko_link }, { text: "KEMBALI KE MENU UTAMA", val: "start" }] },
             'info_gabung': { text: "📅 **INFORMASI LAYANAN:**", options: [{ text: "LIHAT JADWAL", val: "sub_jadwal" }, { text: "SYARAT KUNJUNGAN", val: "sub_syarat_kunjungan" }, { text: "SYARAT PENGURUSAN", val: "sub_syarat_pb" }, { text: "KEMBALI KE MENU UTAMA", val: "start" }] },
-            'sub_jadwal': { text: "📅 **JADWAL:**", customHtml: `<div style="background:white; padding:10px; border-radius:10px;">${cfg.sch_pidum||''}</div>`, backTo: 'info_gabung' },
-            'sub_syarat_kunjungan': { text: "👜 **SYARAT KUNJUNGAN:**", customHtml: `<div style="background:white; padding:15px; border-radius:10px;">${cfg.txt_doc||''}</div>`, backTo: 'info_gabung' },
-            'sub_syarat_pb': { text: "📂 **SYARAT INTEGRASI:**", customHtml: `<div style="background:white; padding:15px; border-radius:10px;">${cfg.txt_pb_cb||''}</div>`, backTo: 'info_gabung' },
+            'sub_jadwal': { text: "📅 **JADWAL:**", customHtml: `<div class="rich-content" style="background:white; padding:15px; border-radius:10px; border:1px solid #eee;">${cfg.sch_pidum||'-'}</div>`, backTo: 'info_gabung' },
+            'sub_syarat_kunjungan': { text: "👜 **SYARAT KUNJUNGAN:**", customHtml: `<div class="rich-content" style="background:white; padding:15px; border-radius:10px; border:1px solid #eee;">${cfg.txt_doc||'-'}</div>`, backTo: 'info_gabung' },
+            'sub_syarat_pb': { text: "📂 **SYARAT INTEGRASI:**", customHtml: `<div class="rich-content" style="background:white; padding:15px; border-radius:10px; border:1px solid #eee;">${cfg.txt_pb_cb||'-'}</div>`, backTo: 'info_gabung' },
             'menu_kritik': { text: "Nilai layanan kami:", isForm: true, formType: "kritik" },
             'kontak': { text: "📞 **KONTAK & PENGADUAN:**", options: [{ text: "WHATSAPP PENGADUAN", type: "link", url: `https://wa.me/${cfg.wa_pengaduan}` }, { text: "SALURAN INFORMASI", type: "link", url: cfg.wa_channel }, { text: "MEDIA SOSIAL", val: "sosmed" }, { text: "KEMBALI KE MENU UTAMA", val: "start" }] },
             'sosmed': { text: "🌐 **MEDIA SOSIAL RESMI:**", options: [{ text: "INSTAGRAM", type: "link", url: cfg.soc_ig }, { text: "FACEBOOK", type: "link", url: cfg.soc_fb }, { text: "TWITTER / X", type: "link", url: cfg.soc_tw }, { text: "YOUTUBE", type: "link", url: cfg.soc_yt }, { text: "KEMBALI SEBELUMNYA", val: "kontak" }] }
