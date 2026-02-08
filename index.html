@@ -82,24 +82,21 @@
 
         /* INFO PENTING 3D EMAS */
         #announcement {
-            /* Latar Belakang Emas 3D */
             background: linear-gradient(145deg, #FFD700, #FFC107); 
-            color: #3e2723; /* Warna Teks Kontras Gelap */
+            color: #3e2723;
             padding: 15px 20px;
             font-size: 13px;
             text-align: center;
             display: none;
-            font-weight: 800; /* Sangat Tegas */
+            font-weight: 800;
             text-transform: uppercase;
-            /* Efek Bayangan 3D */
             box-shadow: 0 8px 15px rgba(0,0,0,0.2), inset 0 2px 3px rgba(255,255,255,0.4);
             position: relative;
             z-index: 11;
-            /* Posisi menumpuk tepat di bawah header */
             margin: -30px 15px 10px 15px; 
             border-radius: 15px;
             line-height: 1.4;
-            border: 2px solid #fff; /* Border putih untuk mempertegas */
+            border: 2px solid #fff;
         }
 
         /* CHAT BOX */
@@ -167,12 +164,43 @@
         .schedule-card { border: 1px solid #eee; border-radius: 10px; overflow: hidden; margin-top: 5px; background: white; }
         .sch-row { display: flex; justify-content: space-between; padding: 12px 15px; border-bottom: 1px solid #f9f9f9; font-size: 12px; }
 
-        /* JAM REALTIME MINIMALIS */
-        #realtime-clock-box {
-            text-align: center; margin-bottom: 15px;
+        /* JAM REALTIME - SEBESAR MENU */
+        .clock-card {
+            background: #fff;
+            padding: 15px;
+            border-radius: 15px;
+            border: 1px solid #eee;
+            margin-bottom: 12px;
+            text-align: center;
+            width: 100%;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.03);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
         }
-        .clock-time { font-size: 16px; font-weight: 800; margin-bottom: 5px; }
-        .clock-status { font-size: 12px; font-weight: 500; color: #555; }
+        .clock-time {
+            font-size: 28px;
+            font-weight: 800;
+            line-height: 1;
+            margin-bottom: 2px;
+            letter-spacing: 1px;
+        }
+        .clock-date {
+            font-size: 12px;
+            color: #777;
+            font-weight: 500;
+            margin-bottom: 10px;
+            padding-bottom: 8px;
+            border-bottom: 1px dashed #eee;
+            width: 80%;
+        }
+        .clock-status {
+            font-size: 11px;
+            font-weight: 700;
+            padding: 4px 10px;
+            border-radius: 20px;
+        }
     </style>
 </head>
 <body>
@@ -228,7 +256,6 @@
             const ann = document.getElementById('announcement');
             if(cfg.announcement && cfg.announcement.trim() !== "") { 
                 ann.style.display = 'block'; 
-                // Render Announcement Teks Tegas
                 ann.innerHTML = "📢 INFO PENTING:<br><div style='margin-top:5px; color:#3e2723;'>" + cfg.announcement + "</div>"; 
             } else { ann.style.display = 'none'; }
             
@@ -238,30 +265,28 @@
 
         const chatBox = document.getElementById('chat-box');
         
-        // --- LOGIKA JAM REALTIME MINIMALIS ---
+        // --- LOGIKA JAM REALTIME CARD ---
         function getGreetingHtml() {
             const now = new Date();
             const days = ['Minggu','Senin','Selasa','Rabu','Kamis','Jumat','Sabtu'];
             const months = ['Januari','Februari','Maret','April','Mei','Juni','Juli','Agustus','September','Oktober','November','Desember'];
             
-            const dateStr = `${days[now.getDay()]}, ${now.getDate()} ${months[now.getMonth()]} ${now.getFullYear()}`;
+            const dayDateStr = `${days[now.getDay()]}, ${now.getDate()} ${months[now.getMonth()]} ${now.getFullYear()}`;
             const timeStr = now.toLocaleTimeString('id-ID', {hour: '2-digit', minute:'2-digit'});
             const hour = now.getHours();
             
-            // Logika Jam Kerja (08.00 - 15.00 WIB)
+            // Jam Kerja: 08.00 - 15.00
             const isOpen = hour >= 8 && hour < 15;
             
             const color = isOpen ? '#2e7d32' : '#c62828'; // Hijau : Merah
-            // Teks Status sesuai permintaan
+            const bgColor = isOpen ? '#e8f5e9' : '#ffebee';
             const statusMsg = isOpen ? "✅ Admin siap melayani Anda" : "⛔ Diluar jam kerja, Admin akan sesegera mungkin melayani Anda";
             
-            // Tampilan Minimalis tanpa tulisan "Silakan pilih..."
             return `
-            <div id="realtime-clock-box">
-                <div class="clock-time" style="color:${color};">
-                    <i class="far fa-clock"></i> ${dateStr} - ${timeStr} WIB
-                </div>
-                <div class="clock-status">${statusMsg}</div>
+            <div class="clock-card">
+                <div class="clock-time" style="color:${color};">${timeStr} WIB</div>
+                <div class="clock-date">${dayDateStr}</div>
+                <div class="clock-status" style="color:${color}; background:${bgColor};">${statusMsg}</div>
             </div>`;
         }
 
