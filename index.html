@@ -2,73 +2,96 @@
 <html lang="id">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <meta name="theme-color" content="#8B0000">
-    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <title>Layanan Lapas Digital</title>
     
     <script defer src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
     <script defer src="https://www.gstatic.com/firebasejs/10.7.1/firebase-database-compat.js"></script>
     
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
     
     <style>
         :root {
             --primary: #8B0000;
-            --primary-dark: #600000;
-            --primary-light: #FFEBEE;
-            --accent: #D32F2F;
-            --bg-body: #F2F4F8;
-            --bg-card: #FFFFFF;
-            --text-main: #1F2937;
-            --text-sub: #6B7280;
-            --shadow-sm: 0 2px 8px rgba(0,0,0,0.05);
-            --shadow-md: 0 8px 24px rgba(0,0,0,0.12);
-            --radius-bubble: 18px;
-            --radius-card: 16px;
+            --primary-dark: #5e0000;
+            --primary-light: #fff5f5;
+            --accent: #FFD700;
+            --text-dark: #1e293b;
+            --text-light: #64748b;
+            --bg-body: #f1f5f9;
+            --white: #ffffff;
+            --shadow-sm: 0 2px 4px rgba(0,0,0,0.05);
+            --shadow-md: 0 4px 12px rgba(0,0,0,0.08);
+            --radius-lg: 20px;
+            --radius-md: 12px;
         }
 
-        * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; outline: none; }
+        * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
         
         body {
-            font-family: 'Inter', sans-serif;
+            font-family: 'Plus Jakarta Sans', sans-serif;
             background: var(--bg-body);
             margin: 0;
             display: flex;
             justify-content: center;
             min-height: 100vh;
-            color: var(--text-main);
+            color: var(--text-dark);
         }
 
+        /* Container Aplikasi */
         .app-container {
             width: 100%;
             max-width: 480px;
-            background: var(--bg-card);
+            background: var(--white);
             min-height: 100vh;
+            box-shadow: 0 0 40px rgba(0,0,0,0.1);
             display: flex;
             flex-direction: column;
             position: relative;
-            box-shadow: 0 0 40px rgba(0,0,0,0.05);
             overflow: hidden;
         }
 
-        /* --- HEADER --- */
+        /* HEADER MODERN */
         .header {
             position: relative;
-            height: 200px;
-            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+            height: 220px;
+            background-color: var(--primary);
+            background-size: cover;
+            background-position: center;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: flex-end;
             color: white;
             border-bottom-left-radius: 35px;
             border-bottom-right-radius: 35px;
             z-index: 10;
-            padding: 30px 20px 20px;
+            padding: 20px 20px 40px 20px;
             box-shadow: 0 10px 30px rgba(139, 0, 0, 0.3);
+            transition: all 0.5s ease;
+        }
+
+        .header::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(to bottom, rgba(0,0,0,0.3), rgba(139, 0, 0, 0.9));
+            border-bottom-left-radius: 35px;
+            border-bottom-right-radius: 35px;
+            z-index: 1;
+        }
+
+        .header-content {
+            position: relative;
+            z-index: 2;
+            text-align: center;
+            width: 100%;
             display: flex;
             flex-direction: column;
             align-items: center;
-            justify-content: center;
         }
 
         .logo-area {
@@ -76,94 +99,87 @@
             height: 80px;
             background: white;
             border-radius: 50%;
-            padding: 10px;
-            margin-bottom: 12px;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+            padding: 5px;
+            margin-bottom: 15px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
             display: flex;
             justify-content: center;
             align-items: center;
         }
-        
-        .logo-area img { width: 100%; height: 100%; object-fit: contain; }
-        
+
+        .logo-area img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+            border-radius: 50%;
+        }
+
         .app-name {
-            font-weight: 700;
+            font-weight: 800;
             font-size: 22px;
             margin: 0;
             letter-spacing: -0.5px;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.3);
         }
 
-        .status-pill {
+        .tagline {
+            font-size: 12px;
+            opacity: 0.9;
+            margin-top: 5px;
             background: rgba(255,255,255,0.2);
-            backdrop-filter: blur(5px);
             padding: 4px 12px;
             border-radius: 20px;
-            font-size: 11px;
-            margin-top: 5px;
-            display: flex;
-            align-items: center;
-            gap: 5px;
+            backdrop-filter: blur(4px);
         }
 
-        /* --- CHAT AREA --- */
+        /* CHAT AREA */
         #chat-box {
             flex: 1;
-            padding: 20px 15px;
+            padding: 20px;
             overflow-y: auto;
             display: flex;
             flex-direction: column;
             gap: 15px;
-            background: var(--bg-body);
+            background: var(--white);
             scroll-behavior: smooth;
-            padding-bottom: 80px; /* Space for footer/bottom */
+            padding-bottom: 80px;
         }
 
+        /* BUBBLE PESAN */
         .msg {
-            max-width: 88%;
-            padding: 14px 18px;
+            max-width: 92%;
+            padding: 15px 18px;
+            border-radius: 18px;
             font-size: 14px;
-            line-height: 1.5;
+            line-height: 1.6;
             position: relative;
-            animation: slideUp 0.3s cubic-bezier(0.16, 1, 0.3, 1);
-            word-wrap: break-word;
-        }
-
-        @keyframes slideUp {
-            from { opacity: 0; transform: translateY(20px); }
-            to { opacity: 1; transform: translateY(0); }
+            animation: slideUp 0.3s ease;
+            box-shadow: var(--shadow-sm);
         }
 
         .bot {
-            background: white;
+            background: var(--white);
             align-self: flex-start;
-            border-radius: 4px var(--radius-bubble) var(--radius-bubble) var(--radius-bubble);
-            color: var(--text-main);
-            box-shadow: var(--shadow-sm);
-            border-left: 4px solid var(--primary);
+            border-top-left-radius: 4px;
+            color: var(--text-dark);
+            border: 1px solid #e2e8f0;
         }
 
         .user {
-            background: var(--primary);
+            background: var(--primary-light);
             align-self: flex-end;
-            border-radius: var(--radius-bubble) var(--radius-bubble) 4px var(--radius-bubble);
-            color: white;
-            box-shadow: 0 4px 12px rgba(139, 0, 0, 0.2);
+            border-top-right-radius: 4px;
+            color: var(--primary);
+            border: 1px solid #ffcdd2;
+            font-weight: 600;
         }
 
-        /* --- BUTTONS & INTERACTION --- */
-        .options-container {
-            display: flex;
-            flex-direction: column;
-            gap: 8px;
-            width: 100%;
-            margin-top: 5px;
-        }
-
+        /* TOMBOL MENU */
         .btn {
-            background: white;
-            color: var(--text-main);
+            background: var(--white);
+            color: var(--text-dark);
             padding: 16px 20px;
-            border-radius: 14px;
+            border-radius: 16px;
             font-size: 14px;
             font-weight: 600;
             cursor: pointer;
@@ -171,230 +187,280 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            border: 1px solid transparent;
-            box-shadow: var(--shadow-sm);
-            transition: all 0.2s ease;
+            border: 1px solid #f1f5f9;
+            margin-bottom: 10px;
+            transition: all 0.2s cubic-bezier(0.25, 0.8, 0.25, 1);
+            box-shadow: 0 4px 6px rgba(0,0,0,0.02);
+            position: relative;
+            overflow: hidden;
         }
 
-        .btn:active { transform: scale(0.98); background: #f8f8f8; }
-        .btn i { color: var(--primary); opacity: 0.7; }
-        
+        .btn::before {
+            content: '';
+            position: absolute;
+            left: 0; top: 0; bottom: 0; width: 4px;
+            background: var(--primary);
+            opacity: 0;
+            transition: opacity 0.2s;
+        }
+
+        .btn:active, .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 15px rgba(0,0,0,0.05);
+            border-color: #ffcdd2;
+        }
+
+        .btn:active::before { opacity: 1; }
+
         .btn-back {
-            background: transparent;
-            border: 1px dashed #ccc;
-            color: #666;
-            box-shadow: none;
+            background: #f8fafc;
+            color: #64748b;
             justify-content: center;
-            margin-top: 10px;
+            border: 1px dashed #cbd5e1;
+            margin-top: 15px;
         }
-        .btn-back i { display: none; }
 
-        /* --- FORMS --- */
+        /* FORMULIR */
         .form-box {
-            background: white;
-            padding: 15px;
-            border-radius: var(--radius-card);
             display: flex;
             flex-direction: column;
-            gap: 12px;
-            margin-top: 8px;
-            border: 1px solid #eee;
-        }
-
-        .input-group { position: relative; }
-        .input-icon {
-            position: absolute;
-            left: 14px;
-            top: 50%;
-            transform: translateY(-50%);
-            color: #9CA3AF;
-            font-size: 14px;
-            pointer-events: none;
+            gap: 15px;
+            background: var(--white);
+            padding: 5px;
+            border-radius: var(--radius-md);
         }
 
         .inp {
-            width: 100%;
-            padding: 14px 14px 14px 42px; /* Space for icon */
-            border: 1px solid #E5E7EB;
+            padding: 14px 16px;
+            border: 2px solid #e2e8f0;
             border-radius: 12px;
             font-size: 14px;
-            background: #F9FAFB;
+            width: 100%;
+            outline: none;
             transition: 0.3s;
-            color: var(--text-main);
+            background: #f8fafc;
             font-family: inherit;
+            color: var(--text-dark);
         }
+
         .inp:focus {
             border-color: var(--primary);
-            background: white;
-            box-shadow: 0 0 0 3px rgba(139, 0, 0, 0.1);
+            background: var(--white);
+            box-shadow: 0 0 0 4px rgba(139, 0, 0, 0.1);
         }
-        textarea.inp { padding: 14px; height: 100px; resize: none; }
-        select.inp { appearance: none; background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%236B7280' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e"); background-repeat: no-repeat; background-position: right 14px center; background-size: 16px; }
 
-        /* File Upload */
+        textarea.inp { resize: vertical; min-height: 100px; }
+
         .upload-group {
-            border: 2px dashed #E5E7EB;
-            border-radius: 12px;
+            border: 2px dashed #cbd5e1;
             padding: 15px;
+            border-radius: 12px;
+            background: #f8fafc;
             text-align: center;
-            background: #F9FAFB;
+            transition: all 0.3s;
             cursor: pointer;
-            transition: 0.3s;
-            position: relative;
         }
-        .upload-group:active { background: #EDF2F7; border-color: var(--primary); }
-        .upload-group input {
-            position: absolute; inset: 0; opacity: 0; cursor: pointer; width: 100%;
-        }
-        .upload-label { font-size: 12px; font-weight: 600; color: #4B5563; pointer-events: none;}
-        .file-status { font-size: 10px; color: var(--primary); margin-top: 4px; display: block;}
 
+        .upload-group:hover {
+            border-color: var(--primary);
+            background: var(--primary-light);
+        }
+
+        .upload-label {
+            font-size: 12px;
+            font-weight: 700;
+            color: var(--text-light);
+            display: block;
+            margin-bottom: 8px;
+        }
+
+        /* TOMBOL SUBMIT */
         .submit-btn {
-            background: var(--primary);
+            background: linear-gradient(135deg, #2e7d32, #1b5e20);
             color: white;
             border: none;
             padding: 16px;
-            border-radius: 12px;
+            border-radius: 14px;
             font-weight: 700;
-            font-size: 14px;
             margin-top: 10px;
             cursor: pointer;
-            box-shadow: 0 4px 12px rgba(139, 0, 0, 0.3);
+            font-size: 15px;
             width: 100%;
-            transition: 0.3s;
+            box-shadow: 0 10px 20px rgba(46, 125, 50, 0.2);
+            transition: transform 0.2s;
             display: flex;
-            justify-content: center;
             align-items: center;
+            justify-content: center;
             gap: 8px;
         }
-        .submit-btn:disabled { background: #9CA3AF; cursor: not-allowed; box-shadow: none; }
 
-        /* --- TICKET DESIGN --- */
+        .submit-btn:active { transform: scale(0.98); }
+        .submit-btn:disabled { background: #cbd5e1; box-shadow: none; cursor: not-allowed; }
+
+        /* TICKET STYLE */
         .ticket-card {
-            background: white;
+            border: none;
+            padding: 0;
             border-radius: 16px;
-            overflow: hidden;
-            position: relative;
+            margin-top: 15px;
+            background: var(--white);
             box-shadow: var(--shadow-md);
-            margin-top: 10px;
-            border: 1px solid #eee;
+            position: relative;
+            overflow: hidden;
         }
+
         .ticket-header {
             background: var(--primary);
             color: white;
             padding: 15px;
             text-align: center;
             font-weight: 700;
-            font-size: 14px;
-            letter-spacing: 1px;
-            text-transform: uppercase;
+            border-bottom: 2px dashed rgba(255,255,255,0.3);
         }
-        .ticket-body { padding: 20px; text-align: center; }
+
+        .ticket-body {
+            padding: 20px;
+            text-align: center;
+            position: relative;
+        }
+
+        .ticket-body::before, .ticket-body::after {
+            content: '';
+            position: absolute;
+            top: -10px;
+            width: 20px;
+            height: 20px;
+            background: var(--bg-body);
+            border-radius: 50%;
+        }
+        .ticket-body::before { left: -10px; }
+        .ticket-body::after { right: -10px; }
+
         .ticket-number {
             font-size: 42px;
             font-weight: 800;
-            color: var(--text-main);
-            letter-spacing: 2px;
-            margin: 5px 0 15px;
-            font-family: 'Courier New', monospace;
+            color: var(--primary);
+            margin: 10px 0;
+            letter-spacing: 4px;
+            font-family: monospace;
         }
-        .ticket-info {
+
+        .ticket-info-table {
+            width: 100%;
+            font-size: 13px;
             text-align: left;
-            background: #F9FAFB;
-            padding: 12px;
-            border-radius: 8px;
-            font-size: 12px;
-            color: #555;
-        }
-        .ticket-info table { width: 100%; }
-        .ticket-info td { padding: 4px 0; vertical-align: top; }
-        .ticket-info td:first-child { width: 70px; color: #888; }
-        .ticket-cut {
-            height: 20px;
-            background: var(--bg-body);
-            position: relative;
-            margin: 0 10px;
-            border-radius: 10px;
-            border: 1px dashed #ccc;
-        }
-        .ticket-footer {
-            padding: 15px;
-            text-align: center;
-            background: white;
+            margin-top: 15px;
+            border-top: 1px dashed #e2e8f0;
+            padding-top: 15px;
         }
         
-        /* --- NOTIFICATION (TOAST) --- */
-        #toast {
-            position: fixed;
-            top: -60px;
-            left: 50%;
-            transform: translateX(-50%);
-            background: #333;
-            color: white;
-            padding: 12px 20px;
-            border-radius: 30px;
-            font-size: 13px;
-            font-weight: 500;
-            z-index: 200;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
-            transition: top 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            white-space: nowrap;
-        }
-        #toast.success { background: #10B981; }
-        #toast.error { background: #EF4444; }
+        .ticket-info-table td { padding: 4px 0; color: var(--text-light); }
+        .ticket-info-table td:nth-child(2) { color: var(--text-dark); font-weight: 600; padding-left: 10px; }
 
-        /* --- MODAL --- */
+        .ticket-note {
+            background: #fff8e1;
+            border-left: 4px solid #ffc107;
+            color: #b7791f;
+            padding: 10px 12px;
+            font-size: 12px;
+            margin-top: 15px;
+            border-radius: 6px;
+            text-align: left;
+        }
+
+        /* MODAL */
         #resultModal {
             display: none;
             position: fixed;
-            z-index: 100;
+            z-index: 1000;
             inset: 0;
             background: rgba(0,0,0,0.9);
-            backdrop-filter: blur(5px);
+            backdrop-filter: blur(8px);
             flex-direction: column;
             justify-content: center;
             align-items: center;
             padding: 20px;
-            opacity: 0;
-            transition: opacity 0.3s;
+            animation: fadeIn 0.3s;
         }
-        #resultModal.show { opacity: 1; }
+
         #resultImg {
             max-width: 100%;
             max-height: 70vh;
-            border-radius: 16px;
-            box-shadow: 0 0 30px rgba(255,255,255,0.1);
-            transform: scale(0.9);
-            transition: transform 0.3s;
-        }
-        #resultModal.show #resultImg { transform: scale(1); }
-        .close-modal {
-            position: absolute;
-            top: 25px;
-            right: 25px;
-            width: 40px;
-            height: 40px;
-            background: rgba(255,255,255,0.2);
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: white;
-            font-size: 24px;
-            cursor: pointer;
-            border: none;
+            border-radius: 12px;
+            box-shadow: 0 0 40px rgba(0,0,0,0.5);
+            border: 5px solid white;
         }
 
-        /* --- UTILS --- */
-        .badge { padding: 4px 10px; border-radius: 6px; font-weight: 700; font-size: 10px; letter-spacing: 0.5px; text-transform: uppercase; }
-        .bg-green { background: #D1FAE5; color: #065F46; }
-        .bg-blue { background: #DBEAFE; color: #1E40AF; }
-        .bg-red { background: #FEE2E2; color: #991B1B; }
-        .bg-gray { background: #F3F4F6; color: #374151; }
-        
+        .close-modal {
+            position: absolute;
+            top: 30px;
+            right: 30px;
+            color: white;
+            font-size: 24px;
+            background: rgba(255,255,255,0.2);
+            width: 40px; height: 40px;
+            border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            border: none;
+            cursor: pointer;
+        }
+
+        /* BADGES & TABLES */
+        .badge { padding: 4px 10px; border-radius: 20px; font-weight: 700; font-size: 11px; letter-spacing: 0.5px; }
+        .bg-green { background: #dcfce7; color: #166534; } 
+        .bg-blue { background: #dbeafe; color: #1e40af; } 
+        .bg-red { background: #fee2e2; color: #991b1b; } 
+        .bg-gray { background: #f1f5f9; color: #475569; }
+
+        .spec-table {
+            width: 100%;
+            border-collapse: separate;
+            border-spacing: 0;
+            font-size: 13px;
+            margin-bottom: 15px;
+            border-radius: 12px;
+            overflow: hidden;
+            border: 1px solid #e2e8f0;
+        }
+        .spec-table th { background: var(--primary); color: white; padding: 12px; text-align: left; font-weight: 600; }
+        .spec-table td { padding: 12px; border-bottom: 1px solid #e2e8f0; background: white; }
+        .spec-table tr:last-child td { border-bottom: none; }
+
+        .schedule-card {
+            border: 1px solid #e2e8f0;
+            border-radius: 12px;
+            background: white;
+            overflow: hidden;
+            box-shadow: var(--shadow-sm);
+        }
+
+        .sch-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 12px 15px;
+            border-bottom: 1px solid #f8fafc;
+            font-size: 13px;
+            color: var(--text-dark);
+        }
+        .sch-row:last-child { border-bottom: none; }
+
+        /* ANNOUNCEMENT */
+        #announcement {
+            background: #fffbeb;
+            color: #92400e;
+            padding: 15px;
+            font-size: 13px;
+            text-align: center;
+            display: none;
+            border-bottom: 1px solid #fcd34d;
+            animation: slideDown 0.5s ease;
+        }
+
+        /* ANIMATIONS */
+        @keyframes slideUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes slideDown { from { opacity: 0; transform: translateY(-20px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+
         #loader {
             position: absolute;
             inset: 0;
@@ -405,70 +471,50 @@
             align-items: center;
             z-index: 99;
         }
-        .spinner {
-            width: 40px; height: 40px;
-            border: 4px solid #f3f3f3;
-            border-top: 4px solid var(--primary);
-            border-radius: 50%;
-            animation: spin 1s linear infinite;
-        }
-        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
 
-        #announcement {
-            background: #FEF3C7;
-            color: #92400E;
-            padding: 12px 16px;
-            font-size: 12px;
-            text-align: center;
-            display: none;
-            border-bottom: 1px solid #FCD34D;
-            font-weight: 500;
+        /* UTILS */
+        .copy-footer {
+            text-align: center; padding: 15px; font-size: 11px; 
+            color: #94a3b8; background: #f8fafc; margin-top: auto;
         }
-        
-        /* Schedule Table */
-        .spec-table { width: 100%; border-collapse: collapse; font-size: 13px; margin-bottom: 10px; border-radius: 8px; overflow: hidden; border: 1px solid #E5E7EB; }
-        .spec-table th { background: var(--primary); color: white; padding: 10px; text-align: left; font-weight: 500; }
-        .spec-table td { padding: 10px; border-bottom: 1px solid #E5E7EB; background: white; }
-        .schedule-card { background: white; border-radius: 12px; border: 1px solid #E5E7EB; overflow: hidden; }
-        .sch-row { display: flex; justify-content: space-between; padding: 12px 15px; border-bottom: 1px solid #f0f0f0; font-size: 13px; color: #444; }
-        .sch-row:last-child { border-bottom: none; }
-        
-        .footer-cr { font-size: 11px; color: #9CA3AF; text-align: center; padding: 15px; margin-top: auto; }
     </style>
 </head>
 <body>
 
-<div id="toast"><i class="fas fa-info-circle"></i> <span>Pesan notifikasi</span></div>
-
 <div id="resultModal">
     <button class="close-modal" onclick="closeResultModal()"><i class="fas fa-times"></i></button>
     <img id="resultImg" src="" alt="Tiket">
-    <div style="color:white; text-align:center; margin-top:15px; font-size:13px; opacity:0.8;">
-        <i class="fas fa-fingerprint"></i> Tekan & tahan gambar untuk menyimpan
+    <div style="color:white; text-align:center; margin-top:15px; font-size:13px; font-weight:500;">
+        <i class="fas fa-download"></i> Tekan & tahan gambar untuk menyimpan
     </div>
 </div>
 
 <div class="app-container">
     <div id="loader">
-        <div class="spinner"></div>
-        <div style="margin-top:15px; font-size:12px; font-weight:600; color:#555;">Memuat Sistem...</div>
+        <i class="fas fa-circle-notch fa-spin fa-3x" style="color:#8B0000;"></i>
+        <p style="margin-top:10px; font-size:12px; color:#666;">Memuat Aplikasi...</p>
     </div>
     
     <div class="header" id="header_bg">
-        <div class="logo-area"><img id="logo_img" src="" alt="Logo"></div>
-        <h1 class="app-name" id="app_title">Lapas Digital</h1>
-        <div class="status-pill"><i class="fas fa-wifi"></i> Online System</div>
+        <div class="header-content">
+            <div class="logo-area">
+                <img id="logo_img" src="" alt="Logo" loading="lazy">
+            </div>
+            <h1 class="app-name" id="app_title">Loading...</h1>
+            <div class="tagline">Melayani dengan Sepenuh Hati</div>
+        </div>
     </div>
     
     <div id="announcement"></div>
-    
     <div id="chat-box"></div>
     
-    <div class="footer-cr">&copy; 2026 Sistem Lapas Digital. Aman & Terpercaya.</div>
+    <div class="copy-footer">
+        &copy; 2026 Sistem Lapas Digital | v2.0 Smart Service
+    </div>
 </div>
 
 <script>
-    // --- KONFIGURASI FIREBASE ---
+    // --- KONFIGURASI FIREBASE (TIDAK BERUBAH) ---
     const firebaseConfig = {
         apiKey: "AIzaSyDvpFZtiG_fXLOf8okjafNm7gqbJZr2pSY",
         authDomain: "lapassistem.firebaseapp.com",
@@ -480,51 +526,29 @@
         measurementId: "G-25HSNZ35ZH"
     };
 
-    // --- UI HELPERS ---
-    function showToast(msg, type = 'normal') {
-        const t = document.getElementById('toast');
-        t.className = type; 
-        t.querySelector('span').innerText = msg;
-        t.style.top = '20px';
-        setTimeout(() => t.style.top = '-60px', 3000);
-    }
-    
-    function updateFileLabel(input) {
-        const label = input.parentElement.querySelector('.file-status');
-        if(input.files && input.files[0]) {
-            label.innerText = "✅ " + input.files[0].name;
-            label.style.color = 'green';
-        } else {
-            label.innerText = "";
-        }
-    }
-
     window.addEventListener('load', () => {
         if (!firebase.apps.length) firebase.initializeApp(firebaseConfig);
         const db = firebase.database();
         let config = {};
 
         db.ref('app_config').on('value', (snap) => {
-            if(snap.exists()) config = snap.val();
-            updateUI(config);
+           if(snap.exists()) config = snap.val();
+           updateUI(config);
         });
 
         function updateUI(cfg) {
-            document.getElementById('app_title').innerText = cfg.app_name || "Lapas Digital";
-            document.getElementById('logo_img').src = cfg.logo_url || "https://cdn-icons-png.flaticon.com/512/9204/9204288.png"; // Default placeholder
-            
-            const ann = document.getElementById('announcement');
-            if(cfg.announcement) { 
-                ann.style.display = 'block'; 
-                ann.innerHTML = `<span>📢 ${cfg.announcement}</span>`; 
-            } else { 
-                ann.style.display = 'none'; 
-            }
-            
-            setTimeout(() => {
-                document.getElementById('loader').style.display = 'none';
-                if(document.getElementById('chat-box').innerHTML === "") startChat();
-            }, 800);
+           document.getElementById('app_title').innerText = cfg.app_name || "Lapas App";
+           document.getElementById('logo_img').src = cfg.logo_url || "";
+           if(cfg.header_bg) document.getElementById('header_bg').style.backgroundImage = `url('${cfg.header_bg}')`;
+           
+           const ann = document.getElementById('announcement');
+           if(cfg.announcement) { 
+               ann.style.display = 'block'; 
+               ann.innerHTML = "📢 <b>INFO PENTING:</b><br>" + cfg.announcement; 
+           } else { ann.style.display = 'none'; }
+           
+           document.getElementById('loader').style.display = 'none';
+           startChat();
         }
 
         const chatBox = document.getElementById('chat-box');
@@ -533,6 +557,7 @@
         window.respond = function(key) {
             if (key === 'start') chatBox.innerHTML = '';
             
+            // Handle Cek Status Universal
             if (key.startsWith('cek_status_')) {
                 const type = key.split('_')[2]; 
                 askNikForStatus(type);
@@ -543,9 +568,10 @@
             if(!menu) return;
 
             let opts = menu.options || [];
-            if(menu.back) opts.push({text:"⬅️ Menu Utama", val:"start", isBack: true});
-            if(menu.backTo) opts.push({text:"⬅️ Kembali", val: menu.backTo, isBack: true});
+            if(menu.back) opts.push({text:"Kembali Menu Utama", val:"start", icon: "fa-home"});
+            if(menu.backTo) opts.push({text:"Kembali Sebelumnya", val: menu.backTo, icon: "fa-arrow-left"});
 
+            // Handle Render Form
             if(menu.isForm) {
                 if(menu.formType === 'pengurusan') renderFormPengurusan();
                 else if(menu.formType === 'kritik') renderFormKritik();
@@ -563,34 +589,35 @@
             const div = document.createElement('div');
             div.className = `msg ${sender}`;
             let content = text.replace(/\n/g, '<br>').replace(/\*\*(.*?)\*\*/g, '<b>$1</b>');
-            if(extra.customHtml) content += `<br>${extra.customHtml}`;
+            if(extra.customHtml) content += `<div style="margin-top:10px;">${extra.customHtml}</div>`;
             div.innerHTML = content;
             chatBox.appendChild(div);
-            
             if(!extra.isForm && extra.options) showBtn(extra.options);
-            
-            // Auto scroll logic
-            setTimeout(() => {
-                chatBox.scrollTo({ top: chatBox.scrollHeight, behavior: 'smooth' });
-            }, 100);
+            chatBox.scrollTop = chatBox.scrollHeight;
         }
 
         function showBtn(opts) {
             const div = document.createElement('div');
-            div.className = 'options-container';
             opts.forEach(o => {
                 if(!o.url && !o.val) return;
                 const btn = document.createElement('div');
-                btn.className = o.isBack ? 'btn btn-back' : 'btn';
+                // Auto add icon if not present in data
+                let iconClass = o.icon ? `fas ${o.icon}` : "fas fa-chevron-right";
+                if(o.text.includes("DAFTAR")) iconClass = "fas fa-clipboard-list";
+                if(o.text.includes("VIDEO")) iconClass = "fas fa-video";
+                if(o.text.includes("TOKO")) iconClass = "fas fa-shopping-cart";
                 
-                let icon = '<i class="fas fa-chevron-right"></i>';
-                if(o.type === 'link') icon = '<i class="fas fa-external-link-alt"></i>';
-                if(o.isBack) icon = '';
-
-                btn.innerHTML = `<span>${o.text}</span> ${icon}`;
+                btn.className = o.text.includes("KEMBALI") ? 'btn btn-back' : 'btn';
+                btn.innerHTML = `<span>${o.text}</span> <i class="${iconClass}" style="opacity:0.6;"></i>`;
+                
                 btn.onclick = () => {
                     div.remove();
-                    appendMsg('user', o.text);
+                    // Append user selection bubble just for context
+                    const userBubble = document.createElement('div');
+                    userBubble.className = 'msg user';
+                    userBubble.innerText = o.text.replace(/[^a-zA-Z0-9 ]/g, '');
+                    chatBox.appendChild(userBubble);
+                    
                     if(o.type === 'link') window.open(o.url);
                     else setTimeout(() => respond(o.val), 300);
                 };
@@ -603,49 +630,24 @@
         function renderFormStandard(text, type) {
             const formHtml = `
             <div class="form-box">
-                <div class="upload-group">
-                    <span class="upload-label"><i class="fas fa-camera"></i> Foto KTP (Wajib)</span>
-                    <input id="f_ktp" type="file" accept="image/*" onchange="updateFileLabel(this)">
-                    <span class="file-status"></span>
+                <div class="upload-group" onclick="document.getElementById('f_ktp').click()">
+                    <span class="upload-label"><i class="fas fa-camera fa-2x" style="color:#8B0000; margin-bottom:5px;"></i><br>Tekan untuk Foto KTP (Wajib)</span>
+                    <input id="f_ktp" type="file" accept="image/*" style="display:none" onchange="this.previousElementSibling.innerHTML = '✅ Foto Terpilih: ' + this.files[0].name">
                 </div>
-                
-                <div class="input-group">
-                    <i class="fas fa-user input-icon"></i>
-                    <input id="f_nama" class="inp" placeholder="Nama Pengunjung">
-                </div>
-                <div class="input-group">
-                    <i class="fas fa-id-card input-icon"></i>
-                    <input id="f_nik" class="inp" type="number" placeholder="NIK / No. KTP">
-                </div>
-                <div class="input-group">
-                    <i class="fas fa-map-marker-alt input-icon"></i>
-                    <input id="f_alamat" class="inp" placeholder="Alamat Lengkap">
-                </div>
-                <div class="input-group">
-                    <i class="fab fa-whatsapp input-icon"></i>
-                    <input id="f_telp" class="inp" type="tel" placeholder="No. HP / WA">
-                </div>
-                <div class="input-group">
-                    <i class="fas fa-user-lock input-icon"></i>
-                    <input id="f_wbp" class="inp" placeholder="Nama WBP (Bin/Binti)">
-                </div>
-                
+                <input id="f_nama" class="inp" placeholder="Nama Pengunjung">
+                <input id="f_nik" class="inp" type="number" placeholder="NIK / No. KTP">
+                <input id="f_alamat" class="inp" placeholder="Alamat Lengkap">
+                <input id="f_telp" class="inp" type="tel" placeholder="No. HP / WhatsApp">
+                <input id="f_wbp" class="inp" placeholder="Nama WBP (Bin/Binti)">
                 <div style="display:flex; gap:10px;">
-                    <div class="input-group" style="flex:2">
-                        <input id="f_tgl" class="inp" type="date">
-                    </div>
-                    <div class="input-group" style="flex:1">
-                        <select id="f_jam" class="inp" style="padding-left:10px;">
-                            <option value="Pagi">Pagi</option>
-                            <option value="Siang">Siang</option>
-                        </select>
-                    </div>
+                    <input id="f_tgl" class="inp" type="date" style="flex:2">
+                    <select id="f_jam" class="inp" style="flex:1">
+                        <option value="Pagi">Pagi</option>
+                        <option value="Siang">Siang</option>
+                    </select>
                 </div>
-                
-                <button onclick="submitForm('${type}')" class="submit-btn">
-                    <i class="fas fa-paper-plane"></i> AMBIL ANTRIAN
-                </button>
-                <button onclick="respond('start')" class="btn btn-back">Batal</button>
+                <button onclick="submitForm('${type}')" class="submit-btn"><i class="fas fa-paper-plane"></i> AMBIL ANTRIAN</button>
+                <button onclick="respond('start')" class="btn btn-back" style="width:100%; justify-content:center;">Batal</button>
             </div>`;
             appendMsg('bot', text, { customHtml: formHtml });
         }
@@ -665,35 +667,35 @@
             let uploadsHtml = '';
             fields.forEach(f => {
                 uploadsHtml += `
-                <div class="upload-group" style="margin-bottom:8px;">
-                    <span class="upload-label"><i class="fas fa-file-upload"></i> ${f.l}</span>
-                    <input type="file" id="${f.id}" accept="image/*" onchange="updateFileLabel(this)">
-                    <span class="file-status"></span>
+                <div class="upload-group" style="padding:10px; margin-bottom:8px;">
+                    <span class="upload-label">📂 ${f.l}</span>
+                    <input type="file" id="${f.id}" accept="image/*" class="inp" style="padding:5px; font-size:12px;">
                 </div>`;
             });
 
             const html = `
             <div class="form-box">
-                <div style="background:#e3f2fd; color:#0d47a1; padding:12px; font-size:12px; border-radius:8px; display:flex; gap:8px;">
-                    <i class="fas fa-info-circle"></i> 
-                    <div>Pastikan foto dokumen terlihat jelas & terbaca.</div>
+                <div style="background:#dbeafe; padding:12px; font-size:12px; border-radius:8px; border-left:4px solid #1e40af; color:#1e3a8a;">
+                   <i class="fas fa-info-circle"></i> Pastikan semua foto dokumen terlihat jelas dan tidak buram.
                 </div>
                 
-                <label style="font-size:12px; font-weight:600; margin-top:5px;">Jenis Pengurusan:</label>
-                <select id="p_jenis" class="inp" style="padding-left:14px;">
-                    <option value="PB">PB (Pembebasan Bersyarat)</option>
-                    <option value="CB">CB (Cuti Bersyarat)</option>
-                    <option value="CMB">CMB (Cuti Menjelang Bebas)</option>
-                </select>
+                <div style="margin-top:10px;">
+                    <label style="font-size:12px; font-weight:700; color:#475569;">Jenis Layanan:</label>
+                    <select id="p_jenis" class="inp">
+                        <option value="PB">PB (Pembebasan Bersyarat)</option>
+                        <option value="CB">CB (Cuti Bersyarat)</option>
+                        <option value="CMB">CMB (Cuti Menjelang Bebas)</option>
+                    </select>
+                </div>
 
                 <input id="p_wbp" class="inp" placeholder="Nama WBP">
                 <input id="p_penjamin" class="inp" placeholder="Nama Penjamin">
-                <input id="p_nik" class="inp" type="number" placeholder="NIK Penjamin">
+                <input id="p_nik" class="inp" type="number" placeholder="NIK Penjamin (Untuk Cek Status)">
                 <input id="p_alamat" class="inp" placeholder="Alamat Penjamin">
                 <input id="p_hub" class="inp" placeholder="Hubungan dengan WBP">
                 <input id="p_telp" class="inp" type="tel" placeholder="No HP / WA">
                 
-                <div style="margin-top:15px; font-weight:700; font-size:13px; color:var(--primary);">UNGGAH DOKUMEN:</div>
+                <div style="margin-top:15px; font-weight:700; font-size:13px; color:var(--primary); border-bottom:1px solid #ddd; padding-bottom:5px;">UNGGAH DOKUMEN:</div>
                 ${uploadsHtml}
                 
                 <button onclick="submitPengurusan()" class="submit-btn"><i class="fas fa-upload"></i> KIRIM PERMOHONAN</button>
@@ -706,58 +708,53 @@
         window.renderFormKritik = function() {
             const html = `
             <div class="form-box">
-                <label style="font-size:12px; font-weight:600;">Tingkat Kepuasan:</label>
-                <select id="k_puas" class="inp" style="padding-left:14px;">
+                <label style="font-size:12px; font-weight:600;">Seberapa puas Anda?</label>
+                <select id="k_puas" class="inp">
                     <option value="Sangat Puas">😍 Sangat Puas</option>
                     <option value="Puas">🙂 Puas</option>
                     <option value="Cukup">😐 Cukup</option>
                     <option value="Kurang">☹️ Kurang</option>
                 </select>
-                <textarea id="k_pesan" class="inp" placeholder="Tulis kritik & saran Anda disini..."></textarea>
-                <button onclick="submitKritik()" class="submit-btn">KIRIM MASUKAN</button>
+                <textarea id="k_pesan" class="inp" rows="4" placeholder="Tulis kritik & saran Anda disini..."></textarea>
+                <button onclick="submitKritik()" class="submit-btn"><i class="fas fa-paper-plane"></i> KIRIM MASUKAN</button>
                 <button onclick="respond('start')" class="btn btn-back">Batal</button>
             </div>`;
-            appendMsg('bot', "📢 **KRITIK & SARAN:**\nMasukan Anda sangat berarti bagi kami.", { customHtml: html });
+            appendMsg('bot', "📢 **KRITIK & SARAN:**", { customHtml: html });
         }
 
-        // --- SUBMIT LOGIC ---
+        // --- LOGIC SUBMIT (SAMA SEPERTI ASLI) ---
         window.submitForm = function(type) {
             const f_ktp = document.getElementById('f_ktp').files[0];
-            const ids = ['f_nama', 'f_nik', 'f_alamat', 'f_telp', 'f_wbp', 'f_tgl', 'f_jam'];
-            const data = {};
-            
-            // Collect Data
-            for(let id of ids) data[id] = document.getElementById(id).value;
+            const nama = document.getElementById('f_nama').value;
+            const nik = document.getElementById('f_nik').value;
+            const alamat = document.getElementById('f_alamat').value;
+            const telp = document.getElementById('f_telp').value;
+            const wbp = document.getElementById('f_wbp').value;
+            const tgl = document.getElementById('f_tgl').value;
+            const jam = document.getElementById('f_jam').value;
 
-            if(!f_ktp || Object.values(data).some(v => !v)) return showToast("Lengkapi semua data & foto!", "error");
+            if(!f_ktp || !nama || !nik || !wbp || !tgl) return alert("Mohon lengkapi data & foto KTP!");
 
             const btn = document.querySelector('.submit-btn');
             btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Mengirim...'; btn.disabled = true;
 
             const path = type === 'fisik' ? 'registrations' : 'online_registrations';
             const prefix = type === 'fisik' ? 'A' : 'V';
-            const sess = data.f_jam === 'Pagi' ? 'P' : 'S';
-            const counterPath = `counters/${data.f_tgl}/${type}/${data.f_jam}`;
+            const sess = jam === 'Pagi' ? 'P' : 'S';
+            const counterPath = `counters/${tgl}/${type}/${jam}`;
 
             compressImage(f_ktp, (base64) => {
                 db.ref(counterPath).transaction(c => (c||0)+1, (e, comm, s) => {
                     if(comm) {
                         const no = `${prefix}-${sess}-${String(s.val()).padStart(3,'0')}`;
-                        const payload = { 
-                            nama: data.f_nama, nik: data.f_nik, alamat: data.f_alamat, 
-                            telp: data.f_telp, wbp: data.f_wbp, tgl: data.f_tgl, jam: data.f_jam, 
-                            noAntrian: no, ktpUrl: base64, status: 'waiting', 
-                            createdAt: firebase.database.ServerValue.TIMESTAMP 
-                        };
+                        const payload = { nama, nik, alamat, telp, wbp, tgl, jam, noAntrian: no, ktpUrl: base64, status: 'waiting', createdAt: firebase.database.ServerValue.TIMESTAMP };
                         
                         db.ref(path).push(payload).then(() => {
                             chatBox.innerHTML = '';
                             renderTicket(payload, type === 'fisik' ? 'TATAP MUKA' : 'VIDEO CALL');
-                            showToast("Berhasil mendaftar!", "success");
                         });
                     } else {
-                        btn.disabled = false; btn.innerHTML = "AMBIL ANTRIAN";
-                        showToast("Gagal koneksi database.", "error");
+                        btn.disabled = false; alert("Gagal koneksi. Coba lagi.");
                     }
                 });
             });
@@ -765,21 +762,25 @@
 
         window.submitPengurusan = async function() {
             const ids = ['u_ktp_wbp','u_kk_wbp','u_ktp_penj','u_kk_penj','u_surat_1','u_surat_2','u_foto'];
-            const textIds = ['p_jenis','p_wbp','p_penjamin','p_nik','p_alamat','p_hub','p_telp'];
             const inputs = {};
-            
-            for(let id of textIds) {
-                inputs[id.replace('p_', '')] = document.getElementById(id).value;
-                if(!inputs[id.replace('p_', '')]) return showToast("Lengkapi form data!", "error");
-            }
-            
-            for(let id of ids) {
-                if(!document.getElementById(id).files[0]) return showToast("Unggah semua 7 dokumen!", "error");
-            }
+            let missing = false;
+
+            inputs.jenis = document.getElementById('p_jenis').value;
+            inputs.wbp = document.getElementById('p_wbp').value;
+            inputs.penjamin = document.getElementById('p_penjamin').value;
+            inputs.nik = document.getElementById('p_nik').value;
+            inputs.alamat = document.getElementById('p_alamat').value;
+            inputs.hub = document.getElementById('p_hub').value;
+            inputs.telp = document.getElementById('p_telp').value;
+
+            if(!inputs.wbp || !inputs.penjamin || !inputs.nik || !inputs.hub) return alert("Mohon lengkapi data formulir!");
+
+            for(let id of ids) { if(!document.getElementById(id).files[0]) missing = true; }
+            if(missing) return alert("Mohon unggah ke-7 dokumen yang diminta!");
 
             const btn = document.querySelector('.submit-btn');
             const oldTxt = btn.innerHTML;
-            btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Mengunggah...'; btn.disabled = true;
+            btn.innerHTML = '<i class="fas fa-cog fa-spin"></i> Mengunggah...'; btn.disabled = true;
 
             try {
                 const images = {};
@@ -796,12 +797,11 @@
 
                 await db.ref('pengurusan').push(payload);
                 chatBox.innerHTML = '';
-                appendMsg('bot', `✅ **PERMOHONAN TERKIRIM!**\n\nJenis: **${inputs.jenis}**\nWBP: **${inputs.wbp}**\n\nSilakan cek status berkala dengan NIK Penjamin.`);
-                showBtn([{text:"⬅️ Menu Utama", val:"start"}]);
-                showToast("Data berhasil dikirim", "success");
+                appendMsg('bot', `✅ **PERMOHONAN TERKIRIM!**\n\nPengajuan **${inputs.jenis}** untuk WBP: **${inputs.wbp}** telah kami terima.\n\nSilakan cek status secara berkala menggunakan menu **Cek Status** dengan NIK Penjamin: **${inputs.nik}**.`);
+                showBtn([{text:"Kembali ke Menu Utama", val:"start", icon:"fa-home"}]);
 
             } catch(e) {
-                showToast("Gagal: " + e.message, "error");
+                alert("Gagal upload: " + e.message);
                 btn.innerHTML = oldTxt; btn.disabled = false;
             }
         }
@@ -809,34 +809,24 @@
         window.submitKritik = function() {
             const puas = document.getElementById('k_puas').value;
             const pesan = document.getElementById('k_pesan').value;
-            if(!pesan) return showToast("Tulis pesan kritik anda.", "error");
+            if(!pesan) return alert("Mohon isi pesan kritik/saran.");
 
             const btn = document.querySelector('.submit-btn');
-            btn.disabled = true; btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i>';
+            btn.disabled = true; btn.innerHTML = "Mengirim...";
 
-            const payload = {
-                kepuasan: puas, pesan: pesan, tgl: new Date().toISOString().split('T')[0],
-                createdAt: firebase.database.ServerValue.TIMESTAMP
-            };
-
+            const payload = { kepuasan: puas, pesan: pesan, tgl: new Date().toISOString().split('T')[0], createdAt: firebase.database.ServerValue.TIMESTAMP };
             db.ref('kritik_saran').push(payload).then(() => {
                 chatBox.innerHTML = '';
-                appendMsg('bot', "🙏 **TERIMA KASIH!**\nMasukan Anda sangat berharga.");
-                showBtn([{text:"⬅️ Menu Utama", val:"start"}]);
-                showToast("Kritik terkirim", "success");
+                appendMsg('bot', "🙏 **TERIMA KASIH!**\nMasukan Anda telah kami terima.");
+                showBtn([{text:"Kembali Menu Utama", val:"start", icon:"fa-home"}]);
             });
         }
 
-        // --- CHECK STATUS ---
         window.askNikForStatus = function(type) {
-            appendMsg('bot', `🔍 **CEK STATUS ${type.toUpperCase().replace('_', ' ')}**\nMasukkan NIK:`, {
-                customHtml: `
-                <div class="form-box">
-                    <div class="input-group">
-                        <i class="fas fa-search input-icon"></i>
-                        <input id="cek_nik" class="inp" type="number" placeholder="NIK Pengunjung/Penjamin">
-                    </div>
-                    <button onclick="doCheckStatus('${type}')" class="submit-btn">CARI DATA</button>
+            appendMsg('bot', `🔍 **CEK STATUS ${type.toUpperCase().replace('_', ' ')}**\nMasukkan NIK Penjamin/Pengunjung:`, {
+                customHtml: `<div class="form-box">
+                    <input id="cek_nik" class="inp" type="number" placeholder="Ketik NIK disini...">
+                    <button onclick="doCheckStatus('${type}')" class="submit-btn"><i class="fas fa-search"></i> CARI DATA</button>
                     <button onclick="respond('start')" class="btn btn-back">Batal</button>
                 </div>`
             });
@@ -844,20 +834,20 @@
 
         window.doCheckStatus = function(type) {
             const nik = document.getElementById('cek_nik').value;
-            if(!nik) return showToast("Masukkan NIK", "error");
+            if(!nik) return alert("Isi NIK!");
             
-            const paths = { 'fisik': 'registrations', 'online': 'online_registrations', 'pengurusan': 'pengurusan' };
-            const path = paths[type] || 'registrations';
+            let path = 'registrations';
+            if(type === 'online') path = 'online_registrations';
+            if(type === 'pengurusan') path = 'pengurusan';
 
             const btn = document.querySelector('.submit-btn');
-            btn.innerHTML = 'Mencari...'; btn.disabled = true;
+            btn.innerHTML = "Mencari..."; btn.disabled = true;
 
             db.ref(path).orderByChild('createdAt').limitToLast(50).once('value').then(s => {
                 let found = null;
                 if(s.exists()) {
                     s.forEach(c => {
                         const d = c.val();
-                        // Support for standard form (nik) and pengurusan (inputs.nik)
                         if(String(d.nik) === String(nik) || (d.inputs && String(d.inputs.nik) === String(nik))) found = d;
                     });
                 }
@@ -866,18 +856,17 @@
                 if(found) {
                     if(type === 'pengurusan') {
                         let stBadge = found.status === 'accepted' ? '✅ DISETUJUI' : (found.status === 'rejected' ? '❌ DITOLAK' : '🕒 MENUNGGU');
-                        appendMsg('bot', `📄 **STATUS PENGURUSAN**\n\nJenis: **${found.jenis}**\nWBP: **${found.wbp}**\nPenjamin: **${found.penjamin}**\nStatus: **${stBadge}**\nCatatan: "${found.note || '-'}"`);
+                        appendMsg('bot', `📄 **STATUS PENGURUSAN**\n\nJenis: **${found.jenis}**\nNama WBP: **${found.wbp}**\nPenjamin: **${found.penjamin}**\nStatus: **${stBadge}**\nCatatan: "${found.note || '-'}"`);
                     } else {
                         renderTicket(found, type === 'fisik' ? 'TATAP MUKA' : 'VIDEO CALL');
                     }
                 } else {
-                    appendMsg('bot', "❌ **DATA TIDAK DITEMUKAN**\nNIK tidak terdaftar atau salah ketik.");
+                    appendMsg('bot', "❌ **DATA TIDAK DITEMUKAN**\nPastikan NIK benar atau Anda belum mendaftar.");
                 }
-                showBtn([{text:"⬅️ Menu Utama", val:"start"}]);
+                showBtn([{text:"Kembali", val:"start", icon:"fa-arrow-left"}]);
             });
         }
 
-        // --- COMPRESSOR ---
         function compressImage(file, cb) {
             const reader = new FileReader();
             reader.readAsDataURL(file);
@@ -887,113 +876,99 @@
                 img.onload = function() {
                     const canvas = document.createElement('canvas');
                     const ctx = canvas.getContext('2d');
-                    const maxW = 800; 
+                    const maxW = 600; 
                     let w = img.width; let h = img.height;
                     if(w > maxW) { h *= maxW/w; w = maxW; }
                     canvas.width = w; canvas.height = h;
                     ctx.drawImage(img, 0, 0, w, h);
-                    cb(canvas.toDataURL('image/jpeg', 0.6));
+                    cb(canvas.toDataURL('image/jpeg', 0.5));
                 }
             }
         }
 
-        // --- TICKET RENDERER ---
         function renderTicket(data, label) {
-            let stBadge = data.status === 'accepted' ? '<span class="badge bg-green"><i class="fas fa-check"></i> DISETUJUI</span>' : (data.status === 'rejected' ? '<span class="badge bg-red"><i class="fas fa-times"></i> DITOLAK</span>' : '<span class="badge bg-gray"><i class="fas fa-clock"></i> MENUNGGU</span>');
-            const noteHtml = data.note ? `<div style="background:#FFFBEB; color:#B45309; padding:8px; border-radius:6px; margin-top:10px; font-size:11px;"><b>✉️ Pesan Petugas:</b> "${data.note}"</div>` : '';
+            let stBadge = data.status === 'accepted' ? '<span class="badge bg-green">✅ DISETUJUI</span>' : (data.status === 'rejected' ? '<span class="badge bg-red">❌ DITOLAK</span>' : '<span class="badge bg-gray">MENUNGGU VERIFIKASI</span>');
+            const noteHtml = data.note ? `<div class="ticket-note"><b>✉️ Pesan Petugas:</b><br>"${data.note}"</div>` : '';
             
             const ticketHtml = `
             <div id="ticket-node" class="ticket-card">
-                <div class="ticket-header">TIKET ${label}</div>
-                <div class="ticket-body">
-                    <div style="font-size:11px; color:#aaa; margin-bottom:5px;">NOMOR ANTRIAN</div>
-                    <div class="ticket-number">${data.noAntrian}</div>
-                    <div>${stBadge}</div>
+                <div class="ticket-header">
+                     ${label}
                 </div>
-                <div class="ticket-cut"></div>
-                <div class="ticket-footer">
-                    <div class="ticket-info">
-                        <table>
-                            <tr><td>Nama</td><td>: <b>${data.nama}</b></td></tr>
-                            <tr><td>Tujuan</td><td>: ${data.wbp}</td></tr>
-                            <tr><td>Jadwal</td><td>: ${data.tgl} (${data.jam})</td></tr>
-                        </table>
-                        ${noteHtml}
-                    </div>
-                    <div style="margin-top:15px; border-top:1px solid #eee; padding-top:10px;">
+                <div class="ticket-body">
+                    <div style="font-size:12px; color:#64748b; margin-bottom:5px;">NOMOR ANTRIAN</div>
+                    <div class="ticket-number">${data.noAntrian}</div>
+                    <div style="margin-bottom:15px;">${stBadge}</div>
+                    
+                    <table class="ticket-info-table">
+                        <tr><td>NAMA</td><td>: ${data.nama}</td></tr>
+                        <tr><td>TUJUAN</td><td>: ${data.wbp}</td></tr>
+                        <tr><td>TANGGAL</td><td>: ${data.tgl}</td></tr>
+                        <tr><td>WAKTU</td><td>: ${data.jam}</td></tr>
+                    </table>
+                    
+                    ${noteHtml}
+                    <div style="margin-top:15px; border-top:1px dashed #eee; padding-top:10px;">
                         <img src="${data.ktpUrl}" style="height:40px; border-radius:4px; opacity:0.8;">
                     </div>
                 </div>
             </div>
-            <button onclick="downloadTicket()" class="submit-btn" style="background:#1F2937;">
-                <i class="fas fa-download"></i> SIMPAN TIKET
-            </button>`;
-            
-            appendMsg('bot', "✅ **TIKET ANDA:**", { customHtml: ticketHtml });
+            <button onclick="downloadTicket()" class="submit-btn" style="background:#1e293b;"><i class="fas fa-download"></i> SIMPAN TIKET</button>`;
+            appendMsg('bot', "✅ **TIKET ANTRIAN ANDA:**", { customHtml: ticketHtml });
         }
 
         window.downloadTicket = function() {
-            showToast("Memproses gambar...", "normal");
-            const node = document.getElementById('ticket-node');
-            html2canvas(node, {scale:2, backgroundColor:"#fff"}).then(canvas => {
-                document.getElementById('resultImg').src = canvas.toDataURL("image/jpeg");
-                document.getElementById('resultModal').className = 'show';
+            html2canvas(document.getElementById('ticket-node'), {scale:3, backgroundColor:null}).then(canvas => {
+                document.getElementById('resultImg').src = canvas.toDataURL("image/png");
                 document.getElementById('resultModal').style.display = 'flex';
             });
         }
-        
-        window.closeResultModal = () => {
-            const m = document.getElementById('resultModal');
-            m.className = '';
-            setTimeout(() => m.style.display = 'none', 300);
-        }
+        window.closeResultModal = () => document.getElementById('resultModal').style.display = 'none';
     });
 
-    // --- MENU DATA ---
     function getMenu(cfg) {
-        // ... (Logic menu sama persis, hanya styling HTML tabel diperbarui)
         const htmlJadwal = `
-        <div style="margin-bottom:10px; font-weight:700; font-size:13px; color:var(--primary);">KATEGORI LAYANAN:</div>
+        <div style="margin-bottom:10px; font-weight:700; font-size:13px; color:#8B0000;">KATEGORI LAYANAN:</div>
         <table class="spec-table">
-            <tr><th>Jenis</th><th>Hari Layanan</th></tr>
-            <tr><td><b>PIDUM</b></td><td>${cfg.sch_pidum || 'Senin & Rabu'}</td></tr>
-            <tr><td><b>NARKOBA</b></td><td>${cfg.sch_narkoba || 'Selasa & Kamis'}</td></tr>
+           <tr><th>Jenis</th><th>Hari Layanan</th></tr>
+           <tr><td><b>PIDUM</b></td><td>${cfg.sch_pidum || 'Senin & Rabu'}</td></tr>
+           <tr><td><b>NARKOBA</b></td><td>${cfg.sch_narkoba || 'Selasa & Kamis'}</td></tr>
         </table>
         <div class="schedule-card">
-            <div class="sch-row"><span><i class="fas fa-sun"></i> Pagi</span><span class="badge bg-green">${cfg.sch_mon_am || '-'}</span></div>
-            <div class="sch-row"><span><i class="fas fa-cloud-sun"></i> Siang</span><span class="badge bg-green">${cfg.sch_mon_pm || '-'}</span></div>
-            <div class="sch-row"><span><i class="fas fa-calendar-day"></i> Jumat</span><span class="badge bg-green">${cfg.sch_fri || '-'}</span></div>
-            <div class="sch-row"><span><i class="fas fa-calendar-week"></i> Sabtu</span><span class="badge bg-blue">${cfg.sch_sat || '-'}</span></div>
-            <div class="sch-row"><span><i class="fas fa-ban"></i> Minggu</span><span class="badge bg-red">${cfg.sch_sun || 'TUTUP'}</span></div>
+            <div class="sch-row"><span>Pagi</span><span class="badge bg-green">${cfg.sch_mon_am || '-'}</span></div>
+            <div class="sch-row"><span>Siang</span><span class="badge bg-green">${cfg.sch_mon_pm || '-'}</span></div>
+            <div class="sch-row"><span>Jumat</span><span class="badge bg-green">${cfg.sch_fri || '-'}</span></div>
+            <div class="sch-row"><span>Sabtu</span><span class="badge bg-blue">${cfg.sch_sat || '-'}</span></div>
+            <div class="sch-row"><span>Minggu</span><span class="badge bg-red">${cfg.sch_sun || 'TUTUP'}</span></div>
         </div>`;
 
         return {
             'start': {
-                text: cfg.welcome_msg || "Halo! 👋 Selamat datang di Layanan Lapas Digital.\nSilakan pilih menu layanan di bawah ini:",
+                text: cfg.welcome_msg || "Halo! Selamat datang di Layanan Lapas Digital. Ada yang bisa kami bantu hari ini?",
                 options: [
-                    { text: "📝 Daftar Kunjungan", val: "daftar_fisik" },
-                    { text: "💻 Video Call", val: "daftar_online" },
-                    { text: "📂 Pengurusan PB/CB", val: "menu_urus" },
-                    { text: "🛒 Toko Lapas", val: "toko" },
-                    { text: "📅 Info & Jadwal", val: "info_gabung" },
-                    { text: "📢 Kritik Saran", val: "menu_kritik" },
-                    { text: "📞 Pengaduan", val: "kontak" }
+                    { text: "Daftar Tatap Muka", val: "daftar_fisik" },
+                    { text: "Daftar Video Call", val: "daftar_online" },
+                    { text: "Pengurusan PB/CB", val: "menu_urus" },
+                    { text: "Toko Lapas", val: "toko" },
+                    { text: "Jadwal & Info", val: "info_gabung" },
+                    { text: "Kritik & Saran", val: "menu_kritik" },
+                    { text: "Kontak Admin", val: "kontak" }
                 ]
             },
-            'daftar_fisik': { text: "📝 **PENDAFTARAN TATAP MUKA**", options: [{ text: "✍️ Isi Formulir", val: "form_fisik" }, { text: "🔍 Cek Status", val: "cek_status_fisik" }, { text: "Menu Utama", val: "start", isBack:true }] },
-            'form_fisik': { text: "📝 **ISI DATA KUNJUNGAN:**", isForm: true, formType: "fisik" },
-            'daftar_online': { text: "💻 **PENDAFTARAN VIDEO CALL**", options: [{ text: "✍️ Isi Formulir", val: "form_online" }, { text: "🔍 Cek Status", val: "cek_status_online" }, { text: "Menu Utama", val: "start", isBack:true }] },
-            'form_online': { text: "💻 **ISI DATA VIDEO CALL:**", isForm: true, formType: "online" },
-            'menu_urus': { text: "📂 **LAYANAN INTEGRASI**\n(PB / CB / CMB)", options: [{ text: "✍️ Ajukan Baru", val: "form_urus" }, { text: "🔍 Cek Status", val: "cek_status_pengurusan" }, { text: "Menu Utama", val: "start", isBack:true }] },
+            'daftar_fisik': { text: "📝 **PENDAFTARAN TATAP MUKA**\nSilakan pilih menu dibawah:", options: [{ text: "Isi Formulir Baru", val: "form_fisik" }, { text: "Cek Status Antrian", val: "cek_status_fisik" }, { text: "Kembali", val: "start" }] },
+            'form_fisik': { text: "📝 **DATA KUNJUNGAN**\nMohon lengkapi formulir berikut:", isForm: true, formType: "fisik" },
+            'daftar_online': { text: "💻 **PENDAFTARAN VIDEO CALL**\nSilakan pilih menu dibawah:", options: [{ text: "Isi Formulir Baru", val: "form_online" }, { text: "Cek Status Antrian", val: "cek_status_online" }, { text: "Kembali", val: "start" }] },
+            'form_online': { text: "💻 **DATA VIDEO CALL**\nMohon lengkapi formulir berikut:", isForm: true, formType: "online" },
+            'menu_urus': { text: "📂 **LAYANAN INTEGRASI**\n(PB / CB / CMB)\nAjukan permohonan atau cek status Anda disini.", options: [{ text: "Ajukan Permohonan", val: "form_urus" }, { text: "Cek Status Pengajuan", val: "cek_status_pengurusan" }, { text: "Kembali", val: "start" }] },
             'form_urus': { text: "Menyiapkan formulir...", isForm: true, formType: "pengurusan" },
-            'toko': { text: "🛒 **TOKO LAPAS:**\n" + (cfg.toko_announce || "Layanan pembelian kebutuhan WBP."), options: [{ text: "🌐 BUKA APLIKASI", type: "link", url: cfg.toko_link }, { text: "Menu Utama", val: "start", isBack:true }] },
-            'info_gabung': { text: "📅 **PUSAT INFORMASI:**", options: [{ text: "📅 Jadwal Kunjungan", val: "sub_jadwal" }, { text: "👜 Syarat & Barang", val: "sub_syarat_kunjungan" }, { text: "📂 Syarat PB/CB/CMB", val: "sub_syarat_pb" }, { text: "Menu Utama", val: "start", isBack:true }] },
+            'toko': { text: "🛒 **TOKO LAPAS:**\n" + (cfg.toko_announce || "Beli kebutuhan WBP dari rumah."), options: [{ text: "Buka Aplikasi Toko", type: "link", url: cfg.toko_link }, { text: "Kembali", val: "start" }] },
+            'info_gabung': { text: "📅 **PUSAT INFORMASI:**", options: [{ text: "Lihat Jadwal", val: "sub_jadwal" }, { text: "Syarat & Barang", val: "sub_syarat_kunjungan" }, { text: "Syarat PB/CB/CMB", val: "sub_syarat_pb" }, { text: "Kembali", val: "start" }] },
             'sub_jadwal': { text: "📅 **JADWAL LAYANAN:**", customHtml: htmlJadwal, backTo: 'info_gabung' },
             'sub_syarat_kunjungan': { text: "👜 **SYARAT KUNJUNGAN:**\n\n**📄 DOKUMEN:**\n" + (cfg.txt_doc || "-") + "\n\n**📦 ATURAN BARANG:**\n" + (cfg.txt_item || "-"), backTo: 'info_gabung' },
-            'sub_syarat_pb': { text: "📂 **SYARAT PENGURUSAN PB/CB/CMB:**\n\n" + (cfg.txt_pb_cb || "Hubungi petugas untuk info lengkap."), backTo: 'info_gabung' },
-            'menu_kritik': { text: "Silakan berikan penilaian Anda:", isForm: true, formType: "kritik" },
-            'kontak': { text: "📞 **PUSAT PENGADUAN:**", options: [{ text: "💬 WhatsApp Admin", type: "link", url: `https://wa.me/${cfg.wa_pengaduan}` }, { text: "📢 Info Channel", type: "link", url: cfg.wa_channel }, { text: "🌐 Media Sosial", val: "sosmed" }, { text: "Menu Utama", val: "start", isBack:true }] },
-            'sosmed': { text: "🌐 **MEDIA SOSIAL:**", options: [{ text: "📷 Instagram", type: "link", url: cfg.soc_ig }, { text: "📘 Facebook", type: "link", url: cfg.soc_fb }, { text: "🐦 Twitter / X", type: "link", url: cfg.soc_tw }, { text: "Kembali", val: "kontak", isBack:true }] }
+            'sub_syarat_pb': { text: "📂 **SYARAT PENGURUSAN PB/CB/CMB:**\n\n" + (cfg.txt_pb_cb || "Hubungi admin untuk info detail."), backTo: 'info_gabung' },
+            'menu_kritik': { text: "Kami menghargai masukan Anda untuk pelayanan yang lebih baik.", isForm: true, formType: "kritik" },
+            'kontak': { text: "📞 **PUSAT BANTUAN:**", options: [{ text: "Chat WhatsApp", type: "link", url: `https://wa.me/${cfg.wa_pengaduan}` }, { text: "Saluran Informasi", type: "link", url: cfg.wa_channel }, { text: "Media Sosial", val: "sosmed" }, { text: "Kembali", val: "start" }] },
+            'sosmed': { text: "🌐 **MEDIA SOSIAL KAMI:**", options: [{ text: "Instagram", type: "link", url: cfg.soc_ig }, { text: "Facebook", type: "link", url: cfg.soc_fb }, { text: "Twitter / X", type: "link", url: cfg.soc_tw }, { text: "Kembali", val: "kontak" }] }
         };
     }
 </script>
