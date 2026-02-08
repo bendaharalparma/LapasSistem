@@ -15,22 +15,18 @@
     
     <style>
         :root {
-            /* --- PALET WARNA BARU (ABU-ABU / SLATE GRAY) --- */
-            --primary: #607d8b;       /* Abu-abu kebiruan utama */
-            --primary-dark: #37474f;  /* Abu-abu gelap untuk teks/kontras */
-            --primary-light: #eceff1; /* Abu-abu sangat terang untuk bubble user */
+            /* --- PALET WARNA ABU-ABU (SLATE GRAY) --- */
+            --primary: #607d8b;
+            --primary-dark: #37474f;
+            --primary-light: #eceff1;
+            --accent-back: #f57c00;
             
-            --accent-back: #f57c00;   /* Oranye tetap untuk tombol Kembali agar kontras */
-            
-            --text-dark: #263238;     /* Teks hampir hitam */
-            --text-light: #546e7a;    /* Teks abu sedang */
-            --bg-body: #cfd8dc;       /* Latar belakang abu terang */
+            --text-dark: #263238;
+            --text-light: #546e7a;
+            --bg-body: #cfd8dc;
             --white: #ffffff;
             
-            /* --- EFEK BAYANGAN DISESUAIKAN WARNA ABU --- */
             --shadow-raised: 0 4px 6px -1px rgba(96, 125, 139, 0.2), 0 2px 4px -1px rgba(0,0,0,0.06);
-            --shadow-raised-hover: 0 10px 15px -3px rgba(96, 125, 139, 0.3), 0 4px 6px -2px rgba(0,0,0,0.05);
-            
             --radius-md: 14px;
         }
 
@@ -58,7 +54,7 @@
             overflow: hidden;
         }
 
-        /* --- HEADER (GRADASI ABU) --- */
+        /* HEADER */
         .header {
             position: relative;
             height: 240px;
@@ -77,18 +73,11 @@
             box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
         }
 
-        /* Overlay Gradasi Abu di Bawah */
         .header::before {
             content: '';
             position: absolute;
             inset: 0;
-            background: linear-gradient(
-                to bottom, 
-                rgba(0,0,0,0) 0%, 
-                rgba(0,0,0,0.1) 50%, 
-                rgba(96, 125, 139, 0.8) 85%, /* Warna abu slate */
-                var(--primary) 100%
-            );
+            background: linear-gradient(to bottom, rgba(0,0,0,0) 0%, rgba(96, 125, 139, 0.8) 85%, var(--primary) 100%);
             border-bottom-left-radius: 35px;
             border-bottom-right-radius: 35px;
             z-index: 1;
@@ -104,13 +93,9 @@
             align-items: center;
         }
 
-        /* --- LOGO AREA MENYATU (TRANSPARAN) --- */
         .logo-area {
-            max-width: 220px; /* Sedikit diperlebar */
+            max-width: 220px;
             max-height: 100px;
-            height: auto;
-            width: auto;
-            /* Background putih dan shadow dihapus agar menyatu */
             background: transparent;
             padding: 0;
             margin-bottom: 15px;
@@ -120,11 +105,10 @@
         }
 
         .logo-area img {
-            max-height: 90px; /* Ukuran sedikit diperbesar */
+            max-height: 90px;
             width: auto;
             max-width: 100%;
             object-fit: contain;
-            /* Tambahkan drop-shadow langsung ke gambar agar kontras */
             filter: drop-shadow(0 4px 8px rgba(0,0,0,0.4));
         }
 
@@ -141,7 +125,7 @@
             font-weight: 500;
             opacity: 0.9;
             margin-top: 5px;
-            background: rgba(38, 50, 56, 0.4); /* Latar gelap transparan abu tua */
+            background: rgba(38, 50, 56, 0.4);
             padding: 4px 12px;
             border-radius: 20px;
             backdrop-filter: blur(2px);
@@ -179,7 +163,6 @@
             border: 1px solid #e2e8f0;
         }
 
-        /* Bubble user jadi abu terang */
         .user {
             background: var(--primary-light);
             align-self: flex-end;
@@ -190,13 +173,13 @@
             border: 1px solid #cfd8dc;
         }
 
-        /* --- TOMBOL MENU (TEMA ABU) --- */
+        /* BUTTONS */
         .btn {
             background: linear-gradient(to bottom, #ffffff, #f1f5f9);
-            color: var(--primary-dark); /* Teks jadi abu gelap */
+            color: var(--primary-dark);
             padding: 18px 22px;
             border-radius: 16px;
-            font-size: 15px;
+            font-size: 14px; /* Font sedikit diperkecil agar teks panjang muat */
             font-weight: 700;
             cursor: pointer;
             width: 100%;
@@ -204,23 +187,14 @@
             justify-content: space-between;
             align-items: center;
             border: 1px solid #e2e8f0;
-            border-bottom: 4px solid #b0bec5; /* Border bawah abu */
+            border-bottom: 4px solid #b0bec5;
             margin-bottom: 12px;
             transition: all 0.2s;
             box-shadow: 0 4px 6px rgba(0,0,0,0.03);
+            line-height: 1.3; /* Jarak baris teks tombol */
         }
         
-        .btn i { color: var(--primary); opacity: 0.8; } /* Icon warna abu utama */
-
         .btn:active { transform: translateY(2px); border-bottom-width: 2px; }
-
-        @media(hover: hover) {
-            .btn:hover {
-                transform: translateY(-2px);
-                border-bottom-color: var(--primary); /* Hover jadi abu utama */
-                color: var(--primary-dark);
-            }
-        }
 
         .btn-back {
             background: linear-gradient(to bottom, #fffaf5, #fff3e0);
@@ -228,11 +202,42 @@
             border-color: #ffe0b2;
             border-bottom: 4px solid #ffcc80;
             margin-top: 20px;
+            justify-content: center; /* Teks tengah untuk tombol kembali */
         }
-        .btn-back i { color: var(--accent-back) !important; }
-        .btn-back:active { border-bottom-width: 2px; }
+        .btn-back i { display: none; } /* Hilangkan icon panah kanan di tombol kembali */
+        .btn-back span::before { content: '⬅️ '; } /* Tambahkan panah kiri manual */
 
-        /* FORMULIR */
+        /* STYLE KHUSUS INFO BOX (Agar Syarat Mudah Dibaca) */
+        .info-box {
+            background: #fff;
+            border: 1px solid #cfd8dc;
+            border-radius: 12px;
+            padding: 15px;
+            margin-top: 5px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+        }
+        
+        .info-header {
+            font-weight: 800;
+            color: var(--primary);
+            font-size: 13px;
+            border-bottom: 2px solid #eceff1;
+            padding-bottom: 8px;
+            margin-bottom: 10px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        
+        .info-content {
+            font-size: 13px;
+            color: #455a64;
+            line-height: 1.6;
+            white-space: pre-wrap; /* Membaca enter dari firebase */
+        }
+        
+        .info-content b { color: var(--text-dark); }
+
+        /* FORM & INPUTS */
         .form-box {
             display: flex;
             flex-direction: column;
@@ -244,12 +249,12 @@
 
         .inp {
             padding: 14px 16px;
-            border: 2px solid #cfd8dc; /* Border input abu */
+            border: 2px solid #cfd8dc;
             border-radius: 12px;
             font-size: 15px;
             width: 100%;
             transition: 0.3s;
-            background: #eceff1; /* Background input abu terang */
+            background: #eceff1;
             color: var(--text-dark);
         }
 
@@ -269,9 +274,7 @@
             text-align: center;
             cursor: pointer;
         }
-        .upload-group:hover { border-color: var(--primary); background: #e3f2fd; }
 
-        /* Tombol Submit Abu Gelap */
         .submit-btn {
             background: linear-gradient(135deg, var(--primary), var(--primary-dark));
             color: white;
@@ -289,40 +292,23 @@
             justify-content: center;
             gap: 8px;
         }
-        .submit-btn:active { transform: scale(0.98); }
-        .submit-btn:disabled { background: #b0bec5; box-shadow: none; }
 
-        /* TICKET STYLE (Tema Abu) */
+        /* TICKET & TABLES */
         .ticket-card {
-            border: none;
-            border-radius: 16px;
-            margin-top: 15px;
-            background: var(--white);
-            box-shadow: var(--shadow-raised-hover);
-            position: relative;
-            overflow: hidden;
+            border: none; border-radius: 16px; margin-top: 15px;
+            background: var(--white); box-shadow: var(--shadow-raised-hover);
+            position: relative; overflow: hidden;
         }
-
-        .ticket-header {
-            background: var(--primary-dark); /* Header tiket abu gelap */
-            color: white;
-            padding: 15px;
-            text-align: center;
-            font-weight: 700;
-            border-bottom: 2px dashed rgba(255,255,255,0.3);
-        }
-
+        .ticket-header { background: var(--primary-dark); color: white; padding: 15px; text-align: center; font-weight: 700; }
         .ticket-body { padding: 20px; text-align: center; }
         .ticket-number { font-size: 42px; font-weight: 800; color: var(--primary-dark); margin: 10px 0; letter-spacing: 2px; }
-
         .ticket-info-table { width: 100%; font-size: 13px; text-align: left; margin-top: 15px; border-top: 1px dashed #cfd8dc; padding-top: 15px; }
         .ticket-info-table td { padding: 5px 0; color: var(--text-light); }
         .ticket-info-table td:nth-child(2) { color: var(--text-dark); font-weight: 600; padding-left: 10px; }
-
-        /* Badges & Tables */
         .badge { padding: 4px 10px; border-radius: 20px; font-weight: 700; font-size: 11px; }
         .bg-green { background: #dcfce7; color: #166534; } 
-        .bg-gray { background: #eceff1; color: #546e7a; } /* Badge abu */
+        .bg-gray { background: #eceff1; color: #546e7a; }
+        
         .spec-table { width: 100%; border-collapse: separate; border-spacing: 0; font-size: 13px; margin-bottom: 10px; border-radius: 10px; overflow: hidden; border: 1px solid #cfd8dc; }
         .spec-table th { background: var(--primary); color: white; padding: 10px; text-align: left; }
         .spec-table td { padding: 10px; border-bottom: 1px solid #cfd8dc; background: white; }
@@ -330,8 +316,6 @@
         @keyframes slideUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
 
         .copy-footer { text-align: center; padding: 20px; font-size: 11px; color: #90a4ae; background: #eceff1; margin-top: auto; }
-        
-        /* Loader color changed */
         .fa-spin { color: var(--primary) !important; }
     </style>
 </head>
@@ -357,7 +341,7 @@
     <div id="chat-box"></div>
     
     <div class="copy-footer">
-        &copy; 2026 Sistem Lapas Digital | v2.3 Monochrome
+        &copy; 2026 Sistem Lapas Digital | v2.4 Final
     </div>
 </div>
 
@@ -412,8 +396,9 @@
             if(!menu) return;
 
             let opts = menu.options || [];
-            if(menu.back) opts.push({text:"Kembali Menu Utama", val:"start", icon: "fa-home"});
-            if(menu.backTo) opts.push({text:"Kembali Sebelumnya", val: menu.backTo, icon: "fa-arrow-left"});
+            // Mengembalikan tombol kembali ke style tombol biasa di dalam options agar konsisten dengan codingan pertama
+            if(menu.back) opts.push({text:"⬅️ KEMBALI KE MENU UTAMA", val:"start"});
+            if(menu.backTo) opts.push({text:"⬅️ KEMBALI SEBELUMNYA", val: menu.backTo});
 
             if(menu.isForm) {
                 if(menu.formType === 'pengurusan') renderFormPengurusan();
@@ -432,7 +417,7 @@
             const div = document.createElement('div');
             div.className = `msg ${sender}`;
             let content = text.replace(/\n/g, '<br>').replace(/\*\*(.*?)\*\*/g, '<b>$1</b>');
-            if(extra.customHtml) content += `<div style="margin-top:15px;">${extra.customHtml}</div>`;
+            if(extra.customHtml) content += `<div style="margin-top:10px;">${extra.customHtml}</div>`;
             div.innerHTML = content;
             chatBox.appendChild(div);
             if(!extra.isForm && extra.options) showBtn(extra.options);
@@ -445,17 +430,13 @@
             opts.forEach(o => {
                 if(!o.url && !o.val) return;
                 const btn = document.createElement('div');
-                let iconClass = o.icon ? `fas ${o.icon}` : "fas fa-chevron-right";
-                if(o.text.includes("DAFTAR")) iconClass = "fas fa-clipboard-list";
-                if(o.text.includes("VIDEO")) iconClass = "fas fa-video";
-                if(o.text.includes("TOKO")) iconClass = "fas fa-shopping-cart";
+                btn.className = o.text.includes("KEMBALI") ? 'btn btn-back' : 'btn';
                 
-                btn.className = o.text.includes("Kembali") ? 'btn btn-back' : 'btn';
-                
-                if(o.text.includes("Kembali")) {
-                     btn.innerHTML = `<i class="${iconClass}"></i> <span>${o.text}</span>`;
+                // Jika tombol kembali, tidak pakai icon kanan
+                if(o.text.includes("KEMBALI")) {
+                    btn.innerHTML = `<span>${o.text}</span>`;
                 } else {
-                     btn.innerHTML = `<span>${o.text}</span> <i class="${iconClass}" style="font-size:18px;"></i>`;
+                    btn.innerHTML = `<span>${o.text}</span> <i class="fas fa-chevron-right" style="opacity:0.5;"></i>`;
                 }
                
                 btn.onclick = () => {
@@ -493,7 +474,7 @@
                     </select>
                 </div>
                 <button onclick="submitForm('${type}')" class="submit-btn"><i class="fas fa-paper-plane"></i> AMBIL ANTRIAN</button>
-                <button onclick="respond('start')" class="btn btn-back" style="width:100%; justify-content:center;">Batal</button>
+                <div class="btn btn-back" onclick="respond('start')" style="text-align:center; display:block;">⬅️ Batal</div>
             </div>`;
             appendMsg('bot', text, { customHtml: formHtml });
         }
@@ -526,7 +507,7 @@
                 <div style="margin-top:10px; font-weight:bold; font-size:12px; color:var(--primary-dark);">UNGGAH DOKUMEN:</div>
                 ${uploadsHtml}
                 <button onclick="submitPengurusan()" class="submit-btn">KIRIM PERMOHONAN</button>
-                <button onclick="respond('start')" class="btn btn-back">Batal</button>
+                <div class="btn btn-back" onclick="respond('start')" style="text-align:center; display:block;">⬅️ Batal</div>
             </div>`;
             appendMsg('bot', "📝 **FORMULIR PENGURUSAN:**", { customHtml: html });
         }
@@ -537,7 +518,7 @@
                 <select id="k_puas" class="inp"><option value="Sangat Puas">😍 Sangat Puas</option><option value="Puas">🙂 Puas</option><option value="Cukup">😐 Cukup</option><option value="Kurang">☹️ Kurang</option></select>
                 <textarea id="k_pesan" class="inp" rows="3" placeholder="Tulis masukan Anda..."></textarea>
                 <button onclick="submitKritik()" class="submit-btn">KIRIM</button>
-                <button onclick="respond('start')" class="btn btn-back">Batal</button>
+                <div class="btn btn-back" onclick="respond('start')" style="text-align:center; display:block;">⬅️ Batal</div>
             </div>`;
             appendMsg('bot', "📢 **KRITIK & SARAN:**", { customHtml: html });
         }
@@ -596,7 +577,7 @@
                 await db.ref('pengurusan').push(payload);
                 chatBox.innerHTML = '';
                 appendMsg('bot', `✅ **TERKIRIM!**\nPermohonan ${inputs.jenis} diterima.`);
-                showBtn([{text:"Kembali Menu Utama", val:"start", icon:"fa-home"}]);
+                showBtn([{text:"⬅️ KEMBALI KE MENU UTAMA", val:"start"}]);
             } catch(e) { alert("Gagal: " + e.message); btn.disabled = false; }
         }
 
@@ -604,13 +585,13 @@
             const pesan = document.getElementById('k_pesan').value;
             if(!pesan) return alert("Isi pesan!");
             db.ref('kritik_saran').push({ kepuasan: document.getElementById('k_puas').value, pesan: pesan, tgl: new Date().toISOString().split('T')[0] }).then(() => {
-                chatBox.innerHTML = ''; appendMsg('bot', "🙏 Terima Kasih!"); showBtn([{text:"Kembali", val:"start"}]);
+                chatBox.innerHTML = ''; appendMsg('bot', "🙏 Terima Kasih!"); showBtn([{text:"⬅️ KEMBALI KE MENU UTAMA", val:"start"}]);
             });
         }
 
         window.askNikForStatus = function(type) {
             appendMsg('bot', `🔍 **CEK STATUS**\nMasukkan NIK:`, {
-                customHtml: `<div class="form-box"><input id="cek_nik" class="inp" type="number" placeholder="NIK"><button onclick="doCheckStatus('${type}')" class="submit-btn">CARI</button><button onclick="respond('start')" class="btn btn-back">Batal</button></div>`
+                customHtml: `<div class="form-box"><input id="cek_nik" class="inp" type="number" placeholder="NIK"><button onclick="doCheckStatus('${type}')" class="submit-btn">CARI</button><div class="btn btn-back" onclick="respond('start')" style="text-align:center; display:block;">⬅️ Batal</div></div>`
             });
         }
 
@@ -626,7 +607,7 @@
                     if(type === 'pengurusan') appendMsg('bot', `📄 **STATUS:** ${found.status === 'accepted' ? '✅ DISETUJUI' : '🕒 MENUNGGU'}\nKet: ${found.note||'-'}`);
                     else renderTicket(found, type === 'fisik' ? 'TATAP MUKA' : 'VIDEO CALL');
                 } else appendMsg('bot', "❌ Data tidak ditemukan.");
-                showBtn([{text:"Kembali", val:"start", icon:"fa-arrow-left"}]);
+                showBtn([{text:"⬅️ KEMBALI KE MENU UTAMA", val:"start"}]);
             });
         }
 
@@ -664,29 +645,23 @@
             appendMsg('bot', "✅ **TIKET ANDA:**", { customHtml: ticketHtml });
         }
 
-        // --- FUNGSI AUTO DOWNLOAD BARU ---
         window.downloadTicket = function() {
-            const btn = event.target.closest('button'); // Ambil tombol yang diklik
+            const btn = event.target.closest('button');
             const oldText = btn.innerHTML;
             btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Memproses...'; btn.disabled = true;
 
             html2canvas(document.getElementById('ticket-node'), {
                 scale: 3,
-                backgroundColor: null, // Background transparan
-                useCORS: true // Penting jika gambar KTP dari URL eksternal
+                backgroundColor: null, 
+                useCORS: true 
             }).then(canvas => {
-                // Ubah ke format gambar
                 const image = canvas.toDataURL("image/png").replace("image/png", "image/octet-stream");
-                
-                // Buat link sementara untuk trigger download
                 const link = document.createElement('a');
                 link.download = 'tiket-antrian-' + Date.now() + '.png';
                 link.href = image;
                 document.body.appendChild(link);
                 link.click();
                 document.body.removeChild(link);
-
-                // Kembalikan tombol
                 btn.innerHTML = oldText; btn.disabled = false;
             }).catch(err => {
                 alert("Gagal menyimpan gambar: " + err.message);
@@ -696,34 +671,97 @@
     });
 
     function getMenu(cfg) {
+        // --- HELPER UNTUK MEMBUAT TEKS MUDAH DIBACA ---
+        function formatText(text) {
+            if(!text) return '-';
+            // Ubah baris baru jadi <br> dan bold jadi <b>
+            return text.replace(/\n/g, '<br>').replace(/\*\*(.*?)\*\*/g, '<b>$1</b>');
+        }
+
         const htmlJadwal = `<table class="spec-table"><tr><th>Jenis</th><th>Hari</th></tr><tr><td>PIDUM</td><td>${cfg.sch_pidum || 'Sn & Rb'}</td></tr><tr><td>NARKOBA</td><td>${cfg.sch_narkoba || 'Sl & Km'}</td></tr></table>`;
+
+        // --- MENU UTAMA (STRUKTUR KEMBALI KE ORIGINAL) ---
         return {
             'start': {
-                text: cfg.welcome_msg || "👋 **Hai! Selamat Datang.**\nSilakan pilih menu dibawah:",
+                text: cfg.welcome_msg || "Hai! Selamat Datang.\nSilakan pilih menu dibawah:",
                 options: [
-                    { text: "Daftar Tatap Muka", val: "daftar_fisik" },
-                    { text: "Daftar Video Call", val: "daftar_online" },
-                    { text: "Pengurusan PB/CB", val: "menu_urus" },
-                    { text: "Toko Lapas", val: "toko" },
-                    { text: "Jadwal & Info", val: "info_gabung" },
-                    { text: "Kritik & Saran", val: "menu_kritik" },
-                    { text: "Kontak Admin", val: "kontak" }
+                    { text: "1. 📝 DAFTAR KUNJUNGAN (TATAP MUKA)", val: "daftar_fisik" },
+                    { text: "2. 💻 DAFTAR VIDEO CALL", val: "daftar_online" },
+                    { text: "3. 📂 PENGURUSAN (PB/CB/CMB)", val: "menu_urus" },
+                    { text: "4. 🛒 TOKO LAPAS", val: "toko" },
+                    { text: "5. 📅 JADWAL & SYARAT KUNJUNGAN", val: "info_gabung" },
+                    { text: "6. 📢 KRITIK & SARAN", val: "menu_kritik" },
+                    { text: "7. 📞 KONTAK & PENGADUAN", val: "kontak" }
                 ]
             },
-            'daftar_fisik': { text: "📝 **TATAP MUKA**", options: [{ text: "Isi Formulir", val: "form_fisik", icon:"fa-edit" }, { text: "Cek Status", val: "cek_status_fisik", icon:"fa-search" }, { text: "Kembali", val: "start" }] },
-            'form_fisik': { text: "Isi data berikut:", isForm: true, formType: "fisik" },
-            'daftar_online': { text: "💻 **VIDEO CALL**", options: [{ text: "Isi Formulir", val: "form_online", icon:"fa-edit" }, { text: "Cek Status", val: "cek_status_online", icon:"fa-search" }, { text: "Kembali", val: "start" }] },
-            'form_online': { text: "Isi data berikut:", isForm: true, formType: "online" },
-            'menu_urus': { text: "📂 **INTEGRASI**", options: [{ text: "Ajukan Baru", val: "form_urus", icon:"fa-file-import" }, { text: "Cek Status", val: "cek_status_pengurusan", icon:"fa-search" }, { text: "Kembali", val: "start" }] },
-            'form_urus': { text: "Loading form...", isForm: true, formType: "pengurusan" },
-            'toko': { text: "🛒 **TOKO LAPAS**", options: [{ text: "Buka Aplikasi", type: "link", url: cfg.toko_link, icon:"fa-external-link-alt" }, { text: "Kembali", val: "start" }] },
-            'info_gabung': { text: "📅 **INFORMASI**", options: [{ text: "Lihat Jadwal", val: "sub_jadwal", icon:"fa-calendar-day" }, { text: "Syarat Kunjungan", val: "sub_syarat_kunjungan", icon:"fa-briefcase" }, { text: "Syarat PB/CB", val: "sub_syarat_pb", icon:"fa-file-contract" }, { text: "Kembali", val: "start" }] },
-            'sub_jadwal': { text: "📅 **JADWAL:**", customHtml: htmlJadwal, backTo: 'info_gabung' },
-            'sub_syarat_kunjungan': { text: "👜 **SYARAT KUNJUNGAN:**\n" + (cfg.txt_doc || "-"), backTo: 'info_gabung' },
-            'sub_syarat_pb': { text: "📂 **SYARAT PB/CB:**\n" + (cfg.txt_pb_cb || "-"), backTo: 'info_gabung' },
-            'menu_kritik': { text: "Masukan Anda:", isForm: true, formType: "kritik" },
-            'kontak': { text: "📞 **KONTAK:**", options: [{ text: "WhatsApp", type: "link", url: `https://wa.me/${cfg.wa_pengaduan}`, icon:"fa-whatsapp" }, { text: "Medsos", val: "sosmed", icon:"fa-share-alt" }, { text: "Kembali", val: "start" }] },
-            'sosmed': { text: "🌐 **MEDIA SOSIAL:**", options: [{ text: "Instagram", type: "link", url: cfg.soc_ig, icon:"fa-instagram" }, { text: "Facebook", type: "link", url: cfg.soc_fb, icon:"fa-facebook" }, { text: "Twitter", type: "link", url: cfg.soc_tw, icon:"fa-twitter" }, { text: "Kembali", val: "kontak" }] }
+            'daftar_fisik': { text: "📝 **PENDAFTARAN TATAP MUKA**", options: [{ text: "✍️ ISI FORMULIR", val: "form_fisik" }, { text: "🔍 CEK STATUS", val: "cek_status_fisik" }, { text: "⬅️ KEMBALI KE MENU UTAMA", val: "start" }] },
+            'form_fisik': { text: "📝 **ISI DATA KUNJUNGAN:**", isForm: true, formType: "fisik" },
+            'daftar_online': { text: "💻 **PENDAFTARAN VIDEO CALL**", options: [{ text: "✍️ ISI FORMULIR", val: "form_online" }, { text: "🔍 CEK STATUS", val: "cek_status_online" }, { text: "⬅️ KEMBALI KE MENU UTAMA", val: "start" }] },
+            'form_online': { text: "💻 **ISI DATA VIDEO CALL:**", isForm: true, formType: "online" },
+            'menu_urus': { text: "📂 **LAYANAN PENGURUSAN INTEGRASI**\n(PB / CB / CMB)\n\nSilakan ajukan permohonan atau cek status pengajuan Anda.", options: [{ text: "✍️ AJUKAN PERMOHONAN BARU", val: "form_urus" }, { text: "🔍 CEK STATUS PENGAJUAN", val: "cek_status_pengurusan" }, { text: "⬅️ KEMBALI KE MENU UTAMA", val: "start" }] },
+            'form_urus': { text: "Menyiapkan formulir...", isForm: true, formType: "pengurusan" },
+            'toko': { text: "🛒 **TOKO LAPAS:**\n" + (cfg.toko_announce || "-"), options: [{ text: "🌐 BUKA APLIKASI TOKO", type: "link", url: cfg.toko_link }, { text: "⬅️ KEMBALI KE MENU UTAMA", val: "start" }] },
+            
+            // --- MENU 5: JADWAL & INFO (STRUKTUR ORIGINAL) ---
+            'info_gabung': {
+                text: "📅 **PILIH INFORMASI LAYANAN:**",
+                options: [
+                    { text: "📅 LIHAT JADWAL KUNJUNGAN", val: "sub_jadwal" },
+                    { text: "👜 SYARAT KUNJUNGAN & BARANG", val: "sub_syarat_kunjungan" },
+                    { text: "📂 SYARAT PENGURUSAN PB/CB/CMB", val: "sub_syarat_pb" },
+                    { text: "⬅️ KEMBALI KE MENU UTAMA", val: "start" }
+                ]
+            },
+            
+            'sub_jadwal': { text: "📅 **JADWAL LAYANAN:**", customHtml: htmlJadwal, backTo: 'info_gabung' },
+            
+            // --- TAMPILAN SYARAT YANG MUDAH DIBACA ---
+            'sub_syarat_kunjungan': { 
+                text: "👜 **SYARAT KUNJUNGAN & BARANG:**",
+                customHtml: `
+                <div class="info-box">
+                    <div class="info-header"><i class="fas fa-file-alt"></i> DOKUMEN WAJIB</div>
+                    <div class="info-content">${formatText(cfg.txt_doc)}</div>
+                </div>
+                <div class="info-box">
+                    <div class="info-header"><i class="fas fa-box-open"></i> ATURAN BARANG</div>
+                    <div class="info-content">${formatText(cfg.txt_item)}</div>
+                </div>`,
+                backTo: 'info_gabung' 
+            },
+            
+            'sub_syarat_pb': { 
+                text: "📂 **SYARAT PENGURUSAN PB/CB/CMB:**",
+                customHtml: `
+                <div class="info-box">
+                    <div class="info-header"><i class="fas fa-clipboard-list"></i> PERSYARATAN</div>
+                    <div class="info-content">${formatText(cfg.txt_pb_cb || "Hubungi admin untuk info lebih lanjut.")}</div>
+                </div>`,
+                backTo: 'info_gabung' 
+            },
+
+            'menu_kritik': { text: "Silakan berikan penilaian dan masukan Anda:", isForm: true, formType: "kritik" },
+            
+            // --- MENU 7: KONTAK (STRUKTUR ORIGINAL) ---
+            'kontak': { 
+                text: "📞 **PUSAT PENGADUAN:**", 
+                options: [
+                    { text: "💬 WHATSAPP PENGADUAN", type: "link", url: `https://wa.me/${cfg.wa_pengaduan}` }, 
+                    { text: "📢 SALURAN INFORMASI", type: "link", url: cfg.wa_channel }, 
+                    { text: "🌐 MEDIA SOSIAL", val: "sosmed" }, 
+                    { text: "⬅️ KEMBALI KE MENU UTAMA", val: "start" }
+                ] 
+            },
+            
+            'sosmed': { 
+                text: "🌐 **MEDIA SOSIAL:**", 
+                options: [
+                    { text: "📷 INSTAGRAM", type: "link", url: cfg.soc_ig }, 
+                    { text: "📘 FACEBOOK", type: "link", url: cfg.soc_fb }, 
+                    { text: "🐦 TWITTER / X", type: "link", url: cfg.soc_tw }, 
+                    { text: "⬅️ KEMBALI SEBELUMNYA", val: "kontak" }
+                ] 
+            }
         };
     }
 </script>
