@@ -3,86 +3,79 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <meta name="theme-color" content="#607d8b">
+    <meta name="theme-color" content="#37474f">
     <title>Layanan Lapas Digital</title>
     
     <script defer src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
     <script defer src="https://www.gstatic.com/firebasejs/10.7.1/firebase-database-compat.js"></script>
     
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
     
     <style>
+        * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+        
         :root {
-            /* --- PALET WARNA ABU-ABU (SLATE GRAY) --- */
-            --primary: #607d8b;
-            --primary-dark: #37474f;
-            --primary-light: #eceff1;
-            --accent-back: #f57c00;
-            
-            --text-dark: #263238;
-            --text-light: #546e7a;
-            --bg-body: #cfd8dc;
+            /* --- PALET WARNA SLATE GRAY (PROFESIONAL) --- */
+            --primary: #455a64;       /* Abu-abu Slate Utama */
+            --primary-dark: #263238;  /* Abu-abu Gelap (Header) */
+            --primary-light: #eceff1; /* Abu-abu Terang (Bubble User) */
+            --bg-body: #cfd8dc;       /* Background Body */
             --white: #ffffff;
-            
-            --shadow-raised: 0 4px 6px -1px rgba(96, 125, 139, 0.2), 0 2px 4px -1px rgba(0,0,0,0.06);
-            --radius-md: 14px;
+            --text-main: #37474f;
         }
-
-        * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; outline: none; }
         
         body {
-            font-family: 'Inter', sans-serif;
+            font-family: 'Poppins', sans-serif;
             background: var(--bg-body);
             margin: 0;
             display: flex;
             justify-content: center;
             min-height: 100vh;
-            color: var(--text-dark);
+            color: var(--text-main);
         }
-
+        
         .app-container {
             width: 100%;
             max-width: 480px;
             background: var(--white);
             min-height: 100vh;
-            box-shadow: 0 0 50px rgba(0,0,0,0.1);
+            box-shadow: 0 0 30px rgba(0,0,0,0.15);
             display: flex;
             flex-direction: column;
             position: relative;
-            overflow: hidden;
         }
-
-        /* HEADER */
+        
+        /* HEADER (ABU-ABU) */
         .header {
             position: relative;
-            height: 240px;
-            background-color: var(--primary);
+            height: 200px;
+            background-color: var(--primary-dark);
             background-size: cover;
             background-position: center;
             display: flex;
             flex-direction: column;
             align-items: center;
-            justify-content: flex-end;
+            justify-content: center;
             color: white;
             border-bottom-left-radius: 35px;
             border-bottom-right-radius: 35px;
             z-index: 10;
-            padding: 20px 20px 40px 20px;
-            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+            padding: 20px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
         }
-
+        
         .header::before {
             content: '';
             position: absolute;
             inset: 0;
-            background: linear-gradient(to bottom, rgba(0,0,0,0) 0%, rgba(96, 125, 139, 0.8) 85%, var(--primary) 100%);
+            /* Overlay Gradient Abu-abu */
+            background: linear-gradient(to bottom, rgba(38, 50, 56, 0.4), rgba(38, 50, 56, 0.9));
             border-bottom-left-radius: 35px;
             border-bottom-right-radius: 35px;
-            z-index: 1;
         }
-
+        
         .header-content {
             position: relative;
             z-index: 2;
@@ -92,260 +85,295 @@
             flex-direction: column;
             align-items: center;
         }
-
+        
+        /* LOGO MENYATU (TRANSPARAN) */
         .logo-area {
-            max-width: 220px;
-            max-height: 100px;
-            background: transparent;
+            width: auto;
+            height: 80px;
+            margin: 0 auto 10px;
             padding: 0;
-            margin-bottom: 15px;
             display: flex;
             justify-content: center;
             align-items: center;
+            /* Menghapus background putih kotak */
+            background: transparent; 
         }
-
+        
         .logo-area img {
-            max-height: 90px;
+            height: 100%;
             width: auto;
             max-width: 100%;
             object-fit: contain;
-            filter: drop-shadow(0 4px 8px rgba(0,0,0,0.4));
+            /* Drop shadow pada gambar agar kontras dengan background */
+            filter: drop-shadow(0 4px 6px rgba(0,0,0,0.6));
         }
-
+        
         .app-name {
-            font-weight: 800;
-            font-size: 24px;
+            font-weight: 700;
+            font-size: 22px;
             margin: 0;
-            letter-spacing: -0.5px;
-            text-shadow: 0 2px 6px rgba(0,0,0,0.7); 
+            text-shadow: 0 2px 4px rgba(0,0,0,0.8);
+            line-height: 1.2;
         }
-
-        .tagline {
-            font-size: 13px;
-            font-weight: 500;
-            opacity: 0.9;
-            margin-top: 5px;
-            background: rgba(38, 50, 56, 0.4);
-            padding: 4px 12px;
-            border-radius: 20px;
-            backdrop-filter: blur(2px);
-        }
-
-        /* CHAT AREA */
+        
+        /* CHAT BOX */
         #chat-box {
             flex: 1;
-            padding: 25px 20px;
+            padding: 20px;
             overflow-y: auto;
             display: flex;
             flex-direction: column;
-            gap: 15px;
-            background: var(--white);
+            gap: 12px;
+            background: #fff;
             scroll-behavior: smooth;
-            padding-bottom: 90px;
+            padding-bottom: 60px;
         }
-
+        
         .msg {
             max-width: 90%;
-            padding: 16px 20px;
+            padding: 14px 18px;
             border-radius: 18px;
             font-size: 14px;
             line-height: 1.5;
-            position: relative;
-            animation: slideUp 0.3s ease;
+            animation: popIn 0.2s ease;
+            box-shadow: 0 1px 2px rgba(0,0,0,0.05);
         }
-
+        
         .bot {
-            background: #f8fafc;
+            background: #f5f7f8; /* Abu sangat muda */
             align-self: flex-start;
-            border-bottom-left-radius: 4px;
-            color: var(--text-dark);
-            box-shadow: var(--shadow-raised);
-            border: 1px solid #e2e8f0;
+            border-top-left-radius: 4px;
+            color: #333;
+            border: 1px solid #edf2f7;
         }
-
+        
         .user {
-            background: var(--primary-light);
+            background: var(--primary-light); /* Abu terang kebiruan */
             align-self: flex-end;
-            border-bottom-right-radius: 4px;
+            border-top-right-radius: 4px;
             color: var(--primary-dark);
-            font-weight: 600;
-            box-shadow: var(--shadow-raised);
             border: 1px solid #cfd8dc;
+            font-weight: 500;
         }
-
-        /* BUTTONS */
+        
+        /* BUTTONS (Tema Abu) */
         .btn {
-            background: linear-gradient(to bottom, #ffffff, #f1f5f9);
+            background: white;
             color: var(--primary-dark);
-            padding: 18px 22px;
-            border-radius: 16px;
-            font-size: 14px; /* Font sedikit diperkecil agar teks panjang muat */
-            font-weight: 700;
+            padding: 16px;
+            border-radius: 14px;
+            font-size: 14px;
+            font-weight: 600;
             cursor: pointer;
             width: 100%;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            border: 1px solid #e2e8f0;
-            border-bottom: 4px solid #b0bec5;
-            margin-bottom: 12px;
-            transition: all 0.2s;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.03);
-            line-height: 1.3; /* Jarak baris teks tombol */
+            border: 1px solid #eceff1;
+            margin-bottom: 10px;
+            transition: transform 0.1s, background 0.2s;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.03);
         }
         
-        .btn:active { transform: translateY(2px); border-bottom-width: 2px; }
-
-        .btn-back {
-            background: linear-gradient(to bottom, #fffaf5, #fff3e0);
-            color: var(--accent-back) !important;
-            border-color: #ffe0b2;
-            border-bottom: 4px solid #ffcc80;
-            margin-top: 20px;
-            justify-content: center; /* Teks tengah untuk tombol kembali */
+        .btn:active {
+            transform: scale(0.98);
+            background: #eceff1;
         }
-        .btn-back i { display: none; } /* Hilangkan icon panah kanan di tombol kembali */
-        .btn-back span::before { content: '⬅️ '; } /* Tambahkan panah kiri manual */
-
-        /* STYLE KHUSUS INFO BOX (Agar Syarat Mudah Dibaca) */
-        .info-box {
+        
+        .btn-back {
+            background: #f8f9fa;
+            justify-content: center;
+            color: #78909c;
+            margin-top: 15px;
+            border: 1px dashed #b0bec5;
+        }
+        
+        /* FORM STYLES */
+        .form-box {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            margin-top: 5px;
+            background: white;
+            padding: 5px;
+            border-radius: 10px;
+        }
+        
+        .inp {
+            padding: 14px;
+            border: 2px solid #eceff1;
+            border-radius: 10px;
+            font-size: 15px;
+            width: 100%;
+            outline: none;
+            transition: 0.3s;
+            background: #fafafa;
+            color: #333;
+        }
+        
+        .inp:focus {
+            border-color: var(--primary);
             background: #fff;
-            border: 1px solid #cfd8dc;
+        }
+        
+        .upload-group {
+            border: 2px dashed #cfd8dc;
+            padding: 15px;
+            border-radius: 10px;
+            background: #f5f7f8;
+            margin-bottom: 5px;
+            text-align: center;
+        }
+        
+        .submit-btn {
+            background: var(--primary); /* Menggunakan warna tema */
+            color: white;
+            border: none;
+            padding: 16px;
+            border-radius: 12px;
+            font-weight: bold;
+            margin-top: 10px;
+            cursor: pointer;
+            font-size: 15px;
+            box-shadow: 0 4px 10px rgba(69, 90, 100, 0.3);
+            width: 100%;
+            transition: 0.2s;
+        }
+        
+        .submit-btn:active { transform: translateY(2px); }
+        .submit-btn:disabled { background: #b0bec5; cursor: not-allowed; box-shadow: none; }
+        
+        /* TICKET & MODAL */
+        .ticket-card {
+            border: none;
+            padding: 0;
+            border-radius: 16px;
+            text-align: center;
+            margin-top: 15px;
+            background: #fff;
+            position: relative;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+            overflow: hidden;
+        }
+        
+        .ticket-header {
+            background: var(--primary-dark);
+            color: white;
+            padding: 15px;
+            font-weight: bold;
+        }
+        
+        .ticket-body { padding: 20px; }
+        
+        .ticket-number {
+            font-size: 36px;
+            font-weight: 800;
+            color: var(--primary-dark);
+            margin: 10px 0;
+            letter-spacing: 2px;
+        }
+        
+        .ticket-note {
+            background: #eceff1;
+            border-left: 4px solid var(--primary);
+            color: #455a64;
+            padding: 10px;
+            font-size: 12px;
+            margin-top: 15px;
+            border-radius: 4px;
+            text-align: left;
+        }
+        
+        /* INFO CARDS (JADWAL & SYARAT) */
+        .info-card {
+            background: white;
+            border: 1px solid #eceff1;
             border-radius: 12px;
             padding: 15px;
-            margin-top: 5px;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+            margin-bottom: 12px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.03);
+            text-align: left;
         }
         
-        .info-header {
-            font-weight: 800;
-            color: var(--primary);
+        .info-title {
             font-size: 13px;
-            border-bottom: 2px solid #eceff1;
+            font-weight: 700;
+            color: var(--primary);
+            border-bottom: 2px solid #f0f0f0;
             padding-bottom: 8px;
             margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
             text-transform: uppercase;
-            letter-spacing: 0.5px;
         }
         
         .info-content {
             font-size: 13px;
-            color: #455a64;
+            color: #546e7a;
             line-height: 1.6;
-            white-space: pre-wrap; /* Membaca enter dari firebase */
-        }
-        
-        .info-content b { color: var(--text-dark); }
-
-        /* FORM & INPUTS */
-        .form-box {
-            display: flex;
-            flex-direction: column;
-            gap: 15px;
-            background: var(--white);
-            padding: 5px;
-            border-radius: var(--radius-md);
         }
 
-        .inp {
-            padding: 14px 16px;
-            border: 2px solid #cfd8dc;
-            border-radius: 12px;
-            font-size: 15px;
-            width: 100%;
-            transition: 0.3s;
-            background: #eceff1;
-            color: var(--text-dark);
-        }
-
-        .inp:focus {
-            border-color: var(--primary);
-            background: var(--white);
-            box-shadow: 0 0 0 3px rgba(96, 125, 139, 0.2);
-        }
-
-        textarea.inp { resize: vertical; min-height: 100px; }
-
-        .upload-group {
-            border: 2px dashed #b0bec5;
-            padding: 15px;
-            border-radius: 12px;
-            background: #eceff1;
-            text-align: center;
-            cursor: pointer;
-        }
-
-        .submit-btn {
-            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
-            color: white;
-            border: none;
-            padding: 16px;
-            border-radius: 14px;
-            font-weight: 700;
-            margin-top: 10px;
-            cursor: pointer;
-            font-size: 15px;
-            width: 100%;
-            box-shadow: 0 8px 20px rgba(96, 125, 139, 0.3);
-            display: flex;
-            align-items: center;
-            justify-content: center;
+        .schedule-grid {
+            display: grid;
+            grid-template-columns: 1fr;
             gap: 8px;
         }
-
-        /* TICKET & TABLES */
-        .ticket-card {
-            border: none; border-radius: 16px; margin-top: 15px;
-            background: var(--white); box-shadow: var(--shadow-raised-hover);
-            position: relative; overflow: hidden;
-        }
-        .ticket-header { background: var(--primary-dark); color: white; padding: 15px; text-align: center; font-weight: 700; }
-        .ticket-body { padding: 20px; text-align: center; }
-        .ticket-number { font-size: 42px; font-weight: 800; color: var(--primary-dark); margin: 10px 0; letter-spacing: 2px; }
-        .ticket-info-table { width: 100%; font-size: 13px; text-align: left; margin-top: 15px; border-top: 1px dashed #cfd8dc; padding-top: 15px; }
-        .ticket-info-table td { padding: 5px 0; color: var(--text-light); }
-        .ticket-info-table td:nth-child(2) { color: var(--text-dark); font-weight: 600; padding-left: 10px; }
-        .badge { padding: 4px 10px; border-radius: 20px; font-weight: 700; font-size: 11px; }
-        .bg-green { background: #dcfce7; color: #166534; } 
-        .bg-gray { background: #eceff1; color: #546e7a; }
         
-        .spec-table { width: 100%; border-collapse: separate; border-spacing: 0; font-size: 13px; margin-bottom: 10px; border-radius: 10px; overflow: hidden; border: 1px solid #cfd8dc; }
-        .spec-table th { background: var(--primary); color: white; padding: 10px; text-align: left; }
-        .spec-table td { padding: 10px; border-bottom: 1px solid #cfd8dc; background: white; }
-
-        @keyframes slideUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
-
-        .copy-footer { text-align: center; padding: 20px; font-size: 11px; color: #90a4ae; background: #eceff1; margin-top: auto; }
-        .fa-spin { color: var(--primary) !important; }
+        .sch-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 10px;
+            background: #f9fafb;
+            border-radius: 8px;
+            font-size: 12px;
+        }
+        
+        /* UTILS */
+        .badge { padding: 4px 8px; border-radius: 6px; font-weight: bold; font-size: 11px; }
+        .bg-green { background: #e8f5e9; color: #2e7d32; } 
+        .bg-blue { background: #e3f2fd; color: #1565c0; } 
+        .bg-red { background: #ffebee; color: #c62828; } 
+        .bg-gray { background: #eceff1; color: #455a64; }
+        
+        @keyframes popIn { from { opacity: 0; transform: scale(0.95); } to { opacity: 1; transform: scale(1); } }
+        
+        #loader {
+            position: absolute; inset: 0; background: white; display: flex; flex-direction: column; 
+            justify-content: center; align-items: center; z-index: 99;
+        }
+        
+        #announcement {
+            background: #fff8e1; color: #f57f17; padding: 12px 15px; font-size: 12px; 
+            text-align: center; display: none; border-bottom: 2px solid #ffe082; 
+            font-weight: 600; animation: pulse 2s infinite;
+        }
+        
+        @keyframes pulse { 0% { background-color: #fff8e1; } 50% { background-color: #fffde7; } 100% { background-color: #fff8e1; } }
     </style>
 </head>
 <body>
-
+ 
 <div class="app-container">
     <div id="loader">
-        <i class="fas fa-circle-notch fa-spin fa-3x"></i>
-        <p style="margin-top:10px; font-size:12px; color:#666;">Memuat...</p>
+        <i class="fas fa-circle-notch fa-spin fa-2x" style="color:#455a64;"></i>
     </div>
     
     <div class="header" id="header_bg">
         <div class="header-content">
-            <div class="logo-area">
-                <img id="logo_img" src="" alt="Logo" loading="lazy">
-            </div>
+            <div class="logo-area"><img id="logo_img" src="" alt="Logo" loading="lazy"></div>
             <h1 class="app-name" id="app_title">Loading...</h1>
-            <div class="tagline">Melayani dengan Sepenuh Hati</div>
+            <div style="font-size:12px; opacity:0.9; margin-top:5px; font-weight:300;">Melayani dengan Sepenuh Hati</div>
         </div>
     </div>
     
-    <div id="announcement" style="background:#fffbeb; color:#b45309; padding:15px; font-size:13px; text-align:center; display:none; border-bottom:2px solid #fcd34d;"></div>
+    <div id="announcement"></div>
     <div id="chat-box"></div>
-    
-    <div class="copy-footer">
-        &copy; 2026 Sistem Lapas Digital | v2.4 Final
-    </div>
+    <div style="text-align:center; padding:15px; font-size:11px; color:#90a4ae; margin-top: auto; background:#f5f7f8;">&copy; 2026 Sistem Lapas Digital | Profesional & Transparan</div>
 </div>
-
+ 
 <script>
+    // --- KONFIGURASI FIREBASE ---
     const firebaseConfig = {
         apiKey: "AIzaSyDvpFZtiG_fXLOf8okjafNm7gqbJZr2pSY",
         authDomain: "lapassistem.firebaseapp.com",
@@ -356,50 +384,50 @@
         appId: "1:951059663532:web:716bc3010eecc741a4ed09",
         measurementId: "G-25HSNZ35ZH"
     };
-
+ 
     window.addEventListener('load', () => {
         if (!firebase.apps.length) firebase.initializeApp(firebaseConfig);
         const db = firebase.database();
         let config = {};
-
+ 
         db.ref('app_config').on('value', (snap) => {
            if(snap.exists()) config = snap.val();
            updateUI(config);
         });
-
+ 
         function updateUI(cfg) {
            document.getElementById('app_title').innerText = cfg.app_name || "Lapas App";
            document.getElementById('logo_img').src = cfg.logo_url || "";
            if(cfg.header_bg) document.getElementById('header_bg').style.backgroundImage = `url('${cfg.header_bg}')`;
            
            const ann = document.getElementById('announcement');
-           if(cfg.announcement) { ann.style.display = 'block'; ann.innerHTML = "📢 <b>INFO:</b><br>" + cfg.announcement; } 
+           if(cfg.announcement) { ann.style.display = 'block'; ann.innerHTML = "📢 <b>INFO PENTING:</b><br>" + cfg.announcement; } 
            else { ann.style.display = 'none'; }
-           
            document.getElementById('loader').style.display = 'none';
            startChat();
         }
-
+ 
         const chatBox = document.getElementById('chat-box');
         window.startChat = function() { respond('start'); }
-
+ 
         window.respond = function(key) {
             if (key === 'start') chatBox.innerHTML = '';
             
+            // Handle Cek Status Universal
             if (key.startsWith('cek_status_')) {
                 const type = key.split('_')[2]; 
                 askNikForStatus(type);
                 return;
             }
-
+ 
             const menu = getMenu(config)[key];
             if(!menu) return;
-
+ 
             let opts = menu.options || [];
-            // Mengembalikan tombol kembali ke style tombol biasa di dalam options agar konsisten dengan codingan pertama
             if(menu.back) opts.push({text:"⬅️ KEMBALI KE MENU UTAMA", val:"start"});
             if(menu.backTo) opts.push({text:"⬅️ KEMBALI SEBELUMNYA", val: menu.backTo});
-
+ 
+            // Handle Render Form
             if(menu.isForm) {
                 if(menu.formType === 'pengurusan') renderFormPengurusan();
                 else if(menu.formType === 'kritik') renderFormKritik();
@@ -412,161 +440,190 @@
                 appendMsg('bot', menu.text, { options: opts });
             }
         }
-
+ 
         function appendMsg(sender, text, extra = {}) {
             const div = document.createElement('div');
             div.className = `msg ${sender}`;
             let content = text.replace(/\n/g, '<br>').replace(/\*\*(.*?)\*\*/g, '<b>$1</b>');
-            if(extra.customHtml) content += `<div style="margin-top:10px;">${extra.customHtml}</div>`;
+            if(extra.customHtml) content += `<br>${extra.customHtml}`;
             div.innerHTML = content;
             chatBox.appendChild(div);
             if(!extra.isForm && extra.options) showBtn(extra.options);
             chatBox.scrollTop = chatBox.scrollHeight;
         }
-
+ 
         function showBtn(opts) {
             const div = document.createElement('div');
-            div.style.marginTop = "10px";
             opts.forEach(o => {
                 if(!o.url && !o.val) return;
                 const btn = document.createElement('div');
                 btn.className = o.text.includes("KEMBALI") ? 'btn btn-back' : 'btn';
                 
-                // Jika tombol kembali, tidak pakai icon kanan
-                if(o.text.includes("KEMBALI")) {
-                    btn.innerHTML = `<span>${o.text}</span>`;
-                } else {
-                    btn.innerHTML = `<span>${o.text}</span> <i class="fas fa-chevron-right" style="opacity:0.5;"></i>`;
-                }
-               
+                // Icon Youtube jika ada
+                let icon = '<i class="fas fa-chevron-right" style="color:#b0bec5"></i>';
+                if(o.text.includes("YOUTUBE")) icon = '<i class="fab fa-youtube" style="color:red"></i>';
+                if(o.text.includes("WHATSAPP")) icon = '<i class="fab fa-whatsapp" style="color:green"></i>';
+                if(o.text.includes("KEMBALI")) icon = '';
+
+                btn.innerHTML = `<span>${o.text}</span> ${icon}`;
                 btn.onclick = () => {
                     div.remove();
-                    const userBubble = document.createElement('div');
-                    userBubble.className = 'msg user';
-                    userBubble.innerText = o.text.replace(/[^a-zA-Z0-9 ]/g, '');
-                    chatBox.appendChild(userBubble);
-                    
+                    appendMsg('user', o.text);
                     if(o.type === 'link') window.open(o.url);
-                    else setTimeout(() => respond(o.val), 300);
+                    else setTimeout(() => respond(o.val), 200);
                 };
                 div.appendChild(btn);
             });
             chatBox.appendChild(div);
         }
-
+ 
+        // --- FORM STANDARD ---
         function renderFormStandard(text, type) {
             const formHtml = `
             <div class="form-box">
                 <div class="upload-group" onclick="document.getElementById('f_ktp').click()">
-                    <span style="font-size:13px; color:var(--primary-dark); font-weight:bold;"><i class="fas fa-camera fa-lg"></i><br>Foto KTP (Wajib)</span>
-                    <input id="f_ktp" type="file" accept="image/*" style="display:none" onchange="this.previousElementSibling.innerText = '✅ Foto Tersimpan'">
+                     <div style="font-size:12px; font-weight:bold; color:#546e7a;">📸 Foto KTP (Wajib)</div>
+                     <div style="font-size:10px; color:#90a4ae;">Klik untuk mengambil/pilih foto</div>
+                     <input id="f_ktp" type="file" accept="image/*" style="display:none" onchange="alert('Foto KTP Terpilih!')">
                 </div>
-                <input id="f_nama" class="inp" placeholder="Nama Pengunjung">
-                <input id="f_nik" class="inp" type="number" placeholder="NIK">
-                <input id="f_alamat" class="inp" placeholder="Alamat">
-                <input id="f_telp" class="inp" type="tel" placeholder="No HP/WA">
-                <input id="f_wbp" class="inp" placeholder="Nama WBP">
-                <div style="display:flex; gap:10px;">
-                    <input id="f_tgl" class="inp" type="date" style="flex:2">
-                    <select id="f_jam" class="inp" style="flex:1">
-                        <option value="Pagi">Pagi</option>
-                        <option value="Siang">Siang</option>
-                    </select>
-                </div>
-                <button onclick="submitForm('${type}')" class="submit-btn"><i class="fas fa-paper-plane"></i> AMBIL ANTRIAN</button>
-                <div class="btn btn-back" onclick="respond('start')" style="text-align:center; display:block;">⬅️ Batal</div>
-            </div>`;
-            appendMsg('bot', text, { customHtml: formHtml });
+               <input id="f_nama" class="inp" placeholder="Nama Pengunjung">
+               <input id="f_nik" class="inp" type="number" placeholder="NIK / No. KTP">
+               <input id="f_alamat" class="inp" placeholder="Alamat Lengkap">
+               <input id="f_telp" class="inp" type="tel" placeholder="No. HP / WA">
+               <input id="f_wbp" class="inp" placeholder="Nama WBP (Bin/Binti)">
+               <div style="display:flex; gap:5px;">
+                   <input id="f_tgl" class="inp" type="date" style="flex:2">
+                   <select id="f_jam" class="inp" style="flex:1">
+                       <option value="Pagi">Pagi</option>
+                       <option value="Siang">Siang</option>
+                   </select>
+               </div>
+               <button onclick="submitForm('${type}')" class="submit-btn">AMBIL ANTRIAN</button>
+               <button onclick="respond('start')" class="btn btn-back">Batal</button>
+           </div>`;
+           appendMsg('bot', text, { customHtml: formHtml });
         }
-
+ 
+        // --- FORM PENGURUSAN ---
         window.renderFormPengurusan = function() {
             const fields = [
                 {id:'u_ktp_wbp', l:'KTP WBP'}, {id:'u_kk_wbp', l:'KK WBP'},
                 {id:'u_ktp_penj', l:'KTP Penjamin'}, {id:'u_kk_penj', l:'KK Penjamin'},
-                {id:'u_surat_1', l:'Surat Pernyataan'}, {id:'u_surat_2', l:'Surat Jaminan'},
+                {id:'u_surat_1', l:'Surat Pernyataan Penjamin'}, {id:'u_surat_2', l:'Surat Jaminan Kesanggupan'},
                 {id:'u_foto', l:'Foto Diri Penjamin'}
             ];
+            
             let uploadsHtml = '';
             fields.forEach(f => {
                 uploadsHtml += `
-                <div class="upload-group" style="padding:10px; margin-bottom:8px; display:flex; justify-content:space-between; align-items:center;" onclick="document.getElementById('${f.id}').click()">
-                    <span style="font-size:12px; font-weight:bold; color:var(--text-light);">📂 ${f.l}</span>
-                    <input type="file" id="${f.id}" accept="image/*" style="display:none" onchange="this.previousElementSibling.innerText = '✅ Oke'">
-                    <i class="fas fa-chevron-right" style="color:#b0bec5"></i>
+                <div class="upload-group" style="padding:10px; margin-bottom:5px; text-align:left; display:flex; justify-content:space-between; align-items:center;" onclick="document.getElementById('${f.id}').click()">
+                    <span style="font-size:12px; font-weight:600; color:#546e7a;">📂 ${f.l}</span>
+                    <input type="file" id="${f.id}" accept="image/*" style="display:none" onchange="alert('${f.l} Terpilih')">
+                    <i class="fas fa-camera" style="color:#b0bec5"></i>
                 </div>`;
             });
+ 
             const html = `
             <div class="form-box">
-                <select id="p_jenis" class="inp"><option value="PB">PB</option><option value="CB">CB</option><option value="CMB">CMB</option></select>
-                <input id="p_wbp" class="inp" placeholder="Nama WBP">
-                <input id="p_penjamin" class="inp" placeholder="Nama Penjamin">
-                <input id="p_nik" class="inp" type="number" placeholder="NIK Penjamin">
-                <input id="p_alamat" class="inp" placeholder="Alamat">
-                <input id="p_hub" class="inp" placeholder="Hubungan">
-                <input id="p_telp" class="inp" type="tel" placeholder="No HP/WA">
-                <div style="margin-top:10px; font-weight:bold; font-size:12px; color:var(--primary-dark);">UNGGAH DOKUMEN:</div>
-                ${uploadsHtml}
-                <button onclick="submitPengurusan()" class="submit-btn">KIRIM PERMOHONAN</button>
-                <div class="btn btn-back" onclick="respond('start')" style="text-align:center; display:block;">⬅️ Batal</div>
-            </div>`;
-            appendMsg('bot', "📝 **FORMULIR PENGURUSAN:**", { customHtml: html });
+               <div style="background:#eceff1; padding:10px; font-size:11px; border-radius:5px; margin-bottom:10px; color:#455a64;">
+                   ⚠️ Pastikan semua foto dokumen jelas.
+               </div>
+               <select id="p_jenis" class="inp">
+                   <option value="PB">PB (Pembebasan Bersyarat)</option>
+                   <option value="CB">CB (Cuti Bersyarat)</option>
+                   <option value="CMB">CMB (Cuti Menjelang Bebas)</option>
+               </select>
+               <input id="p_wbp" class="inp" placeholder="Nama WBP">
+               <input id="p_penjamin" class="inp" placeholder="Nama Penjamin">
+               <input id="p_nik" class="inp" type="number" placeholder="NIK Penjamin (Untuk Cek Status)">
+               <input id="p_alamat" class="inp" placeholder="Alamat Penjamin">
+               <input id="p_hub" class="inp" placeholder="Hubungan dengan WBP">
+               <input id="p_telp" class="inp" type="tel" placeholder="No HP / WA">
+               
+               <div style="margin-top:10px; font-weight:bold; font-size:12px; color:#37474f;">UNGGAH DOKUMEN:</div>
+               ${uploadsHtml}
+               
+               <button onclick="submitPengurusan()" class="submit-btn">KIRIM PERMOHONAN</button>
+               <button onclick="respond('start')" class="btn btn-back">Batal</button>
+           </div>`;
+           appendMsg('bot', "📝 **FORMULIR PENGURUSAN PB/CB/CMB:**", { customHtml: html });
         }
-
+ 
+        // --- FORM KRITIK ---
         window.renderFormKritik = function() {
             const html = `
             <div class="form-box">
-                <select id="k_puas" class="inp"><option value="Sangat Puas">😍 Sangat Puas</option><option value="Puas">🙂 Puas</option><option value="Cukup">😐 Cukup</option><option value="Kurang">☹️ Kurang</option></select>
-                <textarea id="k_pesan" class="inp" rows="3" placeholder="Tulis masukan Anda..."></textarea>
-                <button onclick="submitKritik()" class="submit-btn">KIRIM</button>
-                <div class="btn btn-back" onclick="respond('start')" style="text-align:center; display:block;">⬅️ Batal</div>
-            </div>`;
-            appendMsg('bot', "📢 **KRITIK & SARAN:**", { customHtml: html });
+               <select id="k_puas" class="inp">
+                   <option value="Sangat Puas">😍 Sangat Puas</option>
+                   <option value="Puas">🙂 Puas</option>
+                   <option value="Cukup">😐 Cukup</option>
+                   <option value="Kurang">☹️ Kurang</option>
+               </select>
+               <textarea id="k_pesan" class="inp" rows="4" placeholder="Tulis kritik & saran Anda disini..."></textarea>
+               <button onclick="submitKritik()" class="submit-btn">KIRIM MASUKAN</button>
+               <button onclick="respond('start')" class="btn btn-back">Batal</button>
+           </div>`;
+           appendMsg('bot', "📢 **KRITIK & SARAN:**", { customHtml: html });
         }
-
+ 
+        // --- LOGIC SUBMIT (SAMA SEPERTI SEBELUMNYA) ---
         window.submitForm = function(type) {
             const f_ktp = document.getElementById('f_ktp').files[0];
             const nama = document.getElementById('f_nama').value;
             const nik = document.getElementById('f_nik').value;
+            const alamat = document.getElementById('f_alamat').value;
+            const telp = document.getElementById('f_telp').value;
             const wbp = document.getElementById('f_wbp').value;
             const tgl = document.getElementById('f_tgl').value;
             const jam = document.getElementById('f_jam').value;
-            if(!f_ktp || !nama || !nik || !wbp || !tgl) return alert("Mohon lengkapi data & foto KTP!");
-            
+ 
+            if(!f_ktp || !nama || !nik || !wbp || !tgl) return alert("Lengkapi data & foto KTP!");
+ 
             const btn = document.querySelector('.submit-btn');
-            btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Mengirim...'; btn.disabled = true;
-
+            btn.innerHTML = "Mengirim..."; btn.disabled = true;
+ 
             const path = type === 'fisik' ? 'registrations' : 'online_registrations';
             const prefix = type === 'fisik' ? 'A' : 'V';
             const sess = jam === 'Pagi' ? 'P' : 'S';
             const counterPath = `counters/${tgl}/${type}/${jam}`;
-
+ 
             compressImage(f_ktp, (base64) => {
                 db.ref(counterPath).transaction(c => (c||0)+1, (e, comm, s) => {
                     if(comm) {
                         const no = `${prefix}-${sess}-${String(s.val()).padStart(3,'0')}`;
-                        const payload = { nama, nik, wbp, tgl, jam, noAntrian: no, ktpUrl: base64, status: 'waiting', createdAt: firebase.database.ServerValue.TIMESTAMP };
+                        const payload = { nama, nik, alamat, telp, wbp, tgl, jam, noAntrian: no, ktpUrl: base64, status: 'waiting', createdAt: firebase.database.ServerValue.TIMESTAMP };
+                        
                         db.ref(path).push(payload).then(() => {
                             chatBox.innerHTML = '';
                             renderTicket(payload, type === 'fisik' ? 'TATAP MUKA' : 'VIDEO CALL');
                         });
-                    } else { btn.disabled = false; alert("Gagal koneksi."); }
+                    } else {
+                        btn.disabled = false; alert("Gagal koneksi. Coba lagi.");
+                    }
                 });
             });
         }
-
+ 
         window.submitPengurusan = async function() {
             const ids = ['u_ktp_wbp','u_kk_wbp','u_ktp_penj','u_kk_penj','u_surat_1','u_surat_2','u_foto'];
             const inputs = {};
             let missing = false;
+ 
             inputs.jenis = document.getElementById('p_jenis').value;
             inputs.wbp = document.getElementById('p_wbp').value;
             inputs.penjamin = document.getElementById('p_penjamin').value;
             inputs.nik = document.getElementById('p_nik').value;
-            if(!inputs.wbp || !inputs.penjamin) return alert("Lengkapi data!");
+            inputs.alamat = document.getElementById('p_alamat').value;
+            inputs.hub = document.getElementById('p_hub').value;
+            inputs.telp = document.getElementById('p_telp').value;
+ 
+            if(!inputs.wbp || !inputs.penjamin || !inputs.nik || !inputs.hub) return alert("Mohon lengkapi data formulir!");
             for(let id of ids) { if(!document.getElementById(id).files[0]) missing = true; }
-            if(missing) return alert("Lengkapi dokumen!");
+            if(missing) return alert("Mohon unggah ke-7 dokumen yang diminta!");
+ 
             const btn = document.querySelector('.submit-btn');
-            btn.innerHTML = 'Mengunggah...'; btn.disabled = true;
+            btn.innerText = "Mengunggah..."; btn.disabled = true;
+ 
             try {
                 const images = {};
                 for(let id of ids) {
@@ -576,41 +633,66 @@
                 const payload = { ...inputs, images: images, status: 'waiting', tgl: new Date().toISOString().split('T')[0], createdAt: firebase.database.ServerValue.TIMESTAMP };
                 await db.ref('pengurusan').push(payload);
                 chatBox.innerHTML = '';
-                appendMsg('bot', `✅ **TERKIRIM!**\nPermohonan ${inputs.jenis} diterima.`);
+                appendMsg('bot', `✅ **PERMOHONAN TERKIRIM!**\n\nPengajuan **${inputs.jenis}** diterima.\nSilakan cek status berkala.`);
                 showBtn([{text:"⬅️ KEMBALI KE MENU UTAMA", val:"start"}]);
-            } catch(e) { alert("Gagal: " + e.message); btn.disabled = false; }
+            } catch(e) {
+                alert("Gagal upload: " + e.message);
+                btn.innerText = "KIRIM PERMOHONAN"; btn.disabled = false;
+            }
         }
-
+ 
         window.submitKritik = function() {
+            const puas = document.getElementById('k_puas').value;
             const pesan = document.getElementById('k_pesan').value;
-            if(!pesan) return alert("Isi pesan!");
-            db.ref('kritik_saran').push({ kepuasan: document.getElementById('k_puas').value, pesan: pesan, tgl: new Date().toISOString().split('T')[0] }).then(() => {
-                chatBox.innerHTML = ''; appendMsg('bot', "🙏 Terima Kasih!"); showBtn([{text:"⬅️ KEMBALI KE MENU UTAMA", val:"start"}]);
+            if(!pesan) return alert("Mohon isi pesan kritik/saran.");
+            const btn = document.querySelector('.submit-btn');
+            btn.disabled = true; btn.innerText = "Mengirim...";
+            const payload = { kepuasan: puas, pesan: pesan, tgl: new Date().toISOString().split('T')[0], createdAt: firebase.database.ServerValue.TIMESTAMP };
+            db.ref('kritik_saran').push(payload).then(() => {
+                chatBox.innerHTML = '';
+                appendMsg('bot', "🙏 **TERIMA KASIH!**\nMasukan Anda telah kami terima.");
+                showBtn([{text:"⬅️ KEMBALI KE MENU UTAMA", val:"start"}]);
             });
         }
-
+ 
         window.askNikForStatus = function(type) {
-            appendMsg('bot', `🔍 **CEK STATUS**\nMasukkan NIK:`, {
-                customHtml: `<div class="form-box"><input id="cek_nik" class="inp" type="number" placeholder="NIK"><button onclick="doCheckStatus('${type}')" class="submit-btn">CARI</button><div class="btn btn-back" onclick="respond('start')" style="text-align:center; display:block;">⬅️ Batal</div></div>`
+            appendMsg('bot', `🔍 **CEK STATUS**\nMasukkan NIK Penjamin/Pengunjung:`, {
+                customHtml: `<div class="form-box"><input id="cek_nik" class="inp" type="number" placeholder="NIK"><button onclick="doCheckStatus('${type}')" class="submit-btn">CARI DATA</button></div>`,
+                options: [{text:"Batal", val:"start"}]
             });
         }
-
+ 
         window.doCheckStatus = function(type) {
             const nik = document.getElementById('cek_nik').value;
             if(!nik) return alert("Isi NIK!");
-            let path = type === 'fisik' ? 'registrations' : (type === 'online' ? 'online_registrations' : 'pengurusan');
+            let path = 'registrations';
+            if(type === 'online') path = 'online_registrations';
+            if(type === 'pengurusan') path = 'pengurusan';
+            const btn = document.querySelector('.submit-btn');
+            btn.innerText = "Mencari..."; btn.disabled = true;
             db.ref(path).orderByChild('createdAt').limitToLast(50).once('value').then(s => {
                 let found = null;
-                if(s.exists()) s.forEach(c => { const d = c.val(); if(String(d.nik) === String(nik) || (d.inputs && String(d.inputs.nik) === String(nik))) found = d; });
+                if(s.exists()) {
+                    s.forEach(c => {
+                        const d = c.val();
+                        if(String(d.nik) === String(nik) || (d.inputs && String(d.inputs.nik) === String(nik))) found = d;
+                    });
+                }
                 chatBox.innerHTML = '';
                 if(found) {
-                    if(type === 'pengurusan') appendMsg('bot', `📄 **STATUS:** ${found.status === 'accepted' ? '✅ DISETUJUI' : '🕒 MENUNGGU'}\nKet: ${found.note||'-'}`);
-                    else renderTicket(found, type === 'fisik' ? 'TATAP MUKA' : 'VIDEO CALL');
-                } else appendMsg('bot', "❌ Data tidak ditemukan.");
+                    if(type === 'pengurusan') {
+                        let stBadge = found.status === 'accepted' ? '✅ DISETUJUI' : (found.status === 'rejected' ? '❌ DITOLAK' : '🕒 MENUNGGU');
+                        appendMsg('bot', `📄 **STATUS PENGURUSAN**\n\nJenis: **${found.jenis}**\nStatus: **${stBadge}**\nCatatan: "${found.note || '-'}"`);
+                    } else {
+                        renderTicket(found, type === 'fisik' ? 'TATAP MUKA' : 'VIDEO CALL');
+                    }
+                } else {
+                    appendMsg('bot', "❌ **DATA TIDAK DITEMUKAN**\nPastikan NIK benar.");
+                }
                 showBtn([{text:"⬅️ KEMBALI KE MENU UTAMA", val:"start"}]);
             });
         }
-
+ 
         function compressImage(file, cb) {
             const reader = new FileReader();
             reader.readAsDataURL(file);
@@ -620,70 +702,91 @@
                 img.onload = function() {
                     const canvas = document.createElement('canvas');
                     const ctx = canvas.getContext('2d');
-                    const maxW = 800; let w = img.width; let h = img.height;
+                    const maxW = 600; 
+                    let w = img.width; let h = img.height;
                     if(w > maxW) { h *= maxW/w; w = maxW; }
                     canvas.width = w; canvas.height = h;
                     ctx.drawImage(img, 0, 0, w, h);
-                    cb(canvas.toDataURL('image/jpeg', 0.6));
+                    cb(canvas.toDataURL('image/jpeg', 0.5));
                 }
             }
         }
-
+ 
         function renderTicket(data, label) {
-            let stBadge = data.status === 'accepted' ? '<span class="badge bg-green">DISETUJUI</span>' : '<span class="badge bg-gray">MENUNGGU</span>';
+            let stBadge = data.status === 'accepted' ? '<span class="badge bg-green">✅ DISETUJUI</span>' : (data.status === 'rejected' ? '<span class="badge bg-red">❌ DITOLAK</span>' : '<span class="badge bg-gray">MENUNGGU VERIFIKASI</span>');
+            const noteHtml = data.note ? `<div class="ticket-note"><b>✉️ Pesan:</b> "${data.note}"</div>` : '';
             const ticketHtml = `
             <div id="ticket-node" class="ticket-card">
-                <div class="ticket-header">${label}</div>
+                <div class="ticket-header">TIKET ANTRIAN ${label}</div>
                 <div class="ticket-body">
+                    <div style="font-size:12px; color:#555;">STATUS: ${stBadge}</div>
                     <div class="ticket-number">${data.noAntrian}</div>
-                    <div>${stBadge}</div>
-                    <table class="ticket-info-table"><tr><td>Nama</td><td>: ${data.nama}</td></tr><tr><td>WBP</td><td>: ${data.wbp}</td></tr><tr><td>Jadwal</td><td>: ${data.tgl} (${data.jam})</td></tr></table>
-                    <div style="margin-top:10px;"><img src="${data.ktpUrl}" style="height:40px;"></div>
+                    <div style="font-size:12px; text-align:left; border-top:1px dashed #cfd8dc; padding-top:8px;">
+                        <table style="width:100%">
+                            <tr><td>Nama</td><td>: <b>${data.nama}</b></td></tr>
+                            <tr><td>Tujuan</td><td>: ${data.wbp}</td></tr>
+                            <tr><td>Jadwal</td><td>: ${data.tgl} (${data.jam})</td></tr>
+                        </table>
+                    </div>
+                    ${noteHtml}
+                    <div style="margin-top:10px;"><img src="${data.ktpUrl}" style="max-height:60px; border-radius:4px;"></div>
                 </div>
             </div>
-            <button onclick="downloadTicket()" class="submit-btn" style="background:var(--primary-dark);">SIMPAN TIKET OTOMATIS</button>`;
+            <button onclick="downloadTicket(this)" class="submit-btn" style="background:#263238;"><i class="fas fa-download"></i> SIMPAN TIKET OTOMATIS</button>`;
             appendMsg('bot', "✅ **TIKET ANDA:**", { customHtml: ticketHtml });
         }
+ 
+        // --- AUTO DOWNLOAD TIKET (Tanpa Modal) ---
+        window.downloadTicket = function(btnElement) {
+            const originalText = btnElement.innerHTML;
+            btnElement.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Menyimpan...';
+            btnElement.disabled = true;
 
-        window.downloadTicket = function() {
-            const btn = event.target.closest('button');
-            const oldText = btn.innerHTML;
-            btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Memproses...'; btn.disabled = true;
-
-            html2canvas(document.getElementById('ticket-node'), {
-                scale: 3,
-                backgroundColor: null, 
-                useCORS: true 
-            }).then(canvas => {
-                const image = canvas.toDataURL("image/png").replace("image/png", "image/octet-stream");
+            html2canvas(document.getElementById('ticket-node'), {scale:2, backgroundColor:"#fff"}).then(canvas => {
                 const link = document.createElement('a');
-                link.download = 'tiket-antrian-' + Date.now() + '.png';
-                link.href = image;
+                link.download = 'tiket-antrian.png';
+                link.href = canvas.toDataURL("image/png");
                 document.body.appendChild(link);
                 link.click();
                 document.body.removeChild(link);
-                btn.innerHTML = oldText; btn.disabled = false;
-            }).catch(err => {
-                alert("Gagal menyimpan gambar: " + err.message);
-                btn.innerHTML = oldText; btn.disabled = false;
+                
+                // Kembalikan tombol
+                btnElement.innerHTML = "✅ TERSIMPAN";
+                setTimeout(() => {
+                    btnElement.innerHTML = originalText;
+                    btnElement.disabled = false;
+                }, 2000);
             });
         }
     });
-
+ 
     function getMenu(cfg) {
-        // --- HELPER UNTUK MEMBUAT TEKS MUDAH DIBACA ---
-        function formatText(text) {
-            if(!text) return '-';
-            // Ubah baris baru jadi <br> dan bold jadi <b>
-            return text.replace(/\n/g, '<br>').replace(/\*\*(.*?)\*\*/g, '<b>$1</b>');
-        }
+        
+        // --- FORMAT JADWAL & SYARAT AGAR MUDAH DIBACA (CARD STYLE) ---
+        const scheduleCard = `
+        <div class="info-card">
+            <div class="info-title"><i class="fas fa-clock"></i> JAM LAYANAN</div>
+            <div class="schedule-grid">
+                <div class="sch-item"><span><b>SESI PAGI</b></span><span>${cfg.sch_mon_am || '09:00 - 11:30'}</span></div>
+                <div class="sch-item"><span><b>SESI SIANG</b></span><span>${cfg.sch_mon_pm || '13:30 - 15:00'}</span></div>
+                <div class="sch-item"><span><b>JUMAT</b></span><span>${cfg.sch_fri || '08:30 - 11:00'}</span></div>
+                <div class="sch-item"><span><b>SABTU</b></span><span>${cfg.sch_sat || 'KHUSUS TITIPAN'}</span></div>
+            </div>
+        </div>
+        <div class="info-card">
+            <div class="info-title"><i class="fas fa-users"></i> JENIS TAHANAN</div>
+            <div class="info-content">
+                • <b>PIDUM:</b> ${cfg.sch_pidum || 'Senin & Rabu'}<br>
+                • <b>NARKOBA:</b> ${cfg.sch_narkoba || 'Selasa & Kamis'}
+            </div>
+        </div>`;
 
-        const htmlJadwal = `<table class="spec-table"><tr><th>Jenis</th><th>Hari</th></tr><tr><td>PIDUM</td><td>${cfg.sch_pidum || 'Sn & Rb'}</td></tr><tr><td>NARKOBA</td><td>${cfg.sch_narkoba || 'Sl & Km'}</td></tr></table>`;
+        // Format Teks Syarat (Ganti baris baru jadi <br>)
+        const fmt = (txt) => txt ? txt.replace(/\n/g, '<br>') : '-';
 
-        // --- MENU UTAMA (STRUKTUR KEMBALI KE ORIGINAL) ---
         return {
             'start': {
-                text: cfg.welcome_msg || "Hai! Selamat Datang.\nSilakan pilih menu dibawah:",
+                text: cfg.welcome_msg || "Halo, selamat datang di Layanan Lapas Digital. Silakan pilih menu:",
                 options: [
                     { text: "1. 📝 DAFTAR KUNJUNGAN (TATAP MUKA)", val: "daftar_fisik" },
                     { text: "2. 💻 DAFTAR VIDEO CALL", val: "daftar_online" },
@@ -702,47 +805,38 @@
             'form_urus': { text: "Menyiapkan formulir...", isForm: true, formType: "pengurusan" },
             'toko': { text: "🛒 **TOKO LAPAS:**\n" + (cfg.toko_announce || "-"), options: [{ text: "🌐 BUKA APLIKASI TOKO", type: "link", url: cfg.toko_link }, { text: "⬅️ KEMBALI KE MENU UTAMA", val: "start" }] },
             
-            // --- MENU 5: JADWAL & INFO (STRUKTUR ORIGINAL) ---
-            'info_gabung': {
-                text: "📅 **PILIH INFORMASI LAYANAN:**",
-                options: [
-                    { text: "📅 LIHAT JADWAL KUNJUNGAN", val: "sub_jadwal" },
-                    { text: "👜 SYARAT KUNJUNGAN & BARANG", val: "sub_syarat_kunjungan" },
-                    { text: "📂 SYARAT PENGURUSAN PB/CB/CMB", val: "sub_syarat_pb" },
-                    { text: "⬅️ KEMBALI KE MENU UTAMA", val: "start" }
-                ]
-            },
+            // --- JADWAL & INFO (DIPERINDAH) ---
+            'info_gabung': { text: "📅 **PILIH INFORMASI LAYANAN:**", options: [{ text: "📅 LIHAT JADWAL KUNJUNGAN", val: "sub_jadwal" }, { text: "👜 SYARAT KUNJUNGAN & BARANG", val: "sub_syarat_kunjungan" }, { text: "📂 SYARAT PENGURUSAN PB/CB/CMB", val: "sub_syarat_pb" }, { text: "⬅️ KEMBALI KE MENU UTAMA", val: "start" }] },
             
-            'sub_jadwal': { text: "📅 **JADWAL LAYANAN:**", customHtml: htmlJadwal, backTo: 'info_gabung' },
+            'sub_jadwal': { text: "📅 **JADWAL PELAYANAN:**", customHtml: scheduleCard, backTo: 'info_gabung' },
             
-            // --- TAMPILAN SYARAT YANG MUDAH DIBACA ---
             'sub_syarat_kunjungan': { 
-                text: "👜 **SYARAT KUNJUNGAN & BARANG:**",
+                text: "👜 **INFORMASI KUNJUNGAN:**", 
                 customHtml: `
-                <div class="info-box">
-                    <div class="info-header"><i class="fas fa-file-alt"></i> DOKUMEN WAJIB</div>
-                    <div class="info-content">${formatText(cfg.txt_doc)}</div>
+                <div class="info-card">
+                    <div class="info-title"><i class="fas fa-file-alt"></i> DOKUMEN WAJIB</div>
+                    <div class="info-content">${fmt(cfg.txt_doc)}</div>
                 </div>
-                <div class="info-box">
-                    <div class="info-header"><i class="fas fa-box-open"></i> ATURAN BARANG</div>
-                    <div class="info-content">${formatText(cfg.txt_item)}</div>
+                <div class="info-card">
+                    <div class="info-title"><i class="fas fa-box-open"></i> ATURAN BARANG</div>
+                    <div class="info-content">${fmt(cfg.txt_item)}</div>
                 </div>`,
                 backTo: 'info_gabung' 
             },
             
             'sub_syarat_pb': { 
-                text: "📂 **SYARAT PENGURUSAN PB/CB/CMB:**",
+                text: "📂 **SYARAT INTEGRASI (PB/CB/CMB):**", 
                 customHtml: `
-                <div class="info-box">
-                    <div class="info-header"><i class="fas fa-clipboard-list"></i> PERSYARATAN</div>
-                    <div class="info-content">${formatText(cfg.txt_pb_cb || "Hubungi admin untuk info lebih lanjut.")}</div>
+                <div class="info-card">
+                    <div class="info-title"><i class="fas fa-list-ul"></i> PERSYARATAN</div>
+                    <div class="info-content">${fmt(cfg.txt_pb_cb || "Hubungi admin untuk info detail.")}</div>
                 </div>`,
                 backTo: 'info_gabung' 
             },
-
+            
             'menu_kritik': { text: "Silakan berikan penilaian dan masukan Anda:", isForm: true, formType: "kritik" },
             
-            // --- MENU 7: KONTAK (STRUKTUR ORIGINAL) ---
+            // --- KONTAK & MEDIA SOSIAL (DENGAN YOUTUBE) ---
             'kontak': { 
                 text: "📞 **PUSAT PENGADUAN:**", 
                 options: [
@@ -754,8 +848,9 @@
             },
             
             'sosmed': { 
-                text: "🌐 **MEDIA SOSIAL:**", 
+                text: "🌐 **IKUTI KAMI DI MEDIA SOSIAL:**", 
                 options: [
+                    { text: "▶️ YOUTUBE", type: "link", url: cfg.soc_yt || "#" }, 
                     { text: "📷 INSTAGRAM", type: "link", url: cfg.soc_ig }, 
                     { text: "📘 FACEBOOK", type: "link", url: cfg.soc_fb }, 
                     { text: "🐦 TWITTER / X", type: "link", url: cfg.soc_tw }, 
