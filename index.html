@@ -33,10 +33,10 @@
             position: relative;
         }
         
-        /* HEADER */
+        /* HEADER 3D */
         .header {
             position: relative;
-            height: 220px;
+            height: 230px;
             background-color: #333;
             background-size: cover;
             background-position: center;
@@ -49,12 +49,13 @@
             border-bottom-right-radius: 40px;
             z-index: 10;
             padding: 20px;
-            box-shadow: 0 10px 20px rgba(0,0,0,0.2);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.25);
+            overflow: visible; /* Biarkan Info Penting overlap */
         }
-        /* Overlay gelap agar logo tetap terlihat jelas */
+        /* Overlay Gelap Transparan di Header */
         .header::before {
             content: ''; position: absolute; inset: 0;
-            background: rgba(0,0,0,0.4);
+            background: linear-gradient(to bottom, rgba(0,0,0,0.3), rgba(0,0,0,0.6));
             border-bottom-left-radius: 40px;
             border-bottom-right-radius: 40px;
             z-index: 1;
@@ -62,43 +63,47 @@
         .header-content { position: relative; z-index: 2; text-align: center; width: 100%; display: flex; flex-direction: column; align-items: center; }
         
         .logo-area {
-            width: auto; height: 85px; margin-bottom: 10px;
-            filter: drop-shadow(0 5px 5px rgba(0,0,0,0.5));
-            transform: perspective(500px) translateZ(20px);
+            width: auto; height: 90px; margin-bottom: 5px;
+            filter: drop-shadow(0 8px 8px rgba(0,0,0,0.6));
+            transform: perspective(500px) translateZ(30px);
         }
         .logo-area img { height: 100%; width: auto; object-fit: contain; }
-        .app-name { font-weight: 900; font-size: 24px; margin: 0; text-transform: uppercase; letter-spacing: 1px; text-shadow: 0 3px 8px rgba(0,0,0,0.8); }
+        .app-name { 
+            font-weight: 900; font-size: 26px; margin: 0; 
+            text-transform: uppercase; letter-spacing: 1px; 
+            text-shadow: 0 4px 10px rgba(0,0,0,0.9); 
+        }
 
-        /* INFO PENTING (REVISI: MENYATU DENGAN BG + LEBIH TEGAS) */
+        /* INFO PENTING (MENYATU DENGAN BACKGROUND - GLASSMORPHISM) */
         #announcement {
-            /* Efek Kaca / Glassmorphism */
-            background: rgba(255, 215, 0, 0.85); /* Kuning Emas Transparan */
-            backdrop-filter: blur(10px); /* Efek Blur di belakang */
-            -webkit-backdrop-filter: blur(10px);
+            /* Latar Belakang Kaca Emas */
+            background: rgba(255, 223, 0, 0.2); 
+            backdrop-filter: blur(15px);
+            -webkit-backdrop-filter: blur(15px);
             
-            color: #000; /* Tulisan Hitam Pekat */
+            /* Border halus agar menyatu */
+            border: 1px solid rgba(255, 255, 255, 0.5);
+            border-bottom: 3px solid #FFD700;
+            
+            color: #222;
             padding: 15px 20px;
-            font-size: 13px;
             text-align: center;
             display: none;
             
-            /* Border halus putih agar terlihat menyatu tapi ada batas */
-            border: 1px solid rgba(255, 255, 255, 0.4);
-            border-bottom: 4px solid #b8860b; /* Aksen bawah emas tua */
+            /* Posisi Overlap ke Header */
+            position: absolute;
+            bottom: -25px; 
+            left: 20px; right: 20px;
+            z-index: 15;
             
-            font-weight: 800; /* Sangat Tebal */
-            box-shadow: 0 15px 25px rgba(0,0,0,0.1);
-            position: relative;
-            z-index: 12; /* Di atas header sedikit */
-            
-            /* Posisi overlap ke header */
-            margin: -30px 20px 10px 20px; 
             border-radius: 15px;
-            line-height: 1.5;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+            animation: slideDown 0.5s ease-out;
         }
+        @keyframes slideDown { from { opacity: 0; transform: translateY(-10px); } to { opacity: 1; transform: translateY(0); } }
 
-        /* CHAT AREA */
-        #chat-box { flex: 1; padding: 20px; overflow-y: auto; display: flex; flex-direction: column; gap: 15px; padding-bottom: 60px; }
+        /* CHAT AREA (Margin top diperbesar agar tidak tertutup Info) */
+        #chat-box { flex: 1; padding: 40px 20px 20px 20px; overflow-y: auto; display: flex; flex-direction: column; gap: 15px; padding-bottom: 60px; }
         .msg { max-width: 95%; animation: popIn 0.3s ease; }
         
         /* JAM REALTIME */
@@ -111,12 +116,13 @@
             box-shadow: 0 4px 10px rgba(0,0,0,0.05);
             border: 1px solid #eee;
         }
-        .time-display { font-family: 'Share Tech Mono', monospace; font-size: 32px; font-weight: bold; color: #333; letter-spacing: 2px; }
-        .date-display { font-size: 11px; color: #777; margin-top: 2px; font-weight: 600; text-transform: uppercase; }
-        .status-msg { font-size: 11px; margin-top: 8px; padding: 6px 10px; border-radius: 6px; display: inline-block; width: 100%; }
+        .time-display { font-family: 'Share Tech Mono', monospace; font-size: 34px; font-weight: bold; color: #333; letter-spacing: 2px; }
+        .date-display { font-size: 11px; color: #777; font-weight: 600; text-transform: uppercase; margin-bottom: 5px; }
+        .status-msg { font-size: 11px; padding: 6px 10px; border-radius: 6px; display: inline-block; width: 100%; line-height: 1.4; }
         
         .open { color: #155724; background: #d4edda; border: 1px solid #c3e6cb; font-weight: bold; }
-        .closed { color: #721c24; background: #f8d7da; border: 1px solid #f5c6cb; font-weight: bold; }
+        /* Style Tertutup tapi Tetap Bisa Akses */
+        .closed { color: #721c24; background: #fff5f5; border: 1px solid #ffcdd2; font-weight: bold; }
 
         /* TOMBOL MENU 3D */
         .btn {
@@ -190,6 +196,7 @@
         @keyframes popIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
         #loader { position: absolute; inset: 0; background: white; display: flex; flex-direction: column; justify-content: center; align-items: center; z-index: 99; }
         
+        /* Table Styles */
         .spec-table { width: 100%; border-collapse: collapse; font-size: 12px; margin-bottom: 10px; border-radius: 8px; overflow: hidden; border: 1px solid #eee; background: white; }
         .spec-table th { background: #555; color: white; padding: 10px; text-align: left; }
         .spec-table td { padding: 10px; border-bottom: 1px solid #eee; }
@@ -207,13 +214,14 @@
     <div id="loader"><i class="fas fa-circle-notch fa-spin fa-2x" style="color:#333;"></i></div>
     
     <div class="header" id="header_bg">
+        <div id="announcement"></div>
+        
         <div class="header-content">
             <div class="logo-area"><img id="logo_img" src="" alt="Logo" loading="lazy"></div>
             <h1 class="app-name" id="app_title">Loading...</h1>
         </div>
     </div>
     
-    <div id="announcement"></div>
     <div id="chat-box"></div>
     <div style="text-align:center; padding:15px; font-size:11px; color:#aaa; margin-top: auto;">&copy; 2026 Sistem Lapas Digital</div>
 </div>
@@ -249,9 +257,9 @@
             const ann = document.getElementById('announcement');
             if(cfg.announcement && cfg.announcement.trim() !== "") { 
                 ann.style.display = 'block'; 
-                // Render text TEGAS dan JELAS
-                ann.innerHTML = "<div style='font-size:14px; letter-spacing:1px; margin-bottom:5px;'>📢 <u>INFO PENTING:</u></div>" + 
-                                "<div style='font-weight:700; font-size:13px; color:#222;'>" + cfg.announcement + "</div>"; 
+                // Tulisan Lebih Tegas
+                ann.innerHTML = "<div style='font-size:13px; font-weight:800; letter-spacing:1px; margin-bottom:5px; text-decoration:underline; text-underline-offset:3px;'>📢 INFO PENTING:</div>" + 
+                                "<div style='font-weight:700; font-size:13px; line-height:1.4; color:#000;'>" + cfg.announcement + "</div>"; 
             } else { ann.style.display = 'none'; }
             
             document.getElementById('loader').style.display = 'none';
@@ -315,17 +323,16 @@
                     dateEl.innerText = dateStr;
                     
                     const h = now.getHours();
-                    // SETTING JAM KERJA: 08:00 - 15:00
+                    // JAM KERJA: 08:00 - 15:00
                     if (h >= 8 && h < 15) {
                         timeEl.style.color = "#333";
                         msgEl.className = "status-msg open";
-                        msgEl.innerHTML = "✅ JAM PELAYANAN BUKA";
+                        msgEl.innerHTML = "✅ JAM PELAYANAN: BUKA";
                     } else {
-                        // Di luar jam kerja: MERAH & Notifikasi
+                        // Di luar jam kerja: MERAH, Tapi Pesan Mengatakan "Tetap Bisa Diakses"
                         timeEl.style.color = "#c62828"; 
                         msgEl.className = "status-msg closed";
-                        // Pesan sesuai permintaan: Aplikasi tetap bisa diakses
-                        msgEl.innerHTML = "⛔ DILUAR JAM KERJA<br><span style='font-weight:400; font-size:10px;'>Aplikasi tetap dapat digunakan. Admin akan merespon pada jam kerja.</span>";
+                        msgEl.innerHTML = "⛔ DILUAR JAM KERJA<br><span style='font-weight:400; font-size:10px;'>Aplikasi tetap dapat diakses. Respon admin akan tertunda.</span>";
                     }
                 }
             };
@@ -454,7 +461,6 @@
         window.submitPengurusan = async function() {
              const btn = document.querySelector('.submit-btn'); btn.innerText = "Mengirim..."; btn.disabled = true;
              // ... (Logic upload same as before) ...
-             // Simulate success for response
              setTimeout(() => {
                 chatBox.innerHTML = '';
                 appendMsg('bot', `✅ **PERMOHONAN TERKIRIM!**\nData berhasil masuk ke sistem.`);
