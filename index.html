@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <meta name="theme-color" content="#1565c0">
+    <meta name="theme-color" content="#607d8b">
     <title>Layanan Lapas Digital</title>
     
     <script defer src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
@@ -15,26 +15,26 @@
     
     <style>
         :root {
-            /* --- WARNA TEMA BIRU --- */
-            --primary: #1565c0;       
-            --primary-dark: #0d47a1;  
-            --primary-light: #e3f2fd; 
+            /* --- PALET WARNA BARU (ABU-ABU / SLATE GRAY) --- */
+            --primary: #607d8b;       /* Abu-abu kebiruan utama */
+            --primary-dark: #37474f;  /* Abu-abu gelap untuk teks/kontras */
+            --primary-light: #eceff1; /* Abu-abu sangat terang untuk bubble user */
             
-            --accent-back: #f57c00;   /* Oranye untuk tombol Kembali */
+            --accent-back: #f57c00;   /* Oranye tetap untuk tombol Kembali agar kontras */
             
-            --text-dark: #1e293b;
-            --text-light: #64748b;
-            --bg-body: #eceff1;
+            --text-dark: #263238;     /* Teks hampir hitam */
+            --text-light: #546e7a;    /* Teks abu sedang */
+            --bg-body: #cfd8dc;       /* Latar belakang abu terang */
             --white: #ffffff;
             
-            /* --- EFEK TIMBUL (RAISED) --- */
-            --shadow-raised: 0 4px 6px -1px rgba(21, 101, 192, 0.1), 0 2px 4px -1px rgba(0,0,0,0.06);
-            --shadow-raised-hover: 0 10px 15px -3px rgba(21, 101, 192, 0.15), 0 4px 6px -2px rgba(0,0,0,0.05);
+            /* --- EFEK BAYANGAN DISESUAIKAN WARNA ABU --- */
+            --shadow-raised: 0 4px 6px -1px rgba(96, 125, 139, 0.2), 0 2px 4px -1px rgba(0,0,0,0.06);
+            --shadow-raised-hover: 0 10px 15px -3px rgba(96, 125, 139, 0.3), 0 4px 6px -2px rgba(0,0,0,0.05);
             
             --radius-md: 14px;
         }
 
-        * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+        * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; outline: none; }
         
         body {
             font-family: 'Inter', sans-serif;
@@ -51,18 +51,18 @@
             max-width: 480px;
             background: var(--white);
             min-height: 100vh;
-            box-shadow: 0 0 50px rgba(0,0,0,0.08);
+            box-shadow: 0 0 50px rgba(0,0,0,0.1);
             display: flex;
             flex-direction: column;
             position: relative;
             overflow: hidden;
         }
 
-        /* --- HEADER DIPERBARUI (GAMBAR JELAS) --- */
+        /* --- HEADER (GRADASI ABU) --- */
         .header {
             position: relative;
-            height: 240px; /* Sedikit lebih tinggi agar gambar puas */
-            background-color: var(--primary); /* Fallback color */
+            height: 240px;
+            background-color: var(--primary);
             background-size: cover;
             background-position: center;
             display: flex;
@@ -74,20 +74,19 @@
             border-bottom-right-radius: 35px;
             z-index: 10;
             padding: 20px 20px 40px 20px;
-            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
         }
 
-        /* Overlay Gradasi Halus di Bawah Saja */
+        /* Overlay Gradasi Abu di Bawah */
         .header::before {
             content: '';
             position: absolute;
             inset: 0;
-            /* Atas Transparan -> Bawah Warna Tema */
             background: linear-gradient(
                 to bottom, 
                 rgba(0,0,0,0) 0%, 
-                rgba(0,0,0,0.05) 50%, 
-                rgba(21, 101, 192, 0.8) 85%, 
+                rgba(0,0,0,0.1) 50%, 
+                rgba(96, 125, 139, 0.8) 85%, /* Warna abu slate */
                 var(--primary) 100%
             );
             border-bottom-left-radius: 35px;
@@ -105,33 +104,28 @@
             align-items: center;
         }
 
-        /* --- LOGO AREA FLEKSIBEL --- */
+        /* --- LOGO AREA MENYATU (TRANSPARAN) --- */
         .logo-area {
-            /* Ukuran menyesuaikan konten tapi dibatasi */
-            max-width: 180px; 
-            max-height: 90px;
+            max-width: 220px; /* Sedikit diperlebar */
+            max-height: 100px;
             height: auto;
             width: auto;
-            
-            background: rgba(255, 255, 255, 0.95); /* Putih hampir solid agar logo menonjol */
-            border-radius: 16px; /* Sudut halus, cocok untuk bulat maupun kotak */
-            padding: 8px 15px; /* Padding kiri kanan agak lebar */
-            margin-bottom: 12px;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.15);
-            
+            /* Background putih dan shadow dihapus agar menyatu */
+            background: transparent;
+            padding: 0;
+            margin-bottom: 15px;
             display: flex;
             justify-content: center;
             align-items: center;
-            /* Menghapus rotasi agar logo tegak */
-            transform: none; 
         }
 
         .logo-area img {
-            max-height: 75px; /* Batas tinggi logo */
-            width: auto;      /* Lebar menyesuaikan proporsi */
+            max-height: 90px; /* Ukuran sedikit diperbesar */
+            width: auto;
             max-width: 100%;
-            object-fit: contain; /* Pastikan logo tidak terpotong */
-            display: block;
+            object-fit: contain;
+            /* Tambahkan drop-shadow langsung ke gambar agar kontras */
+            filter: drop-shadow(0 4px 8px rgba(0,0,0,0.4));
         }
 
         .app-name {
@@ -139,16 +133,15 @@
             font-size: 24px;
             margin: 0;
             letter-spacing: -0.5px;
-            /* Shadow kuat agar terbaca di gambar terang */
-            text-shadow: 0 2px 4px rgba(0,0,0,0.6); 
+            text-shadow: 0 2px 6px rgba(0,0,0,0.7); 
         }
 
         .tagline {
             font-size: 13px;
             font-weight: 500;
-            opacity: 0.95;
+            opacity: 0.9;
             margin-top: 5px;
-            background: rgba(0, 0, 0, 0.3); /* Latar gelap transparan untuk teks */
+            background: rgba(38, 50, 56, 0.4); /* Latar gelap transparan abu tua */
             padding: 4px 12px;
             border-radius: 20px;
             backdrop-filter: blur(2px);
@@ -167,7 +160,6 @@
             padding-bottom: 90px;
         }
 
-        /* BUBBLE PESAN */
         .msg {
             max-width: 90%;
             padding: 16px 20px;
@@ -187,6 +179,7 @@
             border: 1px solid #e2e8f0;
         }
 
+        /* Bubble user jadi abu terang */
         .user {
             background: var(--primary-light);
             align-self: flex-end;
@@ -194,13 +187,13 @@
             color: var(--primary-dark);
             font-weight: 600;
             box-shadow: var(--shadow-raised);
-            border: 1px solid #bbdefb;
+            border: 1px solid #cfd8dc;
         }
 
-        /* --- TOMBOL MENU (TIMBUL & JELAS) --- */
+        /* --- TOMBOL MENU (TEMA ABU) --- */
         .btn {
             background: linear-gradient(to bottom, #ffffff, #f1f5f9);
-            color: var(--primary);
+            color: var(--primary-dark); /* Teks jadi abu gelap */
             padding: 18px 22px;
             border-radius: 16px;
             font-size: 15px;
@@ -211,27 +204,24 @@
             justify-content: space-between;
             align-items: center;
             border: 1px solid #e2e8f0;
-            border-bottom: 4px solid #cfd8dc; /* Efek tebal bawah */
+            border-bottom: 4px solid #b0bec5; /* Border bawah abu */
             margin-bottom: 12px;
             transition: all 0.2s;
             box-shadow: 0 4px 6px rgba(0,0,0,0.03);
         }
+        
+        .btn i { color: var(--primary); opacity: 0.8; } /* Icon warna abu utama */
 
-        .btn:active {
-            transform: translateY(2px);
-            border-bottom-width: 2px;
-        }
+        .btn:active { transform: translateY(2px); border-bottom-width: 2px; }
 
-        /* Efek saat hover di desktop */
         @media(hover: hover) {
             .btn:hover {
                 transform: translateY(-2px);
-                border-bottom-color: var(--primary);
+                border-bottom-color: var(--primary); /* Hover jadi abu utama */
                 color: var(--primary-dark);
             }
         }
 
-        /* --- TOMBOL KEMBALI (BEDA WARNA) --- */
         .btn-back {
             background: linear-gradient(to bottom, #fffaf5, #fff3e0);
             color: var(--accent-back) !important;
@@ -239,9 +229,7 @@
             border-bottom: 4px solid #ffcc80;
             margin-top: 20px;
         }
-        
         .btn-back i { color: var(--accent-back) !important; }
-        
         .btn-back:active { border-bottom-width: 2px; }
 
         /* FORMULIR */
@@ -256,32 +244,34 @@
 
         .inp {
             padding: 14px 16px;
-            border: 2px solid #e2e8f0;
+            border: 2px solid #cfd8dc; /* Border input abu */
             border-radius: 12px;
             font-size: 15px;
             width: 100%;
-            outline: none;
             transition: 0.3s;
-            background: #f8fafc;
+            background: #eceff1; /* Background input abu terang */
             color: var(--text-dark);
         }
 
         .inp:focus {
             border-color: var(--primary);
             background: var(--white);
+            box-shadow: 0 0 0 3px rgba(96, 125, 139, 0.2);
         }
 
         textarea.inp { resize: vertical; min-height: 100px; }
 
         .upload-group {
-            border: 2px dashed #cbd5e1;
+            border: 2px dashed #b0bec5;
             padding: 15px;
             border-radius: 12px;
-            background: #f8fafc;
+            background: #eceff1;
             text-align: center;
             cursor: pointer;
         }
+        .upload-group:hover { border-color: var(--primary); background: #e3f2fd; }
 
+        /* Tombol Submit Abu Gelap */
         .submit-btn {
             background: linear-gradient(135deg, var(--primary), var(--primary-dark));
             color: white;
@@ -293,16 +283,16 @@
             cursor: pointer;
             font-size: 15px;
             width: 100%;
-            box-shadow: 0 8px 20px rgba(21, 101, 192, 0.3);
+            box-shadow: 0 8px 20px rgba(96, 125, 139, 0.3);
             display: flex;
             align-items: center;
             justify-content: center;
             gap: 8px;
         }
-        
         .submit-btn:active { transform: scale(0.98); }
+        .submit-btn:disabled { background: #b0bec5; box-shadow: none; }
 
-        /* TICKET & MODAL (Sama) */
+        /* TICKET STYLE (Tema Abu) */
         .ticket-card {
             border: none;
             border-radius: 16px;
@@ -314,7 +304,7 @@
         }
 
         .ticket-header {
-            background: var(--primary);
+            background: var(--primary-dark); /* Header tiket abu gelap */
             color: white;
             padding: 15px;
             text-align: center;
@@ -323,51 +313,33 @@
         }
 
         .ticket-body { padding: 20px; text-align: center; }
-        .ticket-number { font-size: 42px; font-weight: 800; color: var(--primary); margin: 10px 0; letter-spacing: 2px; }
+        .ticket-number { font-size: 42px; font-weight: 800; color: var(--primary-dark); margin: 10px 0; letter-spacing: 2px; }
 
-        .ticket-info-table { width: 100%; font-size: 13px; text-align: left; margin-top: 15px; border-top: 1px dashed #e2e8f0; padding-top: 15px; }
+        .ticket-info-table { width: 100%; font-size: 13px; text-align: left; margin-top: 15px; border-top: 1px dashed #cfd8dc; padding-top: 15px; }
         .ticket-info-table td { padding: 5px 0; color: var(--text-light); }
         .ticket-info-table td:nth-child(2) { color: var(--text-dark); font-weight: 600; padding-left: 10px; }
 
-        /* Modal */
-        #resultModal {
-            display: none; position: fixed; z-index: 1000; inset: 0;
-            background: rgba(0,0,0,0.85); flex-direction: column;
-            justify-content: center; align-items: center; padding: 20px;
-        }
-        #resultImg { max-width: 100%; max-height: 70vh; border-radius: 10px; border: 4px solid white; }
-        .close-modal { position: absolute; top: 20px; right: 20px; color: white; font-size: 24px; background: none; border: none; cursor: pointer; }
-
-        /* Tables & Badges */
+        /* Badges & Tables */
         .badge { padding: 4px 10px; border-radius: 20px; font-weight: 700; font-size: 11px; }
         .bg-green { background: #dcfce7; color: #166534; } 
-        .bg-blue { background: #dbeafe; color: #1e40af; } 
-        .bg-red { background: #fee2e2; color: #991b1b; } 
-        .spec-table { width: 100%; border-collapse: separate; border-spacing: 0; font-size: 13px; margin-bottom: 10px; border-radius: 10px; overflow: hidden; border: 1px solid #e2e8f0; }
+        .bg-gray { background: #eceff1; color: #546e7a; } /* Badge abu */
+        .spec-table { width: 100%; border-collapse: separate; border-spacing: 0; font-size: 13px; margin-bottom: 10px; border-radius: 10px; overflow: hidden; border: 1px solid #cfd8dc; }
         .spec-table th { background: var(--primary); color: white; padding: 10px; text-align: left; }
-        .spec-table td { padding: 10px; border-bottom: 1px solid #e2e8f0; background: white; }
-        
-        .schedule-card { border-radius: 12px; background: white; overflow: hidden; box-shadow: 0 2px 5px rgba(0,0,0,0.05); border: 1px solid #e2e8f0; }
-        .sch-row { display: flex; justify-content: space-between; padding: 12px 15px; border-bottom: 1px solid #f1f5f9; font-size: 13px; }
+        .spec-table td { padding: 10px; border-bottom: 1px solid #cfd8dc; background: white; }
 
-        #announcement { background: #fffbeb; color: #b45309; padding: 15px; font-size: 13px; text-align: center; display: none; border-bottom: 2px solid #fcd34d; }
-        
         @keyframes slideUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
 
-        .copy-footer { text-align: center; padding: 20px; font-size: 11px; color: #94a3b8; background: #f8fafc; margin-top: auto; }
+        .copy-footer { text-align: center; padding: 20px; font-size: 11px; color: #90a4ae; background: #eceff1; margin-top: auto; }
+        
+        /* Loader color changed */
+        .fa-spin { color: var(--primary) !important; }
     </style>
 </head>
 <body>
 
-<div id="resultModal">
-    <button class="close-modal" onclick="closeResultModal()"><i class="fas fa-times"></i></button>
-    <img id="resultImg" src="" alt="Tiket">
-    <div style="color:white; text-align:center; margin-top:15px; font-size:13px;">Tekan tahan gambar untuk menyimpan</div>
-</div>
-
 <div class="app-container">
     <div id="loader">
-        <i class="fas fa-circle-notch fa-spin fa-3x" style="color:#1565c0;"></i>
+        <i class="fas fa-circle-notch fa-spin fa-3x"></i>
         <p style="margin-top:10px; font-size:12px; color:#666;">Memuat...</p>
     </div>
     
@@ -381,11 +353,11 @@
         </div>
     </div>
     
-    <div id="announcement"></div>
+    <div id="announcement" style="background:#fffbeb; color:#b45309; padding:15px; font-size:13px; text-align:center; display:none; border-bottom:2px solid #fcd34d;"></div>
     <div id="chat-box"></div>
     
     <div class="copy-footer">
-        &copy; 2026 Sistem Lapas Digital | v2.2
+        &copy; 2026 Sistem Lapas Digital | v2.3 Monochrome
     </div>
 </div>
 
@@ -483,7 +455,7 @@
                 if(o.text.includes("Kembali")) {
                      btn.innerHTML = `<i class="${iconClass}"></i> <span>${o.text}</span>`;
                 } else {
-                     btn.innerHTML = `<span>${o.text}</span> <i class="${iconClass}" style="opacity:0.8; font-size:18px;"></i>`;
+                     btn.innerHTML = `<span>${o.text}</span> <i class="${iconClass}" style="font-size:18px;"></i>`;
                 }
                
                 btn.onclick = () => {
@@ -505,7 +477,7 @@
             const formHtml = `
             <div class="form-box">
                 <div class="upload-group" onclick="document.getElementById('f_ktp').click()">
-                    <span style="font-size:13px; color:var(--primary); font-weight:bold;"><i class="fas fa-camera fa-lg"></i><br>Foto KTP (Wajib)</span>
+                    <span style="font-size:13px; color:var(--primary-dark); font-weight:bold;"><i class="fas fa-camera fa-lg"></i><br>Foto KTP (Wajib)</span>
                     <input id="f_ktp" type="file" accept="image/*" style="display:none" onchange="this.previousElementSibling.innerText = '✅ Foto Tersimpan'">
                 </div>
                 <input id="f_nama" class="inp" placeholder="Nama Pengunjung">
@@ -537,9 +509,9 @@
             fields.forEach(f => {
                 uploadsHtml += `
                 <div class="upload-group" style="padding:10px; margin-bottom:8px; display:flex; justify-content:space-between; align-items:center;" onclick="document.getElementById('${f.id}').click()">
-                    <span style="font-size:12px; font-weight:bold; color:#555;">📂 ${f.l}</span>
+                    <span style="font-size:12px; font-weight:bold; color:var(--text-light);">📂 ${f.l}</span>
                     <input type="file" id="${f.id}" accept="image/*" style="display:none" onchange="this.previousElementSibling.innerText = '✅ Oke'">
-                    <i class="fas fa-chevron-right" style="color:#ccc"></i>
+                    <i class="fas fa-chevron-right" style="color:#b0bec5"></i>
                 </div>`;
             });
             const html = `
@@ -551,7 +523,7 @@
                 <input id="p_alamat" class="inp" placeholder="Alamat">
                 <input id="p_hub" class="inp" placeholder="Hubungan">
                 <input id="p_telp" class="inp" type="tel" placeholder="No HP/WA">
-                <div style="margin-top:10px; font-weight:bold; font-size:12px; color:var(--primary);">UNGGAH DOKUMEN:</div>
+                <div style="margin-top:10px; font-weight:bold; font-size:12px; color:var(--primary-dark);">UNGGAH DOKUMEN:</div>
                 ${uploadsHtml}
                 <button onclick="submitPengurusan()" class="submit-btn">KIRIM PERMOHONAN</button>
                 <button onclick="respond('start')" class="btn btn-back">Batal</button>
@@ -574,8 +546,6 @@
             const f_ktp = document.getElementById('f_ktp').files[0];
             const nama = document.getElementById('f_nama').value;
             const nik = document.getElementById('f_nik').value;
-            const alamat = document.getElementById('f_alamat').value;
-            const telp = document.getElementById('f_telp').value;
             const wbp = document.getElementById('f_wbp').value;
             const tgl = document.getElementById('f_tgl').value;
             const jam = document.getElementById('f_jam').value;
@@ -593,7 +563,7 @@
                 db.ref(counterPath).transaction(c => (c||0)+1, (e, comm, s) => {
                     if(comm) {
                         const no = `${prefix}-${sess}-${String(s.val()).padStart(3,'0')}`;
-                        const payload = { nama, nik, alamat, telp, wbp, tgl, jam, noAntrian: no, ktpUrl: base64, status: 'waiting', createdAt: firebase.database.ServerValue.TIMESTAMP };
+                        const payload = { nama, nik, wbp, tgl, jam, noAntrian: no, ktpUrl: base64, status: 'waiting', createdAt: firebase.database.ServerValue.TIMESTAMP };
                         db.ref(path).push(payload).then(() => {
                             chatBox.innerHTML = '';
                             renderTicket(payload, type === 'fisik' ? 'TATAP MUKA' : 'VIDEO CALL');
@@ -611,9 +581,6 @@
             inputs.wbp = document.getElementById('p_wbp').value;
             inputs.penjamin = document.getElementById('p_penjamin').value;
             inputs.nik = document.getElementById('p_nik').value;
-            inputs.alamat = document.getElementById('p_alamat').value;
-            inputs.hub = document.getElementById('p_hub').value;
-            inputs.telp = document.getElementById('p_telp').value;
             if(!inputs.wbp || !inputs.penjamin) return alert("Lengkapi data!");
             for(let id of ids) { if(!document.getElementById(id).files[0]) missing = true; }
             if(missing) return alert("Lengkapi dokumen!");
@@ -634,10 +601,9 @@
         }
 
         window.submitKritik = function() {
-            const puas = document.getElementById('k_puas').value;
             const pesan = document.getElementById('k_pesan').value;
             if(!pesan) return alert("Isi pesan!");
-            db.ref('kritik_saran').push({ kepuasan: puas, pesan: pesan, tgl: new Date().toISOString().split('T')[0], createdAt: firebase.database.ServerValue.TIMESTAMP }).then(() => {
+            db.ref('kritik_saran').push({ kepuasan: document.getElementById('k_puas').value, pesan: pesan, tgl: new Date().toISOString().split('T')[0] }).then(() => {
                 chatBox.innerHTML = ''; appendMsg('bot', "🙏 Terima Kasih!"); showBtn([{text:"Kembali", val:"start"}]);
             });
         }
@@ -694,18 +660,45 @@
                     <div style="margin-top:10px;"><img src="${data.ktpUrl}" style="height:40px;"></div>
                 </div>
             </div>
-            <button onclick="downloadTicket()" class="submit-btn" style="background:#333;">SIMPAN TIKET</button>`;
+            <button onclick="downloadTicket()" class="submit-btn" style="background:var(--primary-dark);">SIMPAN TIKET OTOMATIS</button>`;
             appendMsg('bot', "✅ **TIKET ANDA:**", { customHtml: ticketHtml });
         }
-        window.downloadTicket = function() { html2canvas(document.getElementById('ticket-node'), {scale:3, backgroundColor:null}).then(canvas => { document.getElementById('resultImg').src = canvas.toDataURL("image/png"); document.getElementById('resultModal').style.display = 'flex'; }); }
-        window.closeResultModal = () => document.getElementById('resultModal').style.display = 'none';
+
+        // --- FUNGSI AUTO DOWNLOAD BARU ---
+        window.downloadTicket = function() {
+            const btn = event.target.closest('button'); // Ambil tombol yang diklik
+            const oldText = btn.innerHTML;
+            btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Memproses...'; btn.disabled = true;
+
+            html2canvas(document.getElementById('ticket-node'), {
+                scale: 3,
+                backgroundColor: null, // Background transparan
+                useCORS: true // Penting jika gambar KTP dari URL eksternal
+            }).then(canvas => {
+                // Ubah ke format gambar
+                const image = canvas.toDataURL("image/png").replace("image/png", "image/octet-stream");
+                
+                // Buat link sementara untuk trigger download
+                const link = document.createElement('a');
+                link.download = 'tiket-antrian-' + Date.now() + '.png';
+                link.href = image;
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+
+                // Kembalikan tombol
+                btn.innerHTML = oldText; btn.disabled = false;
+            }).catch(err => {
+                alert("Gagal menyimpan gambar: " + err.message);
+                btn.innerHTML = oldText; btn.disabled = false;
+            });
+        }
     });
 
     function getMenu(cfg) {
         const htmlJadwal = `<table class="spec-table"><tr><th>Jenis</th><th>Hari</th></tr><tr><td>PIDUM</td><td>${cfg.sch_pidum || 'Sn & Rb'}</td></tr><tr><td>NARKOBA</td><td>${cfg.sch_narkoba || 'Sl & Km'}</td></tr></table>`;
         return {
             'start': {
-                // --- PERUBAHAN TEKS DISINI ---
                 text: cfg.welcome_msg || "👋 **Hai! Selamat Datang.**\nSilakan pilih menu dibawah:",
                 options: [
                     { text: "Daftar Tatap Muka", val: "daftar_fisik" },
