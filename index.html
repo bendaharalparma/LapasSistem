@@ -123,19 +123,60 @@
         }
         .btn-back i { color: #5a4a00; margin-left: 5px; }
 
-        /* FORM */
+        /* JAM REALTIME - COMPACT */
+        .clock-card {
+            background: linear-gradient(145deg, #ffffff, #f9f9f9);
+            /* Padding disesuaikan agar tinggi total mirip tombol menu (approx 60px) */
+            padding: 8px 20px; 
+            border-radius: 15px;
+            border: 1px solid #eee;
+            margin-bottom: 12px;
+            width: 100%;
+            /* Efek bayangan mirip tombol */
+            box-shadow: 5px 5px 10px #eeeeee, -5px -5px 10px #ffffff;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            height: 64px; /* Tinggi Fix agar sama dengan tombol */
+        }
+        .clock-left {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .c-time {
+            font-size: 24px;
+            font-weight: 800;
+            line-height: 1;
+            letter-spacing: 0.5px;
+        }
+        .clock-right {
+            text-align: right;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+        .c-date {
+            font-size: 11px;
+            color: #555;
+            font-weight: 600;
+            margin-bottom: 2px;
+        }
+        .c-status {
+            font-size: 10px;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-weight: 700;
+            display: inline-block;
+        }
+
+        /* FORM & LAINNYA */
         .form-box { display: flex; flex-direction: column; gap: 12px; margin-top: 5px; background: rgba(0,0,0,0.02); padding: 15px; border-radius: 15px; border: 1px solid #eee; }
         .inp { padding: 12px; border: 1px solid #ccc; border-radius: 8px; font-size: 15px; width: 100%; outline: none; transition: 0.3s; background: #fff; }
         .inp:focus { border-color: var(--primary); box-shadow: 0 0 0 2px rgba(85,85,85,0.1); }
         .upload-group { border: 2px dashed #ccc; padding: 10px; border-radius: 8px; background: #fff; margin-bottom: 5px; }
         .upload-label { font-size: 12px; font-weight: 600; color: #555; display: block; margin-bottom: 5px; }
-        
-        .submit-btn {
-            background: linear-gradient(to right, #444, #222);
-            color: white; border: none; padding: 16px; border-radius: 10px;
-            font-weight: bold; margin-top: 10px; cursor: pointer; font-size: 14px;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.2); width: 100%;
-        }
+        .submit-btn { background: linear-gradient(to right, #444, #222); color: white; border: none; padding: 16px; border-radius: 10px; font-weight: bold; margin-top: 10px; cursor: pointer; font-size: 14px; box-shadow: 0 5px 15px rgba(0,0,0,0.2); width: 100%; }
 
         /* TICKET */
         .ticket-card { border: 2px dashed var(--primary); padding: 20px; border-radius: 15px; text-align: center; margin-top: 10px; background: #fff; position: relative; box-shadow: 0 5px 20px rgba(0,0,0,0.05); }
@@ -164,43 +205,6 @@
         .schedule-card { border: 1px solid #eee; border-radius: 10px; overflow: hidden; margin-top: 5px; background: white; }
         .sch-row { display: flex; justify-content: space-between; padding: 12px 15px; border-bottom: 1px solid #f9f9f9; font-size: 12px; }
 
-        /* JAM REALTIME - SEBESAR MENU */
-        .clock-card {
-            background: #fff;
-            padding: 15px;
-            border-radius: 15px;
-            border: 1px solid #eee;
-            margin-bottom: 12px;
-            text-align: center;
-            width: 100%;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.03);
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-        }
-        .clock-time {
-            font-size: 28px;
-            font-weight: 800;
-            line-height: 1;
-            margin-bottom: 2px;
-            letter-spacing: 1px;
-        }
-        .clock-date {
-            font-size: 12px;
-            color: #777;
-            font-weight: 500;
-            margin-bottom: 10px;
-            padding-bottom: 8px;
-            border-bottom: 1px dashed #eee;
-            width: 80%;
-        }
-        .clock-status {
-            font-size: 11px;
-            font-weight: 700;
-            padding: 4px 10px;
-            border-radius: 20px;
-        }
     </style>
 </head>
 <body>
@@ -238,6 +242,8 @@
         measurementId: "G-25HSNZ35ZH"
     };
 
+    let clockInterval; // Variabel untuk menyimpan interval jam
+
     window.addEventListener('load', () => {
         if (!firebase.apps.length) firebase.initializeApp(firebaseConfig);
         const db = firebase.database();
@@ -264,40 +270,80 @@
         }
 
         const chatBox = document.getElementById('chat-box');
-        
-        // --- LOGIKA JAM REALTIME CARD ---
-        function getGreetingHtml() {
+
+        // --- UPDATE JAM REALTIME ---
+        window.updateClock = function() {
+            const timeEl = document.getElementById('live_time');
+            const dateEl = document.getElementById('live_date');
+            const statusEl = document.getElementById('live_status');
+            
+            if(!timeEl) return; // Jika elemen tidak ada (user pindah menu), stop
+
             const now = new Date();
             const days = ['Minggu','Senin','Selasa','Rabu','Kamis','Jumat','Sabtu'];
-            const months = ['Januari','Februari','Maret','April','Mei','Juni','Juli','Agustus','September','Oktober','November','Desember'];
+            const months = ['Jan','Feb','Mar','Apr','Mei','Jun','Jul','Agt','Sep','Okt','Nov','Des'];
             
-            const dayDateStr = `${days[now.getDay()]}, ${now.getDate()} ${months[now.getMonth()]} ${now.getFullYear()}`;
-            const timeStr = now.toLocaleTimeString('id-ID', {hour: '2-digit', minute:'2-digit'});
+            // Format Waktu dengan Detik
+            const timeStr = now.toLocaleTimeString('id-ID', {hour: '2-digit', minute:'2-digit', second:'2-digit'});
+            // Format Tanggal
+            const dateStr = `${days[now.getDay()]}, ${now.getDate()} ${months[now.getMonth()]} ${now.getFullYear()}`;
+            
             const hour = now.getHours();
-            
-            // Jam Kerja: 08.00 - 15.00
             const isOpen = hour >= 8 && hour < 15;
             
-            const color = isOpen ? '#2e7d32' : '#c62828'; // Hijau : Merah
-            const bgColor = isOpen ? '#e8f5e9' : '#ffebee';
-            const statusMsg = isOpen ? "✅ Admin siap melayani Anda" : "⛔ Diluar jam kerja, Admin akan sesegera mungkin melayani Anda";
+            // Update DOM
+            timeEl.innerText = timeStr;
+            dateEl.innerText = dateStr;
             
-            return `
-            <div class="clock-card">
-                <div class="clock-time" style="color:${color};">${timeStr} WIB</div>
-                <div class="clock-date">${dayDateStr}</div>
-                <div class="clock-status" style="color:${color}; background:${bgColor};">${statusMsg}</div>
-            </div>`;
+            // Cek Status (Hanya update jika berubah untuk efisiensi)
+            if(statusEl) {
+                if(isOpen) {
+                    timeEl.style.color = '#2e7d32'; // Hijau
+                    statusEl.innerText = "✅ Admin Siap";
+                    statusEl.style.background = "#e8f5e9";
+                    statusEl.style.color = "#2e7d32";
+                } else {
+                    timeEl.style.color = '#c62828'; // Merah
+                    statusEl.innerText = "⛔ Tutup";
+                    statusEl.style.background = "#ffebee";
+                    statusEl.style.color = "#c62828";
+                }
+            }
         }
 
         window.startChat = function() { 
             chatBox.innerHTML = '';
+            // Clear interval lama jika ada
+            if(clockInterval) clearInterval(clockInterval);
+
             const menu = getMenu(config)['start'];
-            const greeting = getGreetingHtml();
-            appendMsg('bot', greeting, { options: menu.options });
+            
+            // Render HTML statis awal untuk jam
+            const clockHtml = `
+            <div class="clock-card">
+                <div class="clock-left">
+                    <div id="live_time" class="c-time">--:--:--</div>
+                </div>
+                <div class="clock-right">
+                    <div id="live_date" class="c-date">...</div>
+                    <div id="live_status" class="c-status">...</div>
+                </div>
+            </div>`;
+            
+            appendMsg('bot', clockHtml, { options: menu.options });
+
+            // Jalankan update pertama kali langsung
+            updateClock();
+            // Set interval tiap 1 detik
+            clockInterval = setInterval(updateClock, 1000);
         }
 
         window.respond = function(key) {
+            // Jika pindah menu, stop interval jam agar hemat resource
+            if (key !== 'start' && clockInterval) {
+                clearInterval(clockInterval);
+            }
+
             if (key === 'start') {
                 startChat();
                 return;
