@@ -102,85 +102,85 @@
 
     <div id="t-set">
         <div style="display:grid; grid-template-columns: 1fr 1fr; gap:30px;">
-            <div>
-                <h3><i class="fas fa-id-badge"></i> Identitas & Kop Surat</h3>
-                <label>Nama Aplikasi:</label> <input id="app_name">
-                <label>Kop Baris 1 (Kementerian):</label> <input id="kop_1">
-                <label>Kop Baris 2 (Wilayah):</label> <input id="kop_2">
-                <label>Kop Baris 3 (Nama Lapas):</label> <input id="kop_3">
-                <label>Kop Baris 4 (Alamat):</label> <input id="kop_4">
-                <label>Link Logo (URL):</label> <input id="logo_url">
-                <label>Link Header (URL):</label> <input id="header_bg">
-                
-                <label>Pengumuman (Info Penting):</label>
-                <div class="rich-box">
-                    <div class="rich-toolbar">
-                        <button class="tool-btn" onclick="fmt('announcement_edit', 'bold')"><b>B</b></button>
-                        <button class="tool-btn" onclick="fmt('announcement_edit', 'italic')"><i>I</i></button>
-                        <button class="tool-btn" onclick="insImg('announcement_edit')"><i class="fas fa-image"></i></button>
-                    </div>
-                    <div id="announcement_edit" class="rich-edit" contenteditable="true"></div>
-                </div>
-            </div>
-            
-            <div>
-                <h3><i class="fas fa-file-alt"></i> Konten & Jadwal</h3>
-                
-                <label>Syarat Kunjungan (Dokumen):</label>
-                <div class="rich-box">
-                    <div class="rich-toolbar">
-                        <button class="tool-btn" onclick="fmt('txt_doc_edit', 'bold')"><b>B</b></button>
-                        <button class="tool-btn" onclick="fmt('txt_doc_edit', 'insertUnorderedList')"><i class="fas fa-list-ul"></i></button>
-                        <button class="tool-btn" onclick="insImg('txt_doc_edit')"><i class="fas fa-image"></i></button>
-                    </div>
-                    <div id="txt_doc_edit" class="rich-edit" contenteditable="true"></div>
-                </div>
+           <div>
+               <h3><i class="fas fa-id-badge"></i> Identitas & Kop Surat</h3>
+               <label>Nama Aplikasi:</label> <input id="app_name">
+               <label>Kop Baris 1 (Kementerian):</label> <input id="kop_1">
+               <label>Kop Baris 2 (Wilayah):</label> <input id="kop_2">
+               <label>Kop Baris 3 (Nama Lapas):</label> <input id="kop_3">
+               <label>Kop Baris 4 (Alamat):</label> <input id="kop_4">
+               <label>Link Logo (URL):</label> <input id="logo_url">
+               <label>Link Header (URL):</label> <input id="header_bg">
+               
+               <label>Pengumuman (Info Penting):</label>
+               <div class="rich-box">
+                   <div class="rich-toolbar">
+                       <button class="tool-btn" onclick="fmt('announcement_edit', 'bold')"><b>B</b></button>
+                       <button class="tool-btn" onclick="fmt('announcement_edit', 'italic')"><i>I</i></button>
+                       <button class="tool-btn" onclick="insImg('announcement_edit')"><i class="fas fa-image"></i></button>
+                   </div>
+                   <div id="announcement_edit" class="rich-edit" contenteditable="true"></div>
+               </div>
+           </div>
+           
+           <div>
+               <h3><i class="fas fa-file-alt"></i> Konten & Jadwal</h3>
+               
+               <label>Syarat Kunjungan (Dokumen):</label>
+               <div class="rich-box">
+                   <div class="rich-toolbar">
+                       <button class="tool-btn" onclick="fmt('txt_doc_edit', 'bold')"><b>B</b></button>
+                       <button class="tool-btn" onclick="fmt('txt_doc_edit', 'insertUnorderedList')"><i class="fas fa-list-ul"></i></button>
+                       <button class="tool-btn" onclick="insImg('txt_doc_edit')"><i class="fas fa-image"></i></button>
+                   </div>
+                   <div id="txt_doc_edit" class="rich-edit" contenteditable="true"></div>
+               </div>
 
-                <label>Aturan Barang:</label>
-                <div class="rich-box">
-                    <div class="rich-toolbar">
-                        <button class="tool-btn" onclick="fmt('txt_item_edit', 'bold')"><b>B</b></button>
-                        <button class="tool-btn" onclick="fmt('txt_item_edit', 'insertUnorderedList')"><i class="fas fa-list-ul"></i></button>
-                        <button class="tool-btn" onclick="insImg('txt_item_edit')"><i class="fas fa-image"></i></button>
-                    </div>
-                    <div id="txt_item_edit" class="rich-edit" contenteditable="true"></div>
-                </div>
-                
-                <label>Syarat PB/CB/CMB (Lengkap):</label> 
-                <div class="rich-box">
-                    <div class="rich-toolbar">
-                        <button class="tool-btn" onclick="fmt('txt_pb_cb_edit', 'bold')"><b>B</b></button>
-                        <button class="tool-btn" onclick="fmt('txt_pb_cb_edit', 'italic')"><i>I</i></button>
-                        <button class="tool-btn" onclick="fmt('txt_pb_cb_edit', 'insertUnorderedList')"><i class="fas fa-list-ul"></i></button>
-                        <button class="tool-btn" onclick="insImg('txt_pb_cb_edit')"><i class="fas fa-image"></i> Gambar</button>
-                    </div>
-                    <div id="txt_pb_cb_edit" class="rich-edit" contenteditable="true" placeholder="Paste dari Word di sini..."></div>
-                </div>
-                
-                <label>Jadwal PIDUM & NARKOBA:</label> 
-                <div style="display:flex; gap:10px;"><input id="sch_pidum" placeholder="PIDUM"><input id="sch_narkoba" placeholder="NARKOBA"></div>
-                <label>Jam Layanan:</label> 
-                <div style="display:flex; gap:10px;"><input id="sch_mon_am" placeholder="Pagi"><input id="sch_mon_pm" placeholder="Siang"></div>
-                <label>Hari Lain:</label> 
-                <div style="display:flex; gap:10px;"><input id="sch_fri" placeholder="Jumat"><input id="sch_sat" placeholder="Sabtu"><input id="sch_sun" placeholder="Minggu"></div>
-            </div>
+               <label>Aturan Barang:</label>
+               <div class="rich-box">
+                   <div class="rich-toolbar">
+                       <button class="tool-btn" onclick="fmt('txt_item_edit', 'bold')"><b>B</b></button>
+                       <button class="tool-btn" onclick="fmt('txt_item_edit', 'insertUnorderedList')"><i class="fas fa-list-ul"></i></button>
+                       <button class="tool-btn" onclick="insImg('txt_item_edit')"><i class="fas fa-image"></i></button>
+                   </div>
+                   <div id="txt_item_edit" class="rich-edit" contenteditable="true"></div>
+               </div>
+               
+               <label>Syarat PB/CB/CMB (Lengkap):</label> 
+               <div class="rich-box">
+                   <div class="rich-toolbar">
+                       <button class="tool-btn" onclick="fmt('txt_pb_cb_edit', 'bold')"><b>B</b></button>
+                       <button class="tool-btn" onclick="fmt('txt_pb_cb_edit', 'italic')"><i>I</i></button>
+                       <button class="tool-btn" onclick="fmt('txt_pb_cb_edit', 'insertUnorderedList')"><i class="fas fa-list-ul"></i></button>
+                       <button class="tool-btn" onclick="insImg('txt_pb_cb_edit')"><i class="fas fa-image"></i> Gambar</button>
+                   </div>
+                   <div id="txt_pb_cb_edit" class="rich-edit" contenteditable="true" placeholder="Paste dari Word di sini..."></div>
+               </div>
+               
+               <label>Jadwal PIDUM & NARKOBA:</label> 
+               <div style="display:flex; gap:10px;"><input id="sch_pidum" placeholder="PIDUM"><input id="sch_narkoba" placeholder="NARKOBA"></div>
+               <label>Jam Layanan:</label> 
+               <div style="display:flex; gap:10px;"><input id="sch_mon_am" placeholder="Pagi"><input id="sch_mon_pm" placeholder="Siang"></div>
+               <label>Hari Lain:</label> 
+               <div style="display:flex; gap:10px;"><input id="sch_fri" placeholder="Jumat"><input id="sch_sat" placeholder="Sabtu"><input id="sch_sun" placeholder="Minggu"></div>
+           </div>
         </div>
 
         <div style="display:grid; grid-template-columns: 1fr 1fr; gap:30px; margin-top:30px;">
-            <div>
-                <h3><i class="fas fa-phone"></i> Kontak & Toko</h3>
-                <label>Info Toko Lapas:</label> <input id="toko_announce">
-                <label>Link Aplikasi Toko:</label> <input id="toko_link">
-                <label>WhatsApp Pengaduan (Tanpa 0/62):</label> <input id="wa_pengaduan">
-                <label>Link Saluran Informasi:</label> <input id="wa_channel">
-            </div>
-            <div>
-                <h3><i class="fas fa-share-alt"></i> Media Sosial</h3>
-                <label>Instagram URL:</label> <input id="soc_ig">
-                <label>Facebook URL:</label> <input id="soc_fb">
-                <label>Twitter/X URL:</label> <input id="soc_tw">
-                <label>Youtube URL:</label> <input id="soc_yt">
-            </div>
+           <div>
+               <h3><i class="fas fa-phone"></i> Kontak & Toko</h3>
+               <label>Info Toko Lapas:</label> <input id="toko_announce">
+               <label>Link Aplikasi Toko:</label> <input id="toko_link">
+               <label>WhatsApp Pengaduan (Tanpa 0/62):</label> <input id="wa_pengaduan">
+               <label>Link Saluran Informasi:</label> <input id="wa_channel">
+           </div>
+           <div>
+               <h3><i class="fas fa-share-alt"></i> Media Sosial</h3>
+               <label>Instagram URL:</label> <input id="soc_ig">
+               <label>Facebook URL:</label> <input id="soc_fb">
+               <label>Twitter/X URL:</label> <input id="soc_tw">
+               <label>Youtube URL:</label> <input id="soc_yt">
+           </div>
         </div>
 
         <button class="btn-save-fancy" onclick="saveConf()">
@@ -192,17 +192,17 @@
         <div class="filter-bar">
             <div class="data-counter" id="cnt_fisik">Memuat...</div>
             <div style="display:flex; gap:5px;">
-                <input type="date" id="d_fisik" style="width:auto;">
-                <button onclick="load('registrations','tb_fisik','d_fisik')" class="btn btn-search"><i class="fas fa-search"></i> Cari</button>
-                <button onclick="realtimeLoad('registrations','tb_fisik','cnt_fisik')" class="btn btn-reset"><i class="fas fa-sync"></i> Refresh</button>
-                <button onclick="deleteAllData('registrations')" class="btn btn-del-all"><i class="fas fa-trash"></i> Hapus Semua</button>
-            </div>
+               <input type="date" id="d_fisik" style="width:auto;">
+               <button onclick="load('registrations','tb_fisik','d_fisik')" class="btn btn-search"><i class="fas fa-search"></i> Cari</button>
+               <button onclick="realtimeLoad('registrations','tb_fisik','cnt_fisik')" class="btn btn-reset"><i class="fas fa-sync"></i> Refresh</button>
+               <button onclick="deleteAllData('registrations')" class="btn btn-del-all"><i class="fas fa-trash"></i> Hapus Semua</button>
+           </div>
         </div>
         <div class="print-area" style="display:flex; gap:10px; align-items:center; margin-bottom:10px;">
             <i class="fas fa-print"></i> <b>Cetak:</b>
             <input id="p_nm_fisik" placeholder="Nama Petugas" style="margin:0; width:150px;">
             <input id="p_nip_fisik" placeholder="NIP Petugas" style="margin:0; width:150px;">
-            <button onclick="pdf('tb_fisik','Laporan Kunjungan Tatap Muka','p_nm_fisik','p_nip_fisik')" class="btn btn-print"><i class="fas fa-file-pdf"></i> PDF</button>
+            <button onclick="pdf('tbl_fisik','Laporan Kunjungan Tatap Muka','p_nm_fisik','p_nip_fisik')" class="btn btn-print"><i class="fas fa-file-pdf"></i> PDF</button>
         </div>
         <div class="table-responsive"><table id="tbl_fisik"><thead><tr><th>No Antrian</th><th>Waktu</th><th>Pengunjung</th><th>WBP</th><th>KTP</th><th>Status</th><th>Catatan</th><th>Aksi</th></tr></thead><tbody id="tb_fisik"></tbody></table></div>
     </div>
@@ -211,17 +211,17 @@
         <div class="filter-bar">
             <div class="data-counter" id="cnt_online">Memuat...</div>
             <div style="display:flex; gap:5px;">
-                <input type="date" id="d_online" style="width:auto;">
-                <button onclick="load('online_registrations','tb_online','d_online')" class="btn btn-search"><i class="fas fa-search"></i> Cari</button>
-                <button onclick="realtimeLoad('online_registrations','tb_online','cnt_online')" class="btn btn-reset"><i class="fas fa-sync"></i> Refresh</button>
-                <button onclick="deleteAllData('online_registrations')" class="btn btn-del-all"><i class="fas fa-trash"></i> Hapus Semua</button>
-            </div>
+               <input type="date" id="d_online" style="width:auto;">
+               <button onclick="load('online_registrations','tb_online','d_online')" class="btn btn-search"><i class="fas fa-search"></i> Cari</button>
+               <button onclick="realtimeLoad('online_registrations','tb_online','cnt_online')" class="btn btn-reset"><i class="fas fa-sync"></i> Refresh</button>
+               <button onclick="deleteAllData('online_registrations')" class="btn btn-del-all"><i class="fas fa-trash"></i> Hapus Semua</button>
+           </div>
         </div>
         <div class="print-area" style="display:flex; gap:10px; align-items:center; margin-bottom:10px;">
             <i class="fas fa-print"></i> <b>Cetak:</b>
             <input id="p_nm_online" placeholder="Nama Petugas" style="margin:0; width:150px;">
             <input id="p_nip_online" placeholder="NIP Petugas" style="margin:0; width:150px;">
-            <button onclick="pdf('tb_online','Laporan Video Call','p_nm_online','p_nip_online')" class="btn btn-print"><i class="fas fa-file-pdf"></i> PDF</button>
+            <button onclick="pdf('tbl_online','Laporan Video Call','p_nm_online','p_nip_online')" class="btn btn-print"><i class="fas fa-file-pdf"></i> PDF</button>
         </div>
         <div class="table-responsive"><table id="tbl_online"><thead><tr><th>No Antrian</th><th>Waktu</th><th>Pengunjung</th><th>WBP</th><th>KTP</th><th>Status</th><th>Catatan</th><th>Aksi</th></tr></thead><tbody id="tb_online"></tbody></table></div>
     </div>
@@ -230,17 +230,17 @@
         <div class="filter-bar">
             <div class="data-counter" id="cnt_urus">Memuat...</div>
             <div style="display:flex; gap:5px;">
-                <input type="date" id="d_urus" style="width:auto;">
-                <button onclick="load('pengurusan','tb_urus','d_urus')" class="btn btn-search"><i class="fas fa-search"></i> Cari</button>
-                <button onclick="realtimeLoad('pengurusan','tb_urus','cnt_urus')" class="btn btn-reset"><i class="fas fa-sync"></i> Refresh</button>
-                <button onclick="deleteAllData('pengurusan')" class="btn btn-del-all"><i class="fas fa-trash"></i> Hapus Semua</button>
-            </div>
+               <input type="date" id="d_urus" style="width:auto;">
+               <button onclick="load('pengurusan','tb_urus','d_urus')" class="btn btn-search"><i class="fas fa-search"></i> Cari</button>
+               <button onclick="realtimeLoad('pengurusan','tb_urus','cnt_urus')" class="btn btn-reset"><i class="fas fa-sync"></i> Refresh</button>
+               <button onclick="deleteAllData('pengurusan')" class="btn btn-del-all"><i class="fas fa-trash"></i> Hapus Semua</button>
+           </div>
         </div>
         <div class="print-area" style="display:flex; gap:10px; align-items:center; margin-bottom:10px;">
             <i class="fas fa-print"></i> <b>Cetak:</b>
             <input id="p_nm_urus" placeholder="Nama Petugas" style="margin:0; width:150px;">
             <input id="p_nip_urus" placeholder="NIP Petugas" style="margin:0; width:150px;">
-            <button onclick="pdf('tb_urus','Laporan Pengurusan PB/CB/CMB','p_nm_urus','p_nip_urus')" class="btn btn-print"><i class="fas fa-file-pdf"></i> PDF</button>
+            <button onclick="pdf('tbl_urus','Laporan Pengurusan PB/CB/CMB','p_nm_urus','p_nip_urus')" class="btn btn-print"><i class="fas fa-file-pdf"></i> PDF</button>
         </div>
         <div class="table-responsive"><table id="tbl_urus"><thead><tr><th>Tanggal</th><th>Jenis</th><th>WBP</th><th>Penjamin</th><th>Hubungan</th><th>Berkas</th><th>Status</th><th>Catatan</th><th>Aksi</th></tr></thead><tbody id="tb_urus"></tbody></table></div>
     </div>
@@ -249,15 +249,15 @@
         <div class="filter-bar">
             <div class="data-counter" id="cnt_kritik">Memuat...</div>
             <div style="display:flex; gap:5px;">
-                <button onclick="realtimeLoad('kritik_saran','tb_kritik','cnt_kritik')" class="btn btn-reset"><i class="fas fa-sync"></i> Refresh</button>
-                <button onclick="deleteAllData('kritik_saran')" class="btn btn-del-all"><i class="fas fa-trash"></i> Hapus Semua</button>
-            </div>
+               <button onclick="realtimeLoad('kritik_saran','tb_kritik','cnt_kritik')" class="btn btn-reset"><i class="fas fa-sync"></i> Refresh</button>
+               <button onclick="deleteAllData('kritik_saran')" class="btn btn-del-all"><i class="fas fa-trash"></i> Hapus Semua</button>
+           </div>
         </div>
         <div class="print-area" style="display:flex; gap:10px; align-items:center; margin-bottom:10px;">
              <i class="fas fa-print"></i> <b>Cetak:</b>
             <input id="p_nm_kritik" placeholder="Nama Petugas" style="margin:0; width:150px;">
             <input id="p_nip_kritik" placeholder="NIP Petugas" style="margin:0; width:150px;">
-            <button onclick="pdf('tb_kritik','Laporan Kritik & Saran','p_nm_kritik','p_nip_kritik')" class="btn btn-print"><i class="fas fa-file-pdf"></i> PDF</button>
+            <button onclick="pdf('tbl_kritik','Laporan Kritik & Saran','p_nm_kritik','p_nip_kritik')" class="btn btn-print"><i class="fas fa-file-pdf"></i> PDF</button>
         </div>
         <div class="table-responsive"><table id="tbl_kritik"><thead><tr><th>Tanggal</th><th>Kepuasan</th><th>Pesan / Masukan</th><th>Aksi</th></tr></thead><tbody id="tb_kritik"></tbody></table></div>
     </div>
@@ -409,10 +409,12 @@
                     row += `<td>${v.tgl}</td><td><b>${v.kepuasan}</b></td><td>${v.pesan}</td><td style="text-align:center">${btnDel}</td>`;
                 } else if (path === 'pengurusan') {
                     let fileBtn = v.images ? `<button onclick='showFiles("${v.k}")' style="background:#17a2b8; color:white; border:none; padding:5px 8px; border-radius:4px; cursor:pointer; font-size:10px;"><i class="fas fa-folder-open"></i> BERKAS</button>` : '-';
-                    row += `<td>${v.tgl}</td><td>${v.jenis}</td><td><b>${v.wbp}</b></td><td>${v.penjamin}<br><small>${v.nik}</small></td><td>${v.hub}</td><td style="text-align:center">${fileBtn}</td><td style="text-align:center">${statusBadge}</td><td>${noteInput}</td><td>${actions}</td>`;
+                    // UPDATE: Menambahkan NIK dan HP Penjamin
+                    row += `<td>${v.tgl}</td><td>${v.jenis}</td><td><b>${v.wbp}</b></td><td><b>${v.penjamin}</b><br><small>NIK: ${v.nik}</small><br><small>HP: ${v.telp}</small></td><td>${v.hub}</td><td style="text-align:center">${fileBtn}</td><td style="text-align:center">${statusBadge}</td><td>${noteInput}</td><td>${actions}</td>`;
                 } else {
                     let imgBtn = v.ktpUrl ? `<img src="${v.ktpUrl}" style="height:35px; border-radius:3px; cursor:pointer; border:1px solid #ccc;" onclick="showSingleImg('${v.k}')">` : '-';
-                    row += `<td style="font-weight:bold; color:#555; text-align:center;">${v.noAntrian||'-'}</td><td>${v.tgl}<br><small style="color:#666;">${v.jam||''}</small></td><td><b>${v.nama}</b><br><small>${v.telp}</small></td><td>${v.wbp}</td><td style="text-align:center">${imgBtn}</td><td style="text-align:center">${statusBadge}</td><td>${noteInput}</td><td>${actions}</td>`;
+                    // UPDATE: Menambahkan NIK dan HP Pengunjung
+                    row += `<td style="font-weight:bold; color:#555; text-align:center;">${v.noAntrian||'-'}</td><td>${v.tgl}<br><small style="color:#666;">${v.jam||''}</small></td><td><b>${v.nama}</b><br><small>NIK: ${v.nik}</small><br><small>HP: ${v.telp}</small></td><td>${v.wbp}</td><td style="text-align:center">${imgBtn}</td><td style="text-align:center">${statusBadge}</td><td>${noteInput}</td><td>${actions}</td>`;
                 }
                 row += "</tr>";
                 tb.insertAdjacentHTML('beforeend', row);
@@ -459,21 +461,61 @@
         doc.setFontSize(10); doc.setFont("helvetica", "normal"); doc.text("Dicetak Tanggal: " + new Date().toLocaleDateString('id-ID'), 148, 58, {align:'center'});
 
         const table = document.getElementById(tableId);
-        const headers = []; const body = [];
-        for(let th of table.parentElement.querySelectorAll('thead th')) { if(th.innerText!=='Aksi' && th.innerText!=='KTP' && th.innerText!=='Berkas') headers.push(th.innerText); }
-        for (let row of table.rows) {
-            const rowData = [];
-            for (let i = 0; i < row.cells.length; i++) {
-                const cell = row.cells[i];
-                if(cell.innerHTML.includes('<button') || cell.innerHTML.includes('<img')) continue;
-                let text = cell.innerText.trim();
-                if(cell.querySelector('input')) text = cell.querySelector('input').value;
-                rowData.push(text);
-            }
-            if(rowData.length > 0) body.push(rowData);
+        
+        // --- LOGIKA PDF BARU (KUSTOM) ---
+        let headers = [];
+        let body = [];
+        
+        // Tentukan Header dan Data berdasarkan ID Table
+        if (tableId === 'tbl_fisik' || tableId === 'tbl_online') {
+            headers = [['No', 'No Antrian', 'Waktu', 'Pengunjung', 'WBP', 'Status', 'Catatan']];
+            Array.from(table.tBodies[0].rows).forEach((row, i) => {
+                const cells = row.cells;
+                const statusText = cells[5].innerText.trim();
+                const noteVal = cells[6].querySelector('input') ? cells[6].querySelector('input').value : '';
+                body.push([
+                    i + 1, // Nomor
+                    cells[0].innerText.trim(), // No Antrian
+                    cells[1].innerText.trim(), // Waktu
+                    cells[2].innerText.trim(), // Pengunjung (sudah ada nik/hp dari render)
+                    cells[3].innerText.trim(), // WBP
+                    statusText, // Status
+                    noteVal // Catatan
+                ]);
+            });
+        } else if (tableId === 'tbl_urus') {
+            // FIX: Urutan Status & Catatan diperbaiki, Aksi dihapus
+            headers = [['No', 'Tanggal', 'Jenis', 'WBP', 'Penjamin', 'Hubungan', 'Status', 'Catatan']];
+            Array.from(table.tBodies[0].rows).forEach((row, i) => {
+                const cells = row.cells;
+                const statusText = cells[6].innerText.trim(); // Kolom 6 di HTML adalah Status
+                const noteVal = cells[7].querySelector('input') ? cells[7].querySelector('input').value : ''; // Kolom 7 adalah Catatan
+                body.push([
+                    i + 1,
+                    cells[0].innerText.trim(), // Tanggal
+                    cells[1].innerText.trim(), // Jenis
+                    cells[2].innerText.trim(), // WBP
+                    cells[3].innerText.trim(), // Penjamin
+                    cells[4].innerText.trim(), // Hubungan
+                    statusText,
+                    noteVal
+                ]);
+            });
+        } else if (tableId === 'tbl_kritik') {
+            headers = [['No', 'Tanggal', 'Kepuasan', 'Pesan / Masukan']];
+            Array.from(table.tBodies[0].rows).forEach((row, i) => {
+                const cells = row.cells;
+                body.push([
+                    i + 1,
+                    cells[0].innerText.trim(),
+                    cells[1].innerText.trim(),
+                    cells[2].innerText.trim()
+                ]);
+            });
         }
 
-        doc.autoTable({ head: [headers], body: body, startY: 65, theme: 'grid', styles: { fontSize: 9, cellPadding: 3, valign: 'middle' }, headStyles: { fillColor: [85, 85, 85], textColor: 255, halign:'center' }, alternateRowStyles: { fillColor: [245, 245, 245] } });
+        doc.autoTable({ head: headers, body: body, startY: 65, theme: 'grid', styles: { fontSize: 9, cellPadding: 3, valign: 'middle' }, headStyles: { fillColor: [85, 85, 85], textColor: 255, halign:'center' }, alternateRowStyles: { fillColor: [245, 245, 245] } });
+        
         let finalY = doc.lastAutoTable.finalY + 20; if(finalY > 170) { doc.addPage(); finalY = 20; }
         const dateStr = new Date().toLocaleDateString('id-ID', {day: 'numeric', month: 'long', year: 'numeric'});
         doc.setFont("times", "normal"); doc.text(`Arga Makmur, ${dateStr}`, 230, finalY);
