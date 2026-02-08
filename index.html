@@ -10,94 +10,340 @@
     <script defer src="https://www.gstatic.com/firebasejs/10.7.1/firebase-database-compat.js"></script>
     
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;600;700;800&display=swap" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
     
     <style>
-        * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
-        :root { --primary: #8B0000; --bg-light: #f4f6f9; }
-        body { font-family: 'Poppins', sans-serif; background: #eef2f5; margin: 0; display: flex; justify-content: center; min-height: 100vh; }
-        .app-container { width: 100%; max-width: 480px; background: #fff; min-height: 100vh; box-shadow: 0 0 25px rgba(0,0,0,0.1); display: flex; flex-direction: column; position: relative; }
-        
-        /* HEADER */
-        .header { position: relative; height: 180px; background-color: var(--primary); background-size: cover; background-position: center; display: flex; flex-direction: column; align-items: center; justify-content: center; color: white; border-bottom-left-radius: 30px; border-bottom-right-radius: 30px; z-index: 10; padding: 20px; }
-        .header::before { content: ''; position: absolute; inset: 0; background: rgba(0,0,0,0.5); border-bottom-left-radius: 30px; border-bottom-right-radius: 30px; }
-        .header-content { position: relative; z-index: 2; text-align: center; width: 100%; display: flex; flex-direction: column; align-items: center; }
-        .logo-area { width: auto; height: 70px; margin: 0 auto 10px; padding: 0; display: flex; justify-content: center; align-items: center; }
-        .logo-area img { height: 100%; width: auto; max-width: 100%; object-fit: contain; filter: drop-shadow(0 2px 4px rgba(0,0,0,0.3)); }
-        .app-name { font-weight: 700; font-size: 20px; margin: 0; text-shadow: 0 2px 4px rgba(0,0,0,0.5); line-height: 1.2; }
-        
-        /* CHAT BOX */
-        #chat-box { flex: 1; padding: 15px; overflow-y: auto; display: flex; flex-direction: column; gap: 10px; background: #fff; scroll-behavior: smooth; padding-bottom: 50px; }
-        .msg { max-width: 90%; padding: 12px 16px; border-radius: 16px; font-size: 14px; line-height: 1.5; animation: popIn 0.2s ease; }
-        .bot { background: #f0f2f5; align-self: flex-start; border-top-left-radius: 4px; color: #333; }
-        .user { background: #ffebee; align-self: flex-end; border-top-right-radius: 4px; color: #8B0000; border: 1px solid #ffcdd2; }
-        
-        /* COMPONENTS */
-        .btn { background: white; color: #444; padding: 15px 16px; border-radius: 12px; font-size: 14px; font-weight: 600; cursor: pointer; width: 100%; display: flex; justify-content: space-between; align-items: center; border: 1px solid #eee; margin-bottom: 8px; transition: transform 0.1s; box-shadow: 0 2px 5px rgba(0,0,0,0.05); }
-        .btn:active { transform: scale(0.98); background: #f9f9f9; }
-        .btn-back { background: #f8f9fa; justify-content: center; color: #666; margin-top: 10px; border-style: dashed; }
-        
-        .form-box { display: flex; flex-direction: column; gap: 12px; margin-top: 5px; background: white; padding: 5px; border-radius: 10px; }
-        .inp { padding: 12px; border: 1px solid #ddd; border-radius: 8px; font-size: 16px; width: 100%; outline: none; transition: 0.3s; background: #fafafa; }
-        .inp:focus { border-color: var(--primary); background: #fff; }
-        
-        .upload-group { border: 1px dashed #ccc; padding: 10px; border-radius: 8px; background: #f9f9f9; margin-bottom: 5px; }
-        .upload-label { font-size: 11px; font-weight: 600; color: #555; display: block; margin-bottom: 5px; }
-        
-        .submit-btn { background: #28a745; color: white; border: none; padding: 15px; border-radius: 8px; font-weight: bold; margin-top: 5px; cursor: pointer; font-size: 14px; box-shadow: 0 4px 6px rgba(40, 167, 69, 0.2); width: 100%; }
-        .submit-btn:disabled { background: #ccc; cursor: not-allowed; box-shadow: none; }
-        
-        /* TICKET & MODAL */
-        .ticket-card { border: 2px dashed var(--primary); padding: 15px; border-radius: 12px; text-align: center; margin-top: 10px; background: #fffcfc; position: relative; }
-        .ticket-number { font-size: 32px; font-weight: 800; color: #333; margin: 10px 0; letter-spacing: 2px; }
-        .ticket-note { background: #fff3cd; border: 1px solid #ffeeba; color: #856404; padding: 8px; font-size: 11px; margin-top: 10px; border-radius: 6px; text-align: left; }
-        
-        #resultModal { display: none; position: fixed; z-index: 100; inset: 0; background: rgba(0,0,0,0.85); flex-direction: column; justify-content: center; align-items: center; padding: 20px; }
-        #resultImg { max-width: 100%; max-height: 70vh; border-radius: 10px; box-shadow: 0 0 20px rgba(255,255,255,0.2); }
-        .close-modal { position: absolute; top: 20px; right: 20px; color: white; font-size: 30px; cursor: pointer; background: none; border: none; }
+        :root {
+            --primary: #8B0000;
+            --primary-dark: #600000;
+            --accent: #FFD700;
+            --bg-body: #f0f2f5;
+            --white: #ffffff;
+            --shadow: 0 10px 30px -5px rgba(0, 0, 0, 0.1);
+            --radius: 16px;
+        }
 
-        .badge { padding: 3px 8px; border-radius: 4px; font-weight: bold; font-size: 10px; }
-        .bg-green { background: #e8f5e9; color: #2e7d32; } 
-        .bg-blue { background: #e3f2fd; color: #1565c0; } 
-        .bg-red { background: #ffebee; color: #c62828; } 
-        .bg-gray { background: #eee; color: #555; }
+        * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
         
-        @keyframes popIn { from { opacity: 0; transform: scale(0.95); } to { opacity: 1; transform: scale(1); } }
-        #loader { position: absolute; inset: 0; background: white; display: flex; flex-direction: column; justify-content: center; align-items: center; z-index: 99; }
-        #announcement { background: #fff3cd; color: #856404; padding: 12px 15px; font-size: 12px; text-align: center; display: none; border-bottom: 2px solid #ffeeba; font-weight: 600; animation: pulse 2s infinite; }
-        @keyframes pulse { 0% { background-color: #fff3cd; } 50% { background-color: #fff8e1; } 100% { background-color: #fff3cd; } }
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background: var(--bg-body);
+            margin: 0;
+            display: flex;
+            justify-content: center;
+            min-height: 100vh;
+            color: #333;
+        }
+
+        .app-container {
+            width: 100%;
+            max-width: 480px;
+            background: #fff;
+            min-height: 100vh;
+            box-shadow: 0 0 40px rgba(0,0,0,0.1);
+            display: flex;
+            flex-direction: column;
+            position: relative;
+            overflow: hidden;
+        }
         
-        /* TABLE & SCHEDULE STYLES */
-        .spec-table { width: 100%; border-collapse: collapse; font-size: 12px; margin-bottom: 10px; border-radius: 8px; overflow: hidden; border: 1px solid #eee; }
-        .spec-table th { background: var(--primary); color: white; padding: 8px; text-align: left; }
-        .spec-table td { padding: 8px; border-bottom: 1px solid #eee; }
-        .schedule-card { border: 1px solid #eee; border-radius: 10px; overflow: hidden; margin-top: 5px; }
-        .sch-row { display: flex; justify-content: space-between; padding: 10px 12px; border-bottom: 1px solid #f9f9f9; font-size: 12px; }
+        /* HEADER MODERN */
+        .header {
+            position: relative;
+            height: 220px;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+            border-bottom-left-radius: 40px;
+            border-bottom-right-radius: 40px;
+            padding: 25px;
+            text-align: center;
+            color: white;
+            box-shadow: 0 10px 20px rgba(139, 0, 0, 0.2);
+            z-index: 10;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .header-bg-overlay {
+            position: absolute;
+            inset: 0;
+            background-image: url("https://www.transparenttextures.com/patterns/cubes.png"); /* Texture halus */
+            opacity: 0.1;
+            border-bottom-left-radius: 40px;
+            border-bottom-right-radius: 40px;
+        }
+
+        .logo-area {
+            width: 80px;
+            height: 80px;
+            background: white;
+            border-radius: 50%;
+            padding: 10px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+            margin-bottom: 10px;
+            z-index: 2;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .logo-area img { width: 100%; height: 100%; object-fit: contain; }
+
+        .app-name {
+            font-weight: 800;
+            font-size: 22px;
+            margin: 0;
+            z-index: 2;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+        }
+        
+        .app-subtitle {
+            font-size: 12px;
+            opacity: 0.9;
+            z-index: 2;
+            margin-top: 5px;
+            background: rgba(255,255,255,0.2);
+            padding: 4px 12px;
+            border-radius: 20px;
+        }
+
+        /* CHAT AREA */
+        #chat-box {
+            flex: 1;
+            padding: 20px;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            background: #fff;
+            padding-bottom: 80px;
+        }
+
+        .msg {
+            max-width: 92%;
+            padding: 14px 18px;
+            border-radius: 18px;
+            font-size: 14px;
+            line-height: 1.6;
+            animation: slideUp 0.3s ease forwards;
+            position: relative;
+        }
+
+        .bot {
+            background: #f8f9fa;
+            align-self: flex-start;
+            border-top-left-radius: 4px;
+            color: #444;
+            border: 1px solid #eee;
+        }
+
+        .user {
+            background: #FFF5F5;
+            align-self: flex-end;
+            border-top-right-radius: 4px;
+            color: var(--primary);
+            border: 1px solid #ffcdd2;
+            box-shadow: 0 2px 5px rgba(139,0,0,0.05);
+            font-weight: 600;
+        }
+
+        /* BUTTONS & MENUS */
+        .btn {
+            background: white;
+            color: #333;
+            padding: 16px 20px;
+            border-radius: 16px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            width: 100%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border: 1px solid #eee;
+            margin-bottom: 10px;
+            transition: all 0.2s ease;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.03);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn:hover { transform: translateY(-2px); box-shadow: 0 6px 15px rgba(0,0,0,0.08); border-color: #ddd; }
+        .btn:active { transform: scale(0.98); background: #f5f5f5; }
+        
+        .btn i { color: var(--primary); }
+        .btn-back { background: #fcfcfc; color: #666; border: 1px dashed #ccc; justify-content: center; }
+        .btn-back i { display: none; }
+
+        /* FORMS */
+        .form-box {
+            background: white;
+            padding: 5px;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .inp-group { position: relative; }
+        
+        .inp {
+            padding: 14px;
+            border: 2px solid #eee;
+            border-radius: 12px;
+            font-size: 15px;
+            width: 100%;
+            outline: none;
+            transition: 0.3s;
+            background: #fdfdfd;
+            font-family: inherit;
+        }
+
+        .inp:focus { border-color: var(--primary); background: #fff; box-shadow: 0 0 0 4px rgba(139, 0, 0, 0.1); }
+        
+        select.inp { appearance: none; background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%238B0000' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e"); background-repeat: no-repeat; background-position: right 15px center; background-size: 16px; }
+
+        .upload-group {
+            border: 2px dashed #ddd;
+            padding: 15px;
+            border-radius: 12px;
+            background: #fafafa;
+            text-align: center;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+        .upload-group:hover { border-color: var(--primary); background: #fff5f5; }
+        .upload-label { font-size: 13px; color: #666; font-weight: 600; display: block; margin-bottom: 5px; }
+
+        .submit-btn {
+            background: linear-gradient(135deg, #28a745 0%, #218838 100%);
+            color: white;
+            border: none;
+            padding: 16px;
+            border-radius: 12px;
+            font-weight: 700;
+            cursor: pointer;
+            font-size: 15px;
+            box-shadow: 0 5px 15px rgba(40, 167, 69, 0.3);
+            width: 100%;
+            transition: 0.3s;
+            letter-spacing: 0.5px;
+            margin-top: 10px;
+        }
+        .submit-btn:hover { transform: translateY(-2px); box-shadow: 0 8px 20px rgba(40, 167, 69, 0.4); }
+        .submit-btn:disabled { background: #ccc; box-shadow: none; transform: none; cursor: not-allowed; }
+
+        /* TICKET STYLE */
+        .ticket-card {
+            border: none;
+            padding: 0;
+            border-radius: 16px;
+            background: white;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+            position: relative;
+            overflow: hidden;
+            margin-top: 10px;
+        }
+        .ticket-header {
+            background: var(--primary);
+            color: white;
+            padding: 15px;
+            text-align: center;
+            font-weight: 700;
+        }
+        .ticket-body {
+            padding: 20px;
+            text-align: center;
+        }
+        .ticket-divider {
+            height: 20px;
+            background: radial-gradient(circle, transparent 50%, white 50%) 0 50% / 20px 20px repeat-x,
+                        linear-gradient(to right, #ddd 50%, transparent 50%) 0 50% / 10px 1px repeat-x;
+            background-color: #f4f6f9;
+            position: relative;
+            margin: 0;
+        }
+
+        .ticket-number { font-size: 36px; font-weight: 800; color: #333; letter-spacing: 2px; margin: 10px 0; font-family: 'Courier New', monospace; }
+        
+        /* RESULT MODAL */
+        #resultModal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            inset: 0;
+            background: rgba(0,0,0,0.9);
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            backdrop-filter: blur(5px);
+        }
+        #resultImg { max-width: 100%; max-height: 80vh; border-radius: 12px; box-shadow: 0 0 30px rgba(255,255,255,0.1); }
+        .close-modal { position: absolute; top: 30px; right: 30px; color: white; font-size: 30px; cursor: pointer; background: rgba(255,255,255,0.2); width: 40px; height: 40px; border-radius: 50%; display: flex; align-items: center; justify-content: center; border:none; transition:0.3s;}
+        .close-modal:hover { background: rgba(255,255,255,0.4); }
+
+        /* BADGES & TABLES */
+        .badge { padding: 5px 10px; border-radius: 6px; font-weight: 700; font-size: 11px; letter-spacing: 0.5px; text-transform: uppercase; }
+        .bg-green { background: #e8f5e9; color: #1b5e20; }
+        .bg-blue { background: #e3f2fd; color: #0d47a1; }
+        .bg-red { background: #ffebee; color: #b71c1c; }
+        .bg-gray { background: #eeeeee; color: #616161; }
+
+        .spec-table { width: 100%; border-collapse: separate; border-spacing: 0; border: 1px solid #eee; border-radius: 12px; overflow: hidden; margin-bottom: 10px; }
+        .spec-table th { background: var(--primary); color: white; padding: 12px; font-weight: 600; text-align: left; }
+        .spec-table td { padding: 12px; border-bottom: 1px solid #f0f0f0; background: white; }
+
+        /* ANIMATION */
+        @keyframes slideUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes pulse { 0% { box-shadow: 0 0 0 0 rgba(255, 193, 7, 0.4); } 70% { box-shadow: 0 0 0 10px rgba(255, 193, 7, 0); } 100% { box-shadow: 0 0 0 0 rgba(255, 193, 7, 0); } }
+
+        #loader { position: absolute; inset: 0; background: white; display: flex; flex-direction: column; justify-content: center; align-items: center; z-index: 999; }
+        
+        #announcement {
+            background: #fff3cd; color: #856404; padding: 15px; font-size: 13px; text-align: center;
+            display: none; border-bottom: 1px solid #ffeeba; font-weight: 600; line-height: 1.5;
+        }
+
+        /* Footer */
+        .app-footer { text-align: center; padding: 15px; font-size: 11px; color: #aaa; margin-top: auto; background: #fafafa; border-top: 1px solid #eee; }
     </style>
 </head>
 <body>
 
 <div id="resultModal">
-    <button class="close-modal" onclick="closeResultModal()">&times;</button>
+    <button class="close-modal" onclick="closeResultModal()"><i class="fas fa-times"></i></button>
     <img id="resultImg" src="" alt="Tiket">
-    <div style="color:white; text-align:center; margin-top:10px; font-size:12px;">Tekan tahan gambar untuk menyimpan</div>
+    <div style="color:white; text-align:center; margin-top:20px; font-size:14px; font-weight:600;">
+        <i class="fas fa-download"></i> Tekan tahan gambar untuk menyimpan
+    </div>
 </div>
 
 <div class="app-container">
-    <div id="loader"><i class="fas fa-circle-notch fa-spin fa-2x" style="color:#8B0000;"></i></div>
+    <div id="loader">
+        <i class="fas fa-circle-notch fa-spin fa-3x" style="color:#8B0000;"></i>
+        <p style="margin-top:15px; font-weight:600; color:#555;">Memuat Aplikasi...</p>
+    </div>
     
     <div class="header" id="header_bg">
-        <div class="header-content">
-            <div class="logo-area"><img id="logo_img" src="" alt="Logo" loading="lazy"></div>
-            <h1 class="app-name" id="app_title">Loading...</h1>
-            <div style="font-size:11px; opacity:0.9; margin-top:5px;">Melayani dengan Sepenuh Hati</div>
+        <div class="header-bg-overlay"></div>
+        <div class="logo-area">
+            <img id="logo_img" src="https://via.placeholder.com/100?text=LOGO" alt="Logo" loading="lazy">
         </div>
+        <h1 class="app-name" id="app_title">Lapas Digital</h1>
+        <div class="app-subtitle">Melayani dengan Sepenuh Hati</div>
     </div>
     
     <div id="announcement"></div>
+    
     <div id="chat-box"></div>
-    <div style="text-align:center; padding:10px; font-size:10px; color:#aaa; margin-top: auto;">&copy; 2026 Sistem Lapas Digital</div>
+    
+    <div class="app-footer">
+        &copy; 2026 Sistem Lapas Digital Terintegrasi
+    </div>
 </div>
 
 <script>
@@ -118,20 +364,29 @@
         const db = firebase.database();
         let config = {};
 
+        // Ambil Konfigurasi App
         db.ref('app_config').on('value', (snap) => {
             if(snap.exists()) config = snap.val();
             updateUI(config);
         });
 
         function updateUI(cfg) {
-            document.getElementById('app_title').innerText = cfg.app_name || "Lapas App";
-            document.getElementById('logo_img').src = cfg.logo_url || "";
-            if(cfg.header_bg) document.getElementById('header_bg').style.backgroundImage = `url('${cfg.header_bg}')`;
+            document.getElementById('app_title').innerText = cfg.app_name || "Lapas Digital";
+            if(cfg.logo_url) document.getElementById('logo_img').src = cfg.logo_url;
             
             const ann = document.getElementById('announcement');
-            if(cfg.announcement) { ann.style.display = 'block'; ann.innerHTML = "📢 <b>INFO PENTING:</b><br>" + cfg.announcement; } 
-            else { ann.style.display = 'none'; }
-            document.getElementById('loader').style.display = 'none';
+            if(cfg.announcement) { 
+                ann.style.display = 'block'; 
+                ann.innerHTML = `<span><i class="fas fa-bullhorn"></i> INFO PENTING:</span><br>${cfg.announcement}`; 
+            } else { 
+                ann.style.display = 'none'; 
+            }
+            
+            setTimeout(() => {
+                document.getElementById('loader').style.opacity = '0';
+                setTimeout(() => document.getElementById('loader').style.display = 'none', 300);
+            }, 500);
+            
             startChat();
         }
 
@@ -139,7 +394,9 @@
         window.startChat = function() { respond('start'); }
 
         window.respond = function(key) {
-            if (key === 'start') chatBox.innerHTML = '';
+            if (key === 'start') {
+                chatBox.innerHTML = ''; // Clear chat
+            }
             
             // Handle Cek Status Universal
             if (key.startsWith('cek_status_')) {
@@ -152,8 +409,8 @@
             if(!menu) return;
 
             let opts = menu.options || [];
-            if(menu.back) opts.push({text:"⬅️ KEMBALI KE MENU UTAMA", val:"start"});
-            if(menu.backTo) opts.push({text:"⬅️ KEMBALI SEBELUMNYA", val: menu.backTo});
+            if(menu.back) opts.push({text:"⬅️ KEMBALI KE MENU UTAMA", val:"start", class: 'btn-back'});
+            if(menu.backTo) opts.push({text:"⬅️ KEMBALI SEBELUMNYA", val: menu.backTo, class: 'btn-back'});
 
             // Handle Render Form
             if(menu.isForm) {
@@ -173,25 +430,52 @@
             const div = document.createElement('div');
             div.className = `msg ${sender}`;
             let content = text.replace(/\n/g, '<br>').replace(/\*\*(.*?)\*\*/g, '<b>$1</b>');
-            if(extra.customHtml) content += `<br>${extra.customHtml}`;
+            
+            if(extra.customHtml) content += `<div style="margin-top:10px;">${extra.customHtml}</div>`;
             div.innerHTML = content;
             chatBox.appendChild(div);
+            
             if(!extra.isForm && extra.options) showBtn(extra.options);
-            chatBox.scrollTop = chatBox.scrollHeight;
+            
+            // Scroll halus ke bawah
+            setTimeout(() => {
+                chatBox.scrollTo({ top: chatBox.scrollHeight, behavior: 'smooth' });
+            }, 100);
         }
 
         function showBtn(opts) {
             const div = document.createElement('div');
+            div.style.marginTop = "5px";
             opts.forEach(o => {
                 if(!o.url && !o.val) return;
                 const btn = document.createElement('div');
-                btn.className = o.text.includes("KEMBALI") ? 'btn btn-back' : 'btn';
-                btn.innerHTML = `<span>${o.text}</span> <i class="fas fa-chevron-right"></i>`;
+                btn.className = o.class || 'btn'; // Use custom class if exists
+                // Add icons based on text content simply
+                let icon = 'fa-chevron-right';
+                if(o.text.includes("DAFTAR")) icon = 'fa-pen-to-square';
+                if(o.text.includes("VIDEO")) icon = 'fa-video';
+                if(o.text.includes("TOKO")) icon = 'fa-cart-shopping';
+                if(o.text.includes("JADWAL")) icon = 'fa-calendar-days';
+                if(o.text.includes("KONTAK")) icon = 'fa-headset';
+                if(o.text.includes("KEMBALI")) icon = 'fa-arrow-left';
+                
+                btn.innerHTML = `<span>${o.text}</span> <i class="fas ${icon}"></i>`;
+                
                 btn.onclick = () => {
-                    div.remove();
-                    appendMsg('user', o.text);
+                    // Jika tombol kembali, hapus elemen chat sebelumnya agar rapi
+                    if(o.text.includes("KEMBALI")) {
+                        chatBox.innerHTML = '';
+                        if(o.val === 'start') {
+                            respond('start');
+                            return;
+                        }
+                    } else {
+                        div.remove(); // Hapus tombol setelah diklik
+                        appendMsg('user', o.text);
+                    }
+                    
                     if(o.type === 'link') window.open(o.url);
-                    else setTimeout(() => respond(o.val), 200);
+                    else setTimeout(() => respond(o.val), 300);
                 };
                 div.appendChild(btn);
             });
@@ -202,53 +486,60 @@
         function renderFormStandard(text, type) {
             const formHtml = `
             <div class="form-box">
-                <label style="font-size:12px; font-weight:600; color:#8B0000;">📸 Foto KTP (Wajib):</label>
-                <input id="f_ktp" type="file" accept="image/*" class="inp" style="padding:5px;">
+                <div class="upload-group" onclick="document.getElementById('f_ktp').click()">
+                    <i class="fas fa-camera fa-2x" style="color:#ccc;"></i>
+                    <span class="upload-label" id="label_ktp">Ketuk untuk Ambil Foto KTP (Wajib)</span>
+                    <input id="f_ktp" type="file" accept="image/*" hidden onchange="updateFileName(this, 'label_ktp')">
+                </div>
+                
                 <input id="f_nama" class="inp" placeholder="Nama Pengunjung">
                 <input id="f_nik" class="inp" type="number" placeholder="NIK / No. KTP">
                 <input id="f_alamat" class="inp" placeholder="Alamat Lengkap">
-                <input id="f_telp" class="inp" type="tel" placeholder="No. HP / WA">
+                <input id="f_telp" class="inp" type="tel" placeholder="No. HP / WhatsApp">
                 <input id="f_wbp" class="inp" placeholder="Nama WBP (Bin/Binti)">
-                <div style="display:flex; gap:5px;">
+                
+                <div style="display:flex; gap:10px;">
                     <input id="f_tgl" class="inp" type="date" style="flex:2">
                     <select id="f_jam" class="inp" style="flex:1">
                         <option value="Pagi">Pagi</option>
                         <option value="Siang">Siang</option>
                     </select>
                 </div>
-                <button onclick="submitForm('${type}')" class="submit-btn">AMBIL ANTRIAN</button>
-                <button onclick="respond('start')" style="background:#f0f0f0; border:none; padding:10px; border-radius:8px; width:100%; margin-top:5px;">Batal</button>
+                
+                <button onclick="submitForm('${type}')" class="submit-btn"><i class="fas fa-paper-plane"></i> AMBIL ANTRIAN</button>
+                <button onclick="respond('start')" class="btn btn-back" style="margin-top:10px;">Batal</button>
             </div>`;
             appendMsg('bot', text, { customHtml: formHtml });
         }
 
-        // --- FORM PENGURUSAN (Menu 3 - 7 Dokumen) ---
+        // --- FORM PENGURUSAN ---
         window.renderFormPengurusan = function() {
             const fields = [
-                {id:'u_ktp_wbp', l:'KTP WBP'}, 
-                {id:'u_kk_wbp', l:'KK WBP'},
-                {id:'u_ktp_penj', l:'KTP Penjamin'}, 
-                {id:'u_kk_penj', l:'KK Penjamin'},
+                {id:'u_ktp_wbp', l:'KTP WBP'}, {id:'u_kk_wbp', l:'KK WBP'},
+                {id:'u_ktp_penj', l:'KTP Penjamin'}, {id:'u_kk_penj', l:'KK Penjamin'},
                 {id:'u_surat_1', l:'Surat Pernyataan Penjamin'},
                 {id:'u_surat_2', l:'Surat Jaminan Kesanggupan'},
                 {id:'u_foto', l:'Foto Diri Penjamin'}
             ];
             
-            let uploadsHtml = '';
+            let uploadsHtml = '<div style="display:grid; grid-template-columns: 1fr 1fr; gap:8px;">';
             fields.forEach(f => {
                 uploadsHtml += `
-                <div class="upload-group">
-                    <span class="upload-label">📂 ${f.l}</span>
-                    <input type="file" id="${f.id}" accept="image/*" style="font-size:12px;">
+                <div class="upload-group" style="padding:10px;" onclick="document.getElementById('${f.id}').click()">
+                    <i class="fas fa-file-upload"></i>
+                    <span class="upload-label" id="l_${f.id}" style="font-size:10px;">${f.l}</span>
+                    <input type="file" id="${f.id}" accept="image/*" hidden onchange="updateFileName(this, 'l_${f.id}')">
                 </div>`;
             });
+            uploadsHtml += '</div>';
 
             const html = `
             <div class="form-box">
-                <div style="background:#e3f2fd; padding:10px; font-size:11px; border-radius:5px; margin-bottom:10px;">
-                    ⚠️ Pastikan semua foto dokumen jelas.
+                <div style="background:#e3f2fd; padding:12px; font-size:12px; border-radius:8px; border-left:4px solid #2196F3; display:flex; align-items:center; gap:10px;">
+                    <i class="fas fa-info-circle" style="color:#2196F3"></i>
+                    <span>Pastikan semua foto dokumen terbaca dengan jelas.</span>
                 </div>
-                <label style="font-size:12px; font-weight:600;">Jenis Pengurusan:</label>
+                <label style="font-weight:600; font-size:12px; margin-top:10px; display:block;">Jenis Pengurusan:</label>
                 <select id="p_jenis" class="inp">
                     <option value="PB">PB (Pembebasan Bersyarat)</option>
                     <option value="CB">CB (Cuti Bersyarat)</option>
@@ -261,31 +552,39 @@
                 <input id="p_hub" class="inp" placeholder="Hubungan dengan WBP">
                 <input id="p_telp" class="inp" type="tel" placeholder="No HP / WA">
                 
-                <div style="margin-top:10px; font-weight:bold; font-size:12px;">UNGGAH DOKUMEN:</div>
+                <div style="margin-top:15px; font-weight:bold; font-size:13px; color:var(--primary);">UNGGAH DOKUMEN:</div>
                 ${uploadsHtml}
                 
-                <button onclick="submitPengurusan()" class="submit-btn">KIRIM PERMOHONAN</button>
-                <button onclick="respond('start')" style="background:#f0f0f0; border:none; padding:10px; border-radius:8px; width:100%; margin-top:5px;">Batal</button>
+                <button onclick="submitPengurusan()" class="submit-btn"><i class="fas fa-paper-plane"></i> KIRIM PERMOHONAN</button>
+                <button onclick="respond('start')" class="btn btn-back" style="margin-top:10px;">Batal</button>
             </div>`;
             appendMsg('bot', "📝 **FORMULIR PENGURUSAN PB/CB/CMB:**", { customHtml: html });
         }
 
-        // --- FORM KRITIK (Menu 6) ---
+        // --- FORM KRITIK ---
         window.renderFormKritik = function() {
             const html = `
             <div class="form-box">
-                <label style="font-size:12px;">Tingkat Kepuasan:</label>
+                <label style="font-size:13px; font-weight:600;">Seberapa puas Anda?</label>
                 <select id="k_puas" class="inp">
                     <option value="Sangat Puas">😍 Sangat Puas</option>
                     <option value="Puas">🙂 Puas</option>
                     <option value="Cukup">😐 Cukup</option>
                     <option value="Kurang">☹️ Kurang</option>
                 </select>
-                <textarea id="k_pesan" class="inp" rows="4" placeholder="Tulis kritik & saran Anda disini..."></textarea>
+                <textarea id="k_pesan" class="inp" rows="4" placeholder="Tulis masukan Anda disini..."></textarea>
                 <button onclick="submitKritik()" class="submit-btn">KIRIM MASUKAN</button>
-                <button onclick="respond('start')" style="background:#f0f0f0; border:none; padding:10px; border-radius:8px; width:100%; margin-top:5px;">Batal</button>
+                <button onclick="respond('start')" class="btn btn-back" style="margin-top:10px;">Batal</button>
             </div>`;
             appendMsg('bot', "📢 **KRITIK & SARAN:**\nMasukan Anda sangat berarti bagi kami.", { customHtml: html });
+        }
+
+        // --- UTILS ---
+        window.updateFileName = function(input, labelId) {
+            if(input.files && input.files[0]) {
+                document.getElementById(labelId).innerText = "✅ " + input.files[0].name.substring(0, 15) + "...";
+                document.getElementById(labelId).style.color = "green";
+            }
         }
 
         // --- LOGIC SUBMIT STANDARD ---
@@ -299,10 +598,14 @@
             const tgl = document.getElementById('f_tgl').value;
             const jam = document.getElementById('f_jam').value;
 
-            if(!f_ktp || !nama || !nik || !wbp || !tgl) return alert("Lengkapi data & foto KTP!");
+            if(!f_ktp || !nama || !nik || !wbp || !tgl) {
+                Swal.fire({icon: 'error', title: 'Data Belum Lengkap', text: 'Mohon lengkapi semua data dan foto KTP.'});
+                return;
+            }
 
             const btn = document.querySelector('.submit-btn');
-            btn.innerHTML = "Mengirim..."; btn.disabled = true;
+            const originalText = btn.innerHTML;
+            btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Mengirim...'; btn.disabled = true;
 
             const path = type === 'fisik' ? 'registrations' : 'online_registrations';
             const prefix = type === 'fisik' ? 'A' : 'V';
@@ -316,11 +619,19 @@
                         const payload = { nama, nik, alamat, telp, wbp, tgl, jam, noAntrian: no, ktpUrl: base64, status: 'waiting', createdAt: firebase.database.ServerValue.TIMESTAMP };
                         
                         db.ref(path).push(payload).then(() => {
-                            chatBox.innerHTML = '';
-                            renderTicket(payload, type === 'fisik' ? 'TATAP MUKA' : 'VIDEO CALL');
+                            Swal.fire({
+                                icon: 'success',
+                                title: 'Berhasil!',
+                                text: 'Tiket antrian Anda berhasil dibuat.',
+                                confirmButtonColor: '#28a745'
+                            }).then(() => {
+                                chatBox.innerHTML = '';
+                                renderTicket(payload, type === 'fisik' ? 'TATAP MUKA' : 'VIDEO CALL');
+                            });
                         });
                     } else {
-                        btn.disabled = false; alert("Gagal koneksi. Coba lagi.");
+                        btn.disabled = false; btn.innerHTML = originalText;
+                        Swal.fire('Gagal', 'Koneksi bermasalah, silakan coba lagi.', 'error');
                     }
                 });
             });
@@ -329,30 +640,25 @@
         // --- LOGIC SUBMIT PENGURUSAN ---
         window.submitPengurusan = async function() {
             const ids = ['u_ktp_wbp','u_kk_wbp','u_ktp_penj','u_kk_penj','u_surat_1','u_surat_2','u_foto'];
-            const inputs = {};
+            const inputs = {
+                jenis: document.getElementById('p_jenis').value,
+                wbp: document.getElementById('p_wbp').value,
+                penjamin: document.getElementById('p_penjamin').value,
+                nik: document.getElementById('p_nik').value,
+                alamat: document.getElementById('p_alamat').value,
+                hub: document.getElementById('p_hub').value,
+                telp: document.getElementById('p_telp').value
+            };
+
+            if(!inputs.wbp || !inputs.penjamin || !inputs.nik) return Swal.fire('Error', 'Data formulir wajib diisi.', 'warning');
+
             let missing = false;
-
-            // Get Text Data
-            inputs.jenis = document.getElementById('p_jenis').value;
-            inputs.wbp = document.getElementById('p_wbp').value;
-            inputs.penjamin = document.getElementById('p_penjamin').value;
-            inputs.nik = document.getElementById('p_nik').value;
-            inputs.alamat = document.getElementById('p_alamat').value;
-            inputs.hub = document.getElementById('p_hub').value;
-            inputs.telp = document.getElementById('p_telp').value;
-
-            if(!inputs.wbp || !inputs.penjamin || !inputs.nik || !inputs.hub) return alert("Mohon lengkapi data formulir!");
-
-            // Check Files
-            for(let id of ids) {
-                if(!document.getElementById(id).files[0]) missing = true;
-            }
-            if(missing) return alert("Mohon unggah ke-7 dokumen yang diminta!");
+            for(let id of ids) { if(!document.getElementById(id).files[0]) missing = true; }
+            if(missing) return Swal.fire('Dokumen Kurang', 'Mohon unggah ke-7 dokumen yang diminta!', 'warning');
 
             const btn = document.querySelector('.submit-btn');
-            const oldTxt = btn.innerText;
-            btn.innerText = "Mengompres & Mengunggah (Mohon Tunggu)..."; 
-            btn.disabled = true;
+            const oldTxt = btn.innerHTML;
+            btn.innerHTML = '<i class="fas fa-cog fa-spin"></i> Mengunggah...'; btn.disabled = true;
 
             try {
                 const images = {};
@@ -361,22 +667,17 @@
                     images[id] = await new Promise(resolve => compressImage(file, resolve));
                 }
 
-                const payload = {
-                    ...inputs,
-                    images: images,
-                    status: 'waiting',
-                    tgl: new Date().toISOString().split('T')[0],
-                    createdAt: firebase.database.ServerValue.TIMESTAMP
-                };
-
+                const payload = { ...inputs, images: images, status: 'waiting', tgl: new Date().toISOString().split('T')[0], createdAt: firebase.database.ServerValue.TIMESTAMP };
                 await db.ref('pengurusan').push(payload);
+                
                 chatBox.innerHTML = '';
-                appendMsg('bot', `✅ **PERMOHONAN TERKIRIM!**\n\nPengajuan **${inputs.jenis}** untuk WBP: **${inputs.wbp}** telah kami terima.\n\nSilakan cek status secara berkala menggunakan menu **Cek Status** dengan NIK Penjamin: **${inputs.nik}**.`);
+                Swal.fire({ icon: 'success', title: 'Terkirim!', text: 'Permohonan Anda sedang kami proses.' });
+                appendMsg('bot', `✅ **PERMOHONAN TERKIRIM!**\n\nPengajuan **${inputs.jenis}** untuk WBP: **${inputs.wbp}** berhasil dikirim.\n\nSilakan cek status berkala dengan NIK: **${inputs.nik}**.`);
                 showBtn([{text:"⬅️ KEMBALI KE MENU UTAMA", val:"start"}]);
 
             } catch(e) {
-                alert("Gagal upload: " + e.message);
-                btn.innerText = oldTxt; btn.disabled = false;
+                Swal.fire('Gagal', e.message, 'error');
+                btn.innerHTML = oldTxt; btn.disabled = false;
             }
         }
 
@@ -384,20 +685,16 @@
         window.submitKritik = function() {
             const puas = document.getElementById('k_puas').value;
             const pesan = document.getElementById('k_pesan').value;
-            if(!pesan) return alert("Mohon isi pesan kritik/saran.");
+            if(!pesan) return Swal.fire('Ups', 'Mohon isi pesan kritik/saran.', 'warning');
 
             const btn = document.querySelector('.submit-btn');
-            btn.disabled = true; btn.innerText = "Mengirim...";
+            btn.disabled = true; btn.innerHTML = 'Mengirim...';
 
-            const payload = {
-                kepuasan: puas,
-                pesan: pesan,
-                tgl: new Date().toISOString().split('T')[0],
-                createdAt: firebase.database.ServerValue.TIMESTAMP
-            };
-
-            db.ref('kritik_saran').push(payload).then(() => {
+            db.ref('kritik_saran').push({
+                kepuasan: puas, pesan: pesan, tgl: new Date().toISOString().split('T')[0], createdAt: firebase.database.ServerValue.TIMESTAMP
+            }).then(() => {
                 chatBox.innerHTML = '';
+                Swal.fire('Terima Kasih', 'Masukan Anda telah kami terima.', 'success');
                 appendMsg('bot', "🙏 **TERIMA KASIH!**\nMasukan Anda telah kami terima.");
                 showBtn([{text:"⬅️ KEMBALI KE MENU UTAMA", val:"start"}]);
             });
@@ -406,19 +703,19 @@
         // --- HELPER: CEK STATUS ---
         window.askNikForStatus = function(type) {
             appendMsg('bot', `🔍 **CEK STATUS ${type.toUpperCase().replace('_', ' ')}**\nMasukkan NIK Penjamin/Pengunjung:`, {
-                customHtml: `<div class="form-box"><input id="cek_nik" class="inp" type="number" placeholder="NIK"><button onclick="doCheckStatus('${type}')" class="submit-btn">CARI DATA</button></div>`,
-                options: [{text:"Batal", val:"start"}]
+                customHtml: `<div class="form-box">
+                    <input id="cek_nik" class="inp" type="number" placeholder="Masukkan NIK disini...">
+                    <button onclick="doCheckStatus('${type}')" class="submit-btn">CARI DATA</button>
+                    <button onclick="respond('start')" class="btn btn-back" style="margin-top:5px;">Batal</button>
+                </div>`
             });
         }
 
         window.doCheckStatus = function(type) {
             const nik = document.getElementById('cek_nik').value;
-            if(!nik) return alert("Isi NIK!");
+            if(!nik) return Swal.fire('Error', 'Mohon isi NIK', 'warning');
             
-            let path = 'registrations';
-            if(type === 'online') path = 'online_registrations';
-            if(type === 'pengurusan') path = 'pengurusan';
-
+            let path = type === 'online' ? 'online_registrations' : (type === 'pengurusan' ? 'pengurusan' : 'registrations');
             const btn = document.querySelector('.submit-btn');
             btn.innerText = "Mencari..."; btn.disabled = true;
 
@@ -435,11 +732,12 @@
                 if(found) {
                     if(type === 'pengurusan') {
                         let stBadge = found.status === 'accepted' ? '✅ DISETUJUI' : (found.status === 'rejected' ? '❌ DITOLAK' : '🕒 MENUNGGU');
-                        appendMsg('bot', `📄 **STATUS PENGURUSAN**\n\nJenis: **${found.jenis}**\nNama WBP: **${found.wbp}**\nPenjamin: **${found.penjamin}**\nStatus: **${stBadge}**\nCatatan: "${found.note || '-'}"`);
+                        appendMsg('bot', `📄 **STATUS PENGURUSAN**\n\nJenis: **${found.jenis}**\nNama WBP: **${found.wbp}**\nStatus: **${stBadge}**\nCatatan: "${found.note || '-'}"`);
                     } else {
                         renderTicket(found, type === 'fisik' ? 'TATAP MUKA' : 'VIDEO CALL');
                     }
                 } else {
+                    Swal.fire('Tidak Ditemukan', 'Data tidak ditemukan atau NIK salah.', 'error');
                     appendMsg('bot', "❌ **DATA TIDAK DITEMUKAN**\nPastikan NIK benar atau Anda belum mendaftar.");
                 }
                 showBtn([{text:"⬅️ KEMBALI", val:"start"}]);
@@ -461,37 +759,53 @@
                     if(w > maxW) { h *= maxW/w; w = maxW; }
                     canvas.width = w; canvas.height = h;
                     ctx.drawImage(img, 0, 0, w, h);
-                    cb(canvas.toDataURL('image/jpeg', 0.5));
+                    cb(canvas.toDataURL('image/jpeg', 0.6));
                 }
             }
         }
 
         function renderTicket(data, label) {
-            let stBadge = data.status === 'accepted' ? '<span class="badge bg-green">✅ DISETUJUI</span>' : (data.status === 'rejected' ? '<span class="badge bg-red">❌ DITOLAK</span>' : '<span class="badge bg-gray">MENUNGGU VERIFIKASI</span>');
-            const noteHtml = data.note ? `<div class="ticket-note"><b>✉️ Pesan:</b> "${data.note}"</div>` : '';
+            let stBadge = data.status === 'accepted' ? '<span class="badge bg-green"><i class="fas fa-check"></i> DISETUJUI</span>' : (data.status === 'rejected' ? '<span class="badge bg-red"><i class="fas fa-times"></i> DITOLAK</span>' : '<span class="badge bg-gray"><i class="fas fa-clock"></i> MENUNGGU</span>');
+            const noteHtml = data.note ? `<div style="background:#fff3cd; color:#856404; padding:8px; border-radius:6px; font-size:11px; margin-top:10px;"><b>✉️ Pesan Admin:</b> "${data.note}"</div>` : '';
+            
             const ticketHtml = `
             <div id="ticket-node" class="ticket-card">
-                <div style="font-weight:bold; color:#8B0000; border-bottom:1px solid #eee; padding-bottom:5px;">TIKET ANTRIAN ${label}</div>
-                <div style="font-size:12px; color:#555; margin-top:5px;">STATUS: ${stBadge}</div>
-                <div class="ticket-number">${data.noAntrian}</div>
-                <div style="font-size:12px; text-align:left; border-top:1px dashed #ccc; padding-top:8px;">
-                    <table style="width:100%">
-                        <tr><td>Nama</td><td>: <b>${data.nama}</b></td></tr>
-                        <tr><td>Tujuan</td><td>: ${data.wbp}</td></tr>
-                        <tr><td>Jadwal</td><td>: ${data.tgl} (${data.jam})</td></tr>
-                    </table>
+                <div class="ticket-header">
+                    <div style="font-size:12px; opacity:0.8;">TIKET ANTRIAN</div>
+                    <div style="font-size:18px;">${label}</div>
                 </div>
-                ${noteHtml}
-                <div style="margin-top:5px;"><img src="${data.ktpUrl}" style="max-height:60px; border-radius:4px;"></div>
+                <div class="ticket-body">
+                    <div style="font-size:12px; color:#aaa; margin-bottom:5px;">Nomor Antrian:</div>
+                    <div class="ticket-number">${data.noAntrian}</div>
+                    <div style="margin-bottom:15px;">${stBadge}</div>
+                    
+                    <div style="text-align:left; font-size:13px; color:#555; background:#f9f9f9; padding:10px; border-radius:8px;">
+                        <table style="width:100%;">
+                            <tr><td style="color:#888; width:70px;">Nama</td><td>: <b>${data.nama}</b></td></tr>
+                            <tr><td style="color:#888;">Tujuan</td><td>: ${data.wbp}</td></tr>
+                            <tr><td style="color:#888;">Jadwal</td><td>: ${data.tgl} (${data.jam})</td></tr>
+                        </table>
+                    </div>
+                    ${noteHtml}
+                    <div style="margin-top:15px; border-top:1px dashed #eee; padding-top:10px;">
+                        <img src="${data.ktpUrl}" style="height:50px; border-radius:4px; opacity:0.8;">
+                        <div style="font-size:10px; color:#aaa; margin-top:5px;">Tunjukkan tiket ini kepada petugas</div>
+                    </div>
+                </div>
+                <div class="ticket-divider"></div>
             </div>
-            <button onclick="downloadTicket()" style="margin-top:10px; width:100%; padding:12px; background:#333; color:white; border:none; border-radius:8px;">📸 SIMPAN TIKET</button>`;
+            <button onclick="downloadTicket()" class="submit-btn" style="background:#333; margin-top:15px;"><i class="fas fa-download"></i> SIMPAN TIKET</button>`;
+            
             appendMsg('bot', "✅ **TIKET ANDA:**", { customHtml: ticketHtml });
         }
 
         window.downloadTicket = function() {
-            html2canvas(document.getElementById('ticket-node'), {scale:2, backgroundColor:"#fff"}).then(canvas => {
+            const node = document.getElementById('ticket-node');
+            Swal.fire({title: 'Memproses...', didOpen: () => Swal.showLoading()});
+            html2canvas(node, {scale:2, backgroundColor:"#fff"}).then(canvas => {
                 document.getElementById('resultImg').src = canvas.toDataURL("image/jpeg");
                 document.getElementById('resultModal').style.display = 'flex';
+                Swal.close();
             });
         }
         window.closeResultModal = () => document.getElementById('resultModal').style.display = 'none';
@@ -499,47 +813,47 @@
 
     function getMenu(cfg) {
         const htmlJadwal = `
-        <div style="margin-bottom:8px; font-weight:600; font-size:12px; color:#8B0000;">KATEGORI LAYANAN:</div>
-        <table class="spec-table">
-            <tr><th>Jenis Tahanan</th><th>Hari Layanan</th></tr>
-            <tr><td><b>PIDUM</b></td><td>${cfg.sch_pidum || 'Senin & Rabu'}</td></tr>
-            <tr><td><b>NARKOBA</b></td><td>${cfg.sch_narkoba || 'Selasa & Kamis'}</td></tr>
-        </table>
-        <div class="schedule-card">
-            <div class="sch-row"><span>Pagi</span><span class="badge bg-green">${cfg.sch_mon_am || '-'}</span></div>
-            <div class="sch-row"><span>Siang</span><span class="badge bg-green">${cfg.sch_mon_pm || '-'}</span></div>
-            <div class="sch-row"><span>Jumat</span><span class="badge bg-green">${cfg.sch_fri || '-'}</span></div>
-            <div class="sch-row"><span>Sabtu</span><span class="badge bg-blue">${cfg.sch_sat || '-'}</span></div>
-            <div class="sch-row"><span>Minggu</span><span class="badge bg-red">${cfg.sch_sun || 'TUTUP'}</span></div>
+        <div style="background:#fff; border-radius:12px; border:1px solid #eee; overflow:hidden;">
+            <div style="background:var(--primary); color:white; padding:10px; font-weight:bold; font-size:12px;">JADWAL PELAYANAN</div>
+            <table class="spec-table" style="border:none; margin:0;">
+                <tr><td><i class="fas fa-users"></i> PIDUM</td><td style="font-weight:bold">${cfg.sch_pidum || 'Senin & Rabu'}</td></tr>
+                <tr><td><i class="fas fa-capsules"></i> NARKOBA</td><td style="font-weight:bold">${cfg.sch_narkoba || 'Selasa & Kamis'}</td></tr>
+            </table>
+            <div style="padding:10px; display:grid; grid-template-columns:1fr 1fr; gap:5px;">
+               <div class="badge bg-green">Pagi: ${cfg.sch_mon_am || '09.00 - 11.30'}</div>
+               <div class="badge bg-green">Siang: ${cfg.sch_mon_pm || '13.30 - 15.00'}</div>
+               <div class="badge bg-blue">Sabtu: ${cfg.sch_sat || 'Khusus Barang'}</div>
+               <div class="badge bg-red">Minggu: TUTUP</div>
+            </div>
         </div>`;
 
         return {
             'start': {
-                text: cfg.welcome_msg || "Halo, selamat datang di Layanan Lapas Digital. Silakan pilih menu:",
+                text: cfg.welcome_msg || "Halo, selamat datang di **Layanan Lapas Digital**.\nSilakan pilih menu layanan di bawah ini:",
                 options: [
-                    { text: "1. 📝 DAFTAR KUNJUNGAN (TATAP MUKA)", val: "daftar_fisik" },
-                    { text: "2. 💻 DAFTAR VIDEO CALL", val: "daftar_online" },
-                    { text: "3. 📂 PENGURUSAN (PB/CB/CMB)", val: "menu_urus" },
-                    { text: "4. 🛒 TOKO LAPAS", val: "toko" },
-                    { text: "5. 📅 JADWAL & SYARAT KUNJUNGAN", val: "info_gabung" },
-                    { text: "6. 📢 KRITIK & SARAN", val: "menu_kritik" },
-                    { text: "7. 📞 KONTAK & PENGADUAN", val: "kontak" }
+                    { text: "📝 DAFTAR TATAP MUKA", val: "daftar_fisik" },
+                    { text: "💻 DAFTAR VIDEO CALL", val: "daftar_online" },
+                    { text: "📂 PENGURUSAN PB/CB", val: "menu_urus" },
+                    { text: "🛒 TOKO LAPAS", val: "toko" },
+                    { text: "📅 INFO JADWAL & SYARAT", val: "info_gabung" },
+                    { text: "📢 KRITIK & SARAN", val: "menu_kritik" },
+                    { text: "📞 KONTAK PENGADUAN", val: "kontak" }
                 ]
             },
-            'daftar_fisik': { text: "📝 **PENDAFTARAN TATAP MUKA**", options: [{ text: "✍️ ISI FORMULIR", val: "form_fisik" }, { text: "🔍 CEK STATUS", val: "cek_status_fisik" }, { text: "⬅️ KEMBALI", val: "start" }] },
+            'daftar_fisik': { text: "📝 **LAYANAN TATAP MUKA**", options: [{ text: "✍️ ISI FORMULIR", val: "form_fisik" }, { text: "🔍 CEK STATUS", val: "cek_status_fisik" }, { text: "⬅️ KEMBALI", val: "start", class: 'btn-back' }] },
             'form_fisik': { text: "📝 **ISI DATA KUNJUNGAN:**", isForm: true, formType: "fisik" },
-            'daftar_online': { text: "💻 **PENDAFTARAN VIDEO CALL**", options: [{ text: "✍️ ISI FORMULIR", val: "form_online" }, { text: "🔍 CEK STATUS", val: "cek_status_online" }, { text: "⬅️ KEMBALI", val: "start" }] },
+            'daftar_online': { text: "💻 **LAYANAN VIDEO CALL**", options: [{ text: "✍️ ISI FORMULIR", val: "form_online" }, { text: "🔍 CEK STATUS", val: "cek_status_online" }, { text: "⬅️ KEMBALI", val: "start", class: 'btn-back' }] },
             'form_online': { text: "💻 **ISI DATA VIDEO CALL:**", isForm: true, formType: "online" },
-            'menu_urus': { text: "📂 **LAYANAN PENGURUSAN INTEGRASI**\n(PB / CB / CMB)\n\nSilakan ajukan permohonan atau cek status pengajuan Anda.", options: [{ text: "✍️ AJUKAN PERMOHONAN BARU", val: "form_urus" }, { text: "🔍 CEK STATUS PENGAJUAN", val: "cek_status_pengurusan" }, { text: "⬅️ KEMBALI", val: "start" }] },
+            'menu_urus': { text: "📂 **LAYANAN INTEGRASI (PB/CB)**", options: [{ text: "✍️ AJUKAN PERMOHONAN", val: "form_urus" }, { text: "🔍 CEK STATUS", val: "cek_status_pengurusan" }, { text: "⬅️ KEMBALI", val: "start", class: 'btn-back' }] },
             'form_urus': { text: "Menyiapkan formulir...", isForm: true, formType: "pengurusan" },
-            'toko': { text: "🛒 **TOKO LAPAS:**\n" + (cfg.toko_announce || "-"), options: [{ text: "🌐 BUKA APLIKASI TOKO", type: "link", url: cfg.toko_link }, { text: "⬅️ KEMBALI", val: "start" }] },
-            'info_gabung': { text: "📅 **PILIH INFORMASI LAYANAN:**", options: [{ text: "📅 LIHAT JADWAL KUNJUNGAN", val: "sub_jadwal" }, { text: "👜 SYARAT KUNJUNGAN & BARANG", val: "sub_syarat_kunjungan" }, { text: "📂 SYARAT PENGURUSAN PB/CB/CMB", val: "sub_syarat_pb" }, { text: "⬅️ KEMBALI", val: "start" }] },
-            'sub_jadwal': { text: "📅 **JADWAL LAYANAN:**", customHtml: htmlJadwal, backTo: 'info_gabung' },
-            'sub_syarat_kunjungan': { text: "👜 **SYARAT KUNJUNGAN:**\n\n**📄 DOKUMEN:**\n" + (cfg.txt_doc || "-") + "\n\n**📦 ATURAN BARANG:**\n" + (cfg.txt_item || "-"), backTo: 'info_gabung' },
-            'sub_syarat_pb': { text: "📂 **SYARAT PENGURUSAN PB/CB/CMB:**\n\n" + (cfg.txt_pb_cb || "Belum ada informasi syarat. Hubungi admin."), backTo: 'info_gabung' },
-            'menu_kritik': { text: "Silakan berikan penilaian dan masukan Anda:", isForm: true, formType: "kritik" },
-            'kontak': { text: "📞 **PUSAT PENGADUAN:**", options: [{ text: "💬 WHATSAPP PENGADUAN", type: "link", url: `https://wa.me/${cfg.wa_pengaduan}` }, { text: "📢 SALURAN INFORMASI", type: "link", url: cfg.wa_channel }, { text: "🌐 MEDIA SOSIAL", val: "sosmed" }, { text: "⬅️ KEMBALI", val: "start" }] },
-            'sosmed': { text: "🌐 **MEDIA SOSIAL:**", options: [{ text: "📷 INSTAGRAM", type: "link", url: cfg.soc_ig }, { text: "📘 FACEBOOK", type: "link", url: cfg.soc_fb }, { text: "🐦 TWITTER / X", type: "link", url: cfg.soc_tw }, { text: "⬅️ KEMBALI", val: "kontak" }] }
+            'toko': { text: "🛒 **TOKO LAPAS:**\n" + (cfg.toko_announce || "Pesan kebutuhan WBP secara online."), options: [{ text: "🌐 BUKA TOKO ONLINE", type: "link", url: cfg.toko_link }, { text: "⬅️ KEMBALI", val: "start", class: 'btn-back' }] },
+            'info_gabung': { text: "📅 **PUSAT INFORMASI:**", options: [{ text: "📅 LIHAT JADWAL", val: "sub_jadwal" }, { text: "👜 SYARAT KUNJUNGAN", val: "sub_syarat_kunjungan" }, { text: "📂 SYARAT PB/CB", val: "sub_syarat_pb" }, { text: "⬅️ KEMBALI", val: "start", class: 'btn-back' }] },
+            'sub_jadwal': { text: "📅 **JADWAL PELAYANAN:**", customHtml: htmlJadwal, backTo: 'info_gabung' },
+            'sub_syarat_kunjungan': { text: "👜 **SYARAT KUNJUNGAN:**\n\n**📄 DOKUMEN WAJIB:**\n" + (cfg.txt_doc || "-") + "\n\n**📦 ATURAN BARANG:**\n" + (cfg.txt_item || "-"), backTo: 'info_gabung' },
+            'sub_syarat_pb': { text: "📂 **SYARAT PENGURUSAN PB/CB:**\n\n" + (cfg.txt_pb_cb || "Hubungi petugas untuk info lengkap."), backTo: 'info_gabung' },
+            'menu_kritik': { text: "Silakan berikan penilaian Anda:", isForm: true, formType: "kritik" },
+            'kontak': { text: "📞 **PUSAT PENGADUAN:**", options: [{ text: "💬 WHATSAPP ADMIN", type: "link", url: `https://wa.me/${cfg.wa_pengaduan}` }, { text: "📢 CHANNEL INFO", type: "link", url: cfg.wa_channel }, { text: "🌐 MEDIA SOSIAL", val: "sosmed" }, { text: "⬅️ KEMBALI", val: "start", class: 'btn-back' }] },
+            'sosmed': { text: "🌐 **MEDIA SOSIAL KAMI:**", options: [{ text: "📷 INSTAGRAM", type: "link", url: cfg.soc_ig }, { text: "📘 FACEBOOK", type: "link", url: cfg.soc_fb }, { text: "🐦 TWITTER / X", type: "link", url: cfg.soc_tw }, { text: "⬅️ KEMBALI", val: "kontak", class: 'btn-back' }] }
         };
     }
 </script>
