@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <meta name="theme-color" content="#333333">
-  <title>Layanan Lapas Digital</title>
+    <title>Layanan Lapas Digital</title>
  
     <link rel="icon" type="image/png" href="https://surviving-pink-xhrotxxwgh.edgeone.app/Gemini_Generated_Image_wijbcxwijbcxwijb-removebg-preview.png">
     <link rel="shortcut icon" type="image/png" href="https://surviving-pink-xhrotxxwgh.edgeone.app/Gemini_Generated_Image_wijbcxwijbcxwijb-removebg-preview.png">
@@ -115,7 +115,7 @@
             width: 100%; display: flex; justify-content: space-between; align-items: center;
             border: 1px solid white; margin-bottom: 12px;
            box-shadow: 5px 5px 10px #bebebe, -5px -5px 10px #ffffff;
-          transition: transform 0.1s;
+           transition: transform 0.1s;
         }
         .btn:active { transform: scale(0.98); box-shadow: inset 5px 5px 10px #bebebe, inset -5px -5px 10px #ffffff; }
         .btn-back {
@@ -125,48 +125,50 @@
         }
         .btn-back i { color: #5a4a00; margin-left: 5px; }
  
-        /* --- DASHBOARD WIDGETS (JAM & WBP SYMMETRIC) --- */
-        .widget-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 12px;
-            margin-bottom: 12px;
-        }
-        .dashboard-widget {
-            background: linear-gradient(145deg, #ffffff, #f9f9f9);
-            border: 1px solid #eaeaea;
-            border-radius: 15px;
-            padding: 12px;
-            box-shadow: 5px 5px 10px #eeeeee, -5px -5px 10px #ffffff;
+        /* JAM REALTIME - COMPACT */
+        .clock-card {
+           background: linear-gradient(145deg, #ffffff, #f9f9f9);
+            padding: 8px 20px; 
+          border-radius: 15px;
+            border: 1px solid #eee;
+          margin-bottom: 0;
+            width: 100%;
+           box-shadow: 5px 5px 10px #eeeeee, -5px -5px 10px #ffffff;
             display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            text-align: center;
-            min-height: 85px;
+          justify-content: space-between;
+          align-items: center;
+            height: 64px; 
         }
-        .widget-time { font-size: 20px; font-weight: 800; color: #333; line-height: 1; letter-spacing: 0.5px; margin-bottom: 4px; }
-        .widget-date { font-size: 10px; color: #666; font-weight: 600; margin-bottom: 6px; }
-        .widget-badge { font-size: 9px; padding: 4px 8px; border-radius: 6px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; }
-
-        /* WBP Widget specific layout */
-        .wbp-card {
-            flex-direction: row;
-            text-align: left;
-            justify-content: flex-start;
-            gap: 12px;
+        .clock-left {
+            display: flex;
+          align-items: center;
+            gap: 10px;
         }
-        .pie-chart {
-            width: 44px; height: 44px;
-            border-radius: 50%;
-            flex-shrink: 0;
-            border: 3px solid #fff;
-            box-shadow: 0 3px 8px rgba(0,0,0,0.1);
+        .c-time {
+            font-size: 24px;
+          font-weight: 800;
+          line-height: 1;
+          letter-spacing: 0.5px;
         }
-        .wbp-info { display: flex; flex-direction: column; justify-content: center; width: 100%; }
-        .wbp-total { font-size: 11px; font-weight: 800; color: #333; border-bottom: 1px solid #eee; padding-bottom: 3px; margin-bottom: 4px; }
-        .wbp-stat { font-size: 9px; color: #555; font-weight: 700; display: flex; align-items: center; gap: 5px; margin-bottom: 2px; }
-        .wbp-stat span { width: 8px; height: 8px; border-radius: 2px; display: inline-block; }
+        .clock-right {
+           text-align: right;
+            display: flex;
+          flex-direction: column;
+          justify-content: center;
+        }
+        .c-date {
+            font-size: 11px;
+            color: #555;
+          font-weight: 600;
+          margin-bottom: 2px;
+        }
+        .c-status {
+            font-size: 10px;
+            padding: 2px 6px;
+          border-radius: 4px;
+          font-weight: 700;
+            display: inline-block;
+        }
  
         /* FORM & LAINNYA */
         .form-box { display: flex; flex-direction: column; gap: 12px; margin-top: 5px; background: rgba(0,0,0,0.02); padding: 15px; border-radius: 15px; border: 1px solid #eee; }
@@ -221,8 +223,8 @@
 <div class="app-container">
     <div id="loader">
     <img src="https://surviving-pink-xhrotxxwgh.edgeone.app/Gemini_Generated_Image_wijbcxwijbcxwijb-removebg-preview.png"
-        alt="Loading..." 
-        style="width: 150px; height: auto; object-fit: contain; animation: pulse 1.5s infinite ease-in-out;">
+       alt="Loading..." 
+       style="width: 150px; height: auto; object-fit: contain; animation: pulse 1.5s infinite ease-in-out;">
 </div>
     
     <div class="header" id="header_bg">
@@ -301,15 +303,15 @@
             
           if(statusEl) {
               if(isOpen) {
-                  timeEl.style.color = '#27ae60';
-                  statusEl.innerText = "✅ ADMIN SIAP";
-                  statusEl.style.background = "#e8f8f5";
-                  statusEl.style.color = "#27ae60";
+                  timeEl.style.color = '#2e7d32';
+                  statusEl.innerText = "✅ Admin Siap";
+                  statusEl.style.background = "#e8f5e9";
+                  statusEl.style.color = "#2e7d32";
                 } else {
-                  timeEl.style.color = '#c0392b';
-                  statusEl.innerText = "⛔ TUTUP";
-                  statusEl.style.background = "#fdedf0";
-                  statusEl.style.color = "#c0392b";
+                  timeEl.style.color = '#c62828';
+                  statusEl.innerText = "⛔ Tutup";
+                  statusEl.style.background = "#ffebee";
+                  statusEl.style.color = "#c62828";
                 }
             }
         }
@@ -318,34 +320,30 @@
           chatBox.innerHTML = '';
           if(clockInterval) clearInterval(clockInterval);
  
-           const menu = getMenu(config)['start'];
-           
-           // Kalkulasi WBP untuk Pie Chart
-           const napi = parseInt(config.jml_napi || 0);
-           const tahanan = parseInt(config.jml_tahanan || 0);
-           const totalWbp = napi + tahanan;
-           let napiPct = 0;
-           if(totalWbp > 0) {
-               napiPct = (napi / totalWbp) * 100;
-           }
+          const menu = getMenu(config)['start'];
+          const napi = parseInt(config.jml_napi) || 0;
+          const tahanan = parseInt(config.jml_tahanan) || 0;
+          const wbp = napi + tahanan;
             
-            const clockHtml = `
-            <div class="widget-grid">
-               <div class="dashboard-widget">
-                   <div id="live_time" class="widget-time">--:--:--</div>
-                   <div id="live_date" class="widget-date">...</div>
-                   <div id="live_status" class="widget-badge">...</div>
-               </div>
-               
-               <div class="dashboard-widget wbp-card">
-                   <div class="pie-chart" style="background: conic-gradient(#1565c0 0% ${napiPct}%, #c62828 ${napiPct}% 100%);"></div>
-                   <div class="wbp-info">
-                       <div class="wbp-total">Σ WBP: ${totalWbp}</div>
-                       <div class="wbp-stat"><span style="background: #1565c0;"></span> Napi: ${napi}</div>
-                       <div class="wbp-stat"><span style="background: #c62828;"></span> Thn: ${tahanan}</div>
-                   </div>
-               </div>
-            </div>`;
+          const clockHtml = `
+          <div style="display: flex; gap: 10px; margin-bottom: 12px; align-items: stretch;">
+              <div class="clock-card" style="flex: 1.5;">
+                 <div class="clock-left">
+                    <div id="live_time" class="c-time">--:--:--</div>
+                </div>
+                 <div class="clock-right">
+                    <div id="live_date" class="c-date">...</div>
+                    <div id="live_status" class="c-status">...</div>
+                </div>
+            </div>
+            <div style="flex: 1; background: linear-gradient(145deg, #ffffff, #f9f9f9); padding: 8px; border-radius: 15px; border: 1px solid #eee; box-shadow: 5px 5px 10px #eeeeee, -5px -5px 10px #ffffff; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center;">
+                <div style="font-size: 10px; font-weight: 700; color: #555; margin-bottom: 2px;">TOTAL WBP</div>
+                <div style="font-size: 20px; font-weight: 800; color: var(--primary); line-height: 1;">${wbp}</div>
+                <div style="display: flex; gap: 5px; font-size: 9px; margin-top: 4px; color: #777; font-weight: 600;">
+                    <span>Napi: <b style="color:#d35400">${napi}</b></span> | <span>Tahanan: <b style="color:#2980b9">${tahanan}</b></span>
+                </div>
+            </div>
+          </div>`;
             
           appendMsg('bot', clockHtml, { options: menu.options });
  
