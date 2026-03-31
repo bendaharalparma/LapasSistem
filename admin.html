@@ -240,18 +240,14 @@
           </div>
           
           <div class="setting-card">
-               <div class="card-header"><i class="fas fa-chart-pie"></i> DATA WBP (NAPI & TAHANAN)</div>
+               <div class="card-header"><i class="fas fa-users"></i> DATA PENGHUNI (WBP)</div>
                <div class="setting-row">
                   <label>Jumlah Narapidana (Napi)</label>
-                  <input id="jml_napi" type="number" placeholder="0" oninput="calcTotalWBP()">
+                  <input id="jml_napi" type="number" placeholder="Contoh: 150">
               </div>
                <div class="setting-row">
                   <label>Jumlah Tahanan</label>
-                  <input id="jml_tahanan" type="number" placeholder="0" oninput="calcTotalWBP()">
-              </div>
-               <div class="setting-row" style="background: var(--primary); color: white;">
-                  <label style="color:white;">Total WBP <small>(Otomatis)</small></label>
-                  <div id="tot_wbp_display" style="font-weight:bold; font-size:16px;">0</div>
+                  <input id="jml_tahanan" type="number" placeholder="Contoh: 50">
               </div>
           </div>
  
@@ -502,24 +498,16 @@
     window.fmt = function(id, cmd, val=null) { document.getElementById(id).focus(); document.execCommand(cmd, false, val); }
     window.insImg = function(id) { const url = prompt("Masukkan URL Gambar:"); if(url) { document.getElementById(id).focus(); document.execCommand('insertImage', false, url); } }
  
-    // Menambahkan variabel info_survei, link_survei, jml_napi, jml_tahanan ke daftar konfigurasi sederhana
+    // Menambahkan variabel info_survei, link_survei, jml_napi dan jml_tahanan ke daftar konfigurasi
     const simpleFields = ['app_name','logo_url','header_bg','kop_1','kop_2','kop_3','kop_4','sch_pidum','sch_narkoba','sch_mon_am','sch_mon_pm','sch_fri','sch_sat','sch_sun','toko_announce','toko_link','wa_pengaduan','wa_channel','soc_ig','soc_fb','soc_tw','soc_yt', 'info_survei', 'link_survei', 'jml_napi', 'jml_tahanan'];
     const htmlFields = {'announcement': 'announcement_edit', 'txt_doc': 'txt_doc_edit', 'txt_item': 'txt_item_edit', 'txt_pb_cb': 'txt_pb_cb_edit'};
  
-    window.calcTotalWBP = function() {
-        const n = parseInt(document.getElementById('jml_napi').value) || 0;
-        const t = parseInt(document.getElementById('jml_tahanan').value) || 0;
-        const display = document.getElementById('tot_wbp_display');
-        if (display) display.innerText = (n + t);
-    };
-
     function loadSettings() {
       db.ref('app_config').once('value', s => {
           if(s.exists()) {
                 const d = s.val();
               simpleFields.forEach(f => { if(document.getElementById(f)) document.getElementById(f).value = d[f]||""; });
                for(let key in htmlFields) { if(document.getElementById(htmlFields[key])) document.getElementById(htmlFields[key]).innerHTML = d[key] || ""; }
-               calcTotalWBP(); // Set initial total
             }
         });
     }
