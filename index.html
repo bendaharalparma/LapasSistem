@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <meta name="theme-color" content="#333333">
-  <title>Layanan Lapas Digital</title>
+    <title>Layanan Lapas Digital</title>
  
     <link rel="icon" type="image/png" href="https://surviving-pink-xhrotxxwgh.edgeone.app/Gemini_Generated_Image_wijbcxwijbcxwijb-removebg-preview.png">
     <link rel="shortcut icon" type="image/png" href="https://surviving-pink-xhrotxxwgh.edgeone.app/Gemini_Generated_Image_wijbcxwijbcxwijb-removebg-preview.png">
@@ -259,7 +259,7 @@
           if(statusEl) {
               if(isOpen) {
                   timeEl.style.color = '#2e7d32';
-                  statusEl.innerHTML = "<i class='fas fa-check-circle'></i> Admin Siap";
+                  statusEl.innerHTML = "<i class='fas fa-check-circle'></i> Siap";
                   statusEl.style.background = "#e8f5e9";
                   statusEl.style.color = "#2e7d32";
                 } else {
@@ -281,31 +281,31 @@
           const wbp = napi + tahanan;
             
           const clockHtml = `
-          <div style="display: flex; flex-direction: column; gap: 12px; margin-bottom: 12px; width: 100%;">
-              <div style="background: linear-gradient(145deg, #ffffff, #f9f9f9); padding: 15px 20px; border-radius: 15px; border: 1px solid #eee; box-shadow: 5px 5px 10px #eeeeee, -5px -5px 10px #ffffff; display: flex; flex-direction: column; width: 100%; box-sizing: border-box;">
-                  <div id="live_date" style="font-size: 13px; color: #555; font-weight: 700; margin-bottom: 5px; text-align: left; width: 100%;">...</div>
-                  <div style="display: flex; justify-content: space-between; align-items: center; width: 100%;">
-                      <div id="live_time" style="font-size: 32px; font-weight: 800; line-height: 1; letter-spacing: 0.5px; color: var(--primary);">--:--:--</div>
-                      <div id="live_status" style="font-size: 11px; padding: 6px 12px; border-radius: 8px; font-weight: 700; text-align: center;">...</div>
+          <div style="display: flex; flex-direction: row; gap: 10px; margin-bottom: 12px; width: 100%; align-items: stretch;">
+              
+              <div style="flex: 1; background: linear-gradient(145deg, #ffffff, #f9f9f9); padding: 12px 10px; border-radius: 15px; border: 1px solid #eee; box-shadow: 3px 3px 8px #eeeeee, -3px -3px 8px #ffffff; display: flex; flex-direction: column; justify-content: center; box-sizing: border-box;">
+                  <div id="live_date" style="font-size: 10px; color: #555; font-weight: 700; margin-bottom: 6px; text-align: center; border-bottom: 1px dashed #ddd; padding-bottom: 4px; width: 100%;">...</div>
+                  <div style="display: flex; justify-content: center; align-items: center; gap: 6px; width: 100%; flex-wrap: wrap;">
+                      <div id="live_time" style="font-size: 18px; font-weight: 800; line-height: 1; color: var(--primary);">--:--:--</div>
+                      <div id="live_status" style="font-size: 9px; padding: 4px 6px; border-radius: 6px; font-weight: 700; text-align: center;">...</div>
                   </div>
               </div>
 
-              <div style="background: linear-gradient(145deg, #ffffff, #f9f9f9); padding: 15px 20px; border-radius: 15px; border: 1px solid #eee; box-shadow: 5px 5px 10px #eeeeee, -5px -5px 10px #ffffff; display: flex; flex-direction: column; width: 100%; box-sizing: border-box;">
-                  <div style="font-size: 12px; font-weight: 800; color: #555; margin-bottom: 8px; text-align: left; width: 100%; text-transform: uppercase;">TOTAL WBP</div>
-                  <div style="display: flex; justify-content: space-between; align-items: center; width: 100%;">
-                      <div style="font-size: 32px; font-weight: 800; color: var(--primary); line-height: 1;">${wbp}</div>
-                      <div style="display: flex; gap: 12px; font-size: 11px; color: #777; font-weight: 600;">
-                          <div style="background: rgba(211, 84, 0, 0.08); padding: 5px 10px; border-radius: 8px; display: flex; flex-direction: column; align-items: center; justify-content: center;">
-                              <span>Napi</span>
-                              <b style="color:#d35400; font-size: 14px; margin-top:2px;">${napi}</b>
-                          </div>
-                          <div style="background: rgba(41, 128, 185, 0.08); padding: 5px 10px; border-radius: 8px; display: flex; flex-direction: column; align-items: center; justify-content: center;">
-                              <span>Tahanan</span>
-                              <b style="color:#2980b9; font-size: 14px; margin-top:2px;">${tahanan}</b>
-                          </div>
+              <div style="flex: 1; background: linear-gradient(145deg, #ffffff, #f9f9f9); padding: 12px 8px; border-radius: 15px; border: 1px solid #eee; box-shadow: 3px 3px 8px #eeeeee, -3px -3px 8px #ffffff; display: flex; flex-direction: row; justify-content: center; align-items: center; box-sizing: border-box; gap: 6px;">
+                  <div style="display: flex; flex-direction: column; align-items: center; justify-content: center; border-right: 1px dashed #ddd; padding-right: 6px;">
+                      <div style="font-size: 9px; font-weight: 800; color: #555; text-transform: uppercase; margin-bottom: 2px;">Total WBP</div>
+                      <div style="font-size: 20px; font-weight: 800; color: var(--primary); line-height: 1;">${wbp}</div>
+                  </div>
+                  <div style="display: flex; flex-direction: column; gap: 4px; padding-left: 2px;">
+                      <div style="display: flex; align-items: center; justify-content: space-between; font-size: 9px; font-weight: 600; color: #777; gap: 4px;">
+                          <span>Napi:</span> <b style="color:#d35400; font-size: 11px;">${napi}</b>
+                      </div>
+                      <div style="display: flex; align-items: center; justify-content: space-between; font-size: 9px; font-weight: 600; color: #777; gap: 4px;">
+                          <span>Thn:</span> <b style="color:#2980b9; font-size: 11px;">${tahanan}</b>
                       </div>
                   </div>
               </div>
+
           </div>`;
             
           appendMsg('bot', '', { customHtml: clockHtml, options: menu.options });
