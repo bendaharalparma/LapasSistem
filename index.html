@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <meta name="theme-color" content="#333333">
-    <title>Layanan Lapas Digital</title>
+  <title>Layanan Lapas Digital</title>
  
     <link rel="icon" type="image/png" href="https://surviving-pink-xhrotxxwgh.edgeone.app/Gemini_Generated_Image_wijbcxwijbcxwijb-removebg-preview.png">
     <link rel="shortcut icon" type="image/png" href="https://surviving-pink-xhrotxxwgh.edgeone.app/Gemini_Generated_Image_wijbcxwijbcxwijb-removebg-preview.png">
@@ -104,7 +104,7 @@
         /* CHAT BOX */
         #chat-box { flex: 1; padding: 20px; overflow-y: auto; display: flex; flex-direction: column; gap: 12px; background: #fff; scroll-behavior: smooth; padding-bottom: 50px; }
         .msg { max-width: 90%; padding: 14px 18px; border-radius: 16px; font-size: 14px; line-height: 1.5; animation: popIn 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
-        .bot { background: #f0f2f5; align-self: flex-start; border-top-left-radius: 4px; color: #333; }
+        .bot { background: #f0f2f5; align-self: flex-start; border-top-left-radius: 4px; color: #333; width: 100%; box-sizing: border-box; }
         .user { background: #555; align-self: flex-end; border-top-right-radius: 4px; color: white; border: 1px solid #444; }
         
         /* TOMBOL MENU */
@@ -124,51 +124,6 @@
            box-shadow: 0 4px 10px rgba(255, 215, 0, 0.4);
         }
         .btn-back i { color: #5a4a00; margin-left: 5px; }
- 
-        /* JAM REALTIME - COMPACT */
-        .clock-card {
-           background: linear-gradient(145deg, #ffffff, #f9f9f9);
-            padding: 8px 20px; 
-          border-radius: 15px;
-            border: 1px solid #eee;
-          margin-bottom: 0;
-            width: 100%;
-           box-shadow: 5px 5px 10px #eeeeee, -5px -5px 10px #ffffff;
-            display: flex;
-          justify-content: space-between;
-          align-items: center;
-            height: 64px; 
-        }
-        .clock-left {
-            display: flex;
-          align-items: center;
-            gap: 10px;
-        }
-        .c-time {
-            font-size: 24px;
-          font-weight: 800;
-          line-height: 1;
-          letter-spacing: 0.5px;
-        }
-        .clock-right {
-           text-align: right;
-            display: flex;
-          flex-direction: column;
-          justify-content: center;
-        }
-        .c-date {
-            font-size: 11px;
-            color: #555;
-          font-weight: 600;
-          margin-bottom: 2px;
-        }
-        .c-status {
-            font-size: 10px;
-            padding: 2px 6px;
-          border-radius: 4px;
-          font-weight: 700;
-            display: inline-block;
-        }
  
         /* FORM & LAINNYA */
         .form-box { display: flex; flex-direction: column; gap: 12px; margin-top: 5px; background: rgba(0,0,0,0.02); padding: 15px; border-radius: 15px; border: 1px solid #eee; }
@@ -292,7 +247,7 @@
             const days = ['Minggu','Senin','Selasa','Rabu','Kamis','Jumat','Sabtu'];
             const months = ['Jan','Feb','Mar','Apr','Mei','Jun','Jul','Agt','Sep','Okt','Nov','Des'];
             
-            const timeStr = now.toLocaleTimeString('id-ID', {hour: '2-digit', minute:'2-digit', second:'2-digit'});
+            const timeStr = now.toLocaleTimeString('id-ID', {hour: '2-digit', minute:'2-digit', second:'2-digit'}).replace(/\./g, ':');
             const dateStr = `${days[now.getDay()]}, ${now.getDate()} ${months[now.getMonth()]} ${now.getFullYear()}`;
             
             const hour = now.getHours();
@@ -304,12 +259,12 @@
           if(statusEl) {
               if(isOpen) {
                   timeEl.style.color = '#2e7d32';
-                  statusEl.innerText = "✅ Admin Siap";
+                  statusEl.innerHTML = "<i class='fas fa-check-circle'></i> Admin Siap";
                   statusEl.style.background = "#e8f5e9";
                   statusEl.style.color = "#2e7d32";
                 } else {
                   timeEl.style.color = '#c62828';
-                  statusEl.innerText = "⛔ Tutup";
+                  statusEl.innerHTML = "<i class='fas fa-times-circle'></i> Tutup";
                   statusEl.style.background = "#ffebee";
                   statusEl.style.color = "#c62828";
                 }
@@ -326,26 +281,34 @@
           const wbp = napi + tahanan;
             
           const clockHtml = `
-          <div style="display: flex; gap: 10px; margin-bottom: 12px; align-items: stretch;">
-              <div class="clock-card" style="flex: 1.5;">
-                 <div class="clock-left">
-                    <div id="live_time" class="c-time">--:--:--</div>
-                </div>
-                 <div class="clock-right">
-                    <div id="live_date" class="c-date">...</div>
-                    <div id="live_status" class="c-status">...</div>
-                </div>
-            </div>
-            <div style="flex: 1; background: linear-gradient(145deg, #ffffff, #f9f9f9); padding: 8px; border-radius: 15px; border: 1px solid #eee; box-shadow: 5px 5px 10px #eeeeee, -5px -5px 10px #ffffff; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center;">
-                <div style="font-size: 10px; font-weight: 700; color: #555; margin-bottom: 2px;">TOTAL WBP</div>
-                <div style="font-size: 20px; font-weight: 800; color: var(--primary); line-height: 1;">${wbp}</div>
-                <div style="display: flex; gap: 5px; font-size: 9px; margin-top: 4px; color: #777; font-weight: 600;">
-                    <span>Napi: <b style="color:#d35400">${napi}</b></span> | <span>Tahanan: <b style="color:#2980b9">${tahanan}</b></span>
-                </div>
-            </div>
+          <div style="display: flex; flex-direction: column; gap: 12px; margin-bottom: 12px; width: 100%;">
+              <div style="background: linear-gradient(145deg, #ffffff, #f9f9f9); padding: 15px 20px; border-radius: 15px; border: 1px solid #eee; box-shadow: 5px 5px 10px #eeeeee, -5px -5px 10px #ffffff; display: flex; flex-direction: column; width: 100%; box-sizing: border-box;">
+                  <div id="live_date" style="font-size: 13px; color: #555; font-weight: 700; margin-bottom: 5px; text-align: left; width: 100%;">...</div>
+                  <div style="display: flex; justify-content: space-between; align-items: center; width: 100%;">
+                      <div id="live_time" style="font-size: 32px; font-weight: 800; line-height: 1; letter-spacing: 0.5px; color: var(--primary);">--:--:--</div>
+                      <div id="live_status" style="font-size: 11px; padding: 6px 12px; border-radius: 8px; font-weight: 700; text-align: center;">...</div>
+                  </div>
+              </div>
+
+              <div style="background: linear-gradient(145deg, #ffffff, #f9f9f9); padding: 15px 20px; border-radius: 15px; border: 1px solid #eee; box-shadow: 5px 5px 10px #eeeeee, -5px -5px 10px #ffffff; display: flex; flex-direction: column; width: 100%; box-sizing: border-box;">
+                  <div style="font-size: 12px; font-weight: 800; color: #555; margin-bottom: 8px; text-align: left; width: 100%; text-transform: uppercase;">TOTAL WBP</div>
+                  <div style="display: flex; justify-content: space-between; align-items: center; width: 100%;">
+                      <div style="font-size: 32px; font-weight: 800; color: var(--primary); line-height: 1;">${wbp}</div>
+                      <div style="display: flex; gap: 12px; font-size: 11px; color: #777; font-weight: 600;">
+                          <div style="background: rgba(211, 84, 0, 0.08); padding: 5px 10px; border-radius: 8px; display: flex; flex-direction: column; align-items: center; justify-content: center;">
+                              <span>Napi</span>
+                              <b style="color:#d35400; font-size: 14px; margin-top:2px;">${napi}</b>
+                          </div>
+                          <div style="background: rgba(41, 128, 185, 0.08); padding: 5px 10px; border-radius: 8px; display: flex; flex-direction: column; align-items: center; justify-content: center;">
+                              <span>Tahanan</span>
+                              <b style="color:#2980b9; font-size: 14px; margin-top:2px;">${tahanan}</b>
+                          </div>
+                      </div>
+                  </div>
+              </div>
           </div>`;
             
-          appendMsg('bot', clockHtml, { options: menu.options });
+          appendMsg('bot', '', { customHtml: clockHtml, options: menu.options });
  
           updateClock();
           clockInterval = setInterval(updateClock, 1000);
@@ -388,8 +351,8 @@
         function appendMsg(sender, text, extra = {}) {
             const div = document.createElement('div');
           div.className = `msg ${sender}`;
-            let content = text.replace(/\n/g, '<br>').replace(/\*\*(.*?)\*\*/g, '<b>$1</b>');
-          if(extra.customHtml) content += `<br>${extra.customHtml}`;
+            let content = text ? text.replace(/\n/g, '<br>').replace(/\*\*(.*?)\*\*/g, '<b>$1</b>') : '';
+          if(extra.customHtml) content += (content ? `<br>` : '') + extra.customHtml;
           div.innerHTML = content;
           chatBox.appendChild(div);
           if(!extra.isForm && extra.options) showBtn(extra.options);
