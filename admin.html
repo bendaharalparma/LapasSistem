@@ -482,8 +482,7 @@
         projectId: "lapassistem",
         storageBucket: "lapassistem.firebasestorage.app",
         messagingSenderId: "951059663532",
-        appId: "1:951059663532:web:716bc3010eecc741a4ed09",
-        measurementId: "G-25HSNZ35ZH"
+        appId: "1:951059663532:web:716bc3010eecc741a4ed09"
     };
 
     if (!firebase.apps.length) firebase.initializeApp(firebaseConfig);
@@ -592,8 +591,9 @@
                    let fileBtn = v.images ? `<button onclick='showFiles("${v.k}")' class="btn" style="background:#8e44ad; padding:4px 8px; font-size:10px;">BERKAS</button>` : '-';
                    row += `<td>${v.tgl}</td><td>${v.jenis}</td><td><b>${v.wbp}</b></td><td><b>${v.penjamin}</b><br><small>NIK:${v.nik}</small><br><small>HP:${v.telp}</small></td><td>${v.hub}</td><td style="text-align:center">${fileBtn}</td><td style="text-align:center">${stBadge}</td><td>${note}</td><td>${actions}</td>`;
                 } else if (path === 'cek_wbp') {
+                   // Render baris Cek WBP Khusus
                    let imgBtn = v.ktpUrl ? `<img src="${v.ktpUrl}" style="height:35px; border-radius:3px; cursor:pointer;" onclick="showSingleImg('${v.k}')">` : '-';
-                   let sdpInput = `<input id="sdp-${v.k}" value="${v.sdpStatus||''}" placeholder="Input data SDP..." onblur="saveSDP('${path}','${v.k}',this.value)" style="width:150px;">`;
+                   let sdpInput = `<input id="sdp-${v.k}" value="${v.sdpStatus||''}" placeholder="Isi SDP cth: 2/3 bebas" onblur="saveSDP('${path}','${v.k}',this.value)" style="width:160px; font-size:11px;">`;
                    row += `<td>${v.tgl}</td><td><b>${v.namaPengecek}</b></td><td style="text-align:center">${imgBtn}</td><td><b>${v.wbp}</b><br><small>Bin: ${v.bin}</small></td><td style="text-align:center">${stBadge}</td><td>${sdpInput}</td><td>${actions}</td>`;
                 } else {
                    let imgBtn = v.ktpUrl ? `<img src="${v.ktpUrl}" style="height:35px; border-radius:3px; cursor:pointer;" onclick="showSingleImg('${v.k}')">` : '-';
