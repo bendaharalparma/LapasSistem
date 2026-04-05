@@ -647,6 +647,10 @@
     function getMenu(cfg) {
         const renderSafe = (content) => content ? content : "-";
         
+        const pdfDocBtn = cfg.pdf_doc ? `<a href="${cfg.pdf_doc}" download="Syarat_Kunjungan.pdf" style="display:inline-block; margin-top:10px; padding:8px 12px; background:#e74c3c; color:#fff; text-decoration:none; border-radius:5px; font-size:12px; font-weight:bold;"><i class="fas fa-file-pdf"></i> Unduh Dokumen PDF</a>` : '';
+        const pdfItemBtn = cfg.pdf_item ? `<a href="${cfg.pdf_item}" download="Aturan_Barang.pdf" style="display:inline-block; margin-top:10px; padding:8px 12px; background:#e74c3c; color:#fff; text-decoration:none; border-radius:5px; font-size:12px; font-weight:bold;"><i class="fas fa-file-pdf"></i> Unduh Dokumen PDF</a>` : '';
+        const pdfPbBtn = cfg.pdf_pb_cb ? `<a href="${cfg.pdf_pb_cb}" download="Syarat_PB_CB_CMB.pdf" style="display:inline-block; margin-top:10px; padding:8px 12px; background:#e74c3c; color:#fff; text-decoration:none; border-radius:5px; font-size:12px; font-weight:bold;"><i class="fas fa-file-pdf"></i> Unduh Dokumen PDF</a>` : '';
+
         // Gabungan Jadwal dan Syarat
         const htmlJadwalSyarat = `
         <div style="margin-bottom:8px; font-weight:600; font-size:12px; color:var(--primary);">KATEGORI LAYANAN KUNJUNGAN:</div>
@@ -665,8 +669,11 @@
         <div class="rich-content" style="margin-top:10px;">
             <h3 style="margin:0 0 5px 0; border-bottom:1px solid #ddd; padding-bottom:5px;">📄 Dokumen</h3>
             ${renderSafe(cfg.txt_doc)}
+            ${pdfDocBtn}
+            
             <h3 style="margin:15px 0 5px 0; border-bottom:1px solid #ddd; padding-bottom:5px;">📦 Aturan Barang</h3>
             ${renderSafe(cfg.txt_item)}
+            ${pdfItemBtn}
         </div>`;
 
         return {
@@ -715,7 +722,7 @@
             'menu_urus': { text: "📂 **LAYANAN PENGURUSAN INTEGRASI**", options: [{ text: "SYARAT PENGURUSAN PB/CB/CMB", val: "sub_syarat_pb" }, { text: "AJUKAN PERMOHONAN BARU", val: "form_urus" }, { text: "CEK STATUS PENGAJUAN", val: "cek_status_pengurusan" }, { text: "KEMBALI KE MENU UTAMA", val: "start" }] },
             'sub_syarat_pb': { 
                 text: "📂 **SYARAT PENGURUSAN PB/CB/CMB:**", 
-                customHtml: `<div class="rich-content">${renderSafe(cfg.txt_pb_cb)}</div>`, 
+                customHtml: `<div class="rich-content">${renderSafe(cfg.txt_pb_cb)} ${pdfPbBtn}</div>`, 
                 backTo: 'menu_urus' 
             },
             'form_urus': { text: "Menyiapkan formulir...", isForm: true, formType: "pengurusan" },
