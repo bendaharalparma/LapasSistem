@@ -250,6 +250,10 @@
                  <label>Jumlah Tahanan</label>
                  <input id="jml_tahanan" type="number" placeholder="Contoh: 50">
              </div>
+             <div class="setting-row" style="background: #e8f4fc; border-top:2px solid var(--border-color);">
+                 <label style="color:var(--primary); font-size:13px;"><i class="fas fa-calculator"></i> TOTAL WBP KESELURUHAN</label>
+                 <div id="total_wbp_lbl" style="font-weight:800; font-size:20px; color:var(--primary);">0</div>
+             </div>
           </div>
 
             <div class="setting-card" style="grid-column: 1 / -1;">
@@ -380,7 +384,7 @@
         </div>
         <div class="table-responsive">
             <table id="tbl_cekwbp">
-             <thead><tr><th>Tanggal</th><th>Pengecek</th><th>KTP Pengecek</th><th>WBP (Bin)</th><th>Status</th><th>Format Data SDP</th><th>Aksi</th></tr></thead>
+             <thead><tr><th>Tanggal</th><th>Pengecek</th><th>KTP</th><th>WBP (Bin)</th><th>Hubungan</th><th>Status</th><th>Data SDP (Teks & File)</th><th>Aksi</th></tr></thead>
              <tbody id="tb_cekwbp"></tbody>
          </table>
         </div>
@@ -491,6 +495,18 @@
     let currentListener = null;
     const DATA_CACHE = {};
 
+    // Menghitung otomatis Total WBP
+    const inpNapi = document.getElementById('jml_napi');
+    const inpTahanan = document.getElementById('jml_tahanan');
+    const lblTotal = document.getElementById('total_wbp_lbl');
+    function calcTotalWBP() {
+        let n = parseInt(inpNapi.value) || 0;
+        let t = parseInt(inpTahanan.value) || 0;
+        lblTotal.innerText = n + t;
+    }
+    inpNapi.addEventListener('input', calcTotalWBP);
+    inpTahanan.addEventListener('input', calcTotalWBP);
+
     auth.onAuthStateChanged(u => {
         if(u) {
             document.getElementById('login-box').style.display='none';
@@ -531,6 +547,7 @@
                 const d = s.val();
                 simpleFields.forEach(f => { if(document.getElementById(f)) document.getElementById(f).value = d[f]||""; });
                 for(let key in htmlFields) { if(document.getElementById(htmlFields[key])) document.getElementById(htmlFields[key]).innerHTML = d[key] || ""; }
+                calcTotalWBP(); // Set total waktu memuat
             }
         });
     }
@@ -564,6 +581,22 @@
         if(confirm("⚠️ HAPUS SEMUA DATA?")) db.ref(path).remove();
     }
 
+    // Fungsi kompres gambar untuk di admin
+    function compressImage(file, cb) {
+        const reader = new FileReader(); reader.readAsDataURL(file);
+        reader.onload = function(e) {
+            const img = new Image(); img.src = e.target.result;
+            img.onload = function() {
+                const canvas = document.createElement('canvas'); const ctx = canvas.getContext('2d');
+                const maxW = 800; let w = img.width; let h = img.height;
+                if(w > maxW) { h *= maxW/w; w = maxW; }
+                canvas.width = w; canvas.height = h;
+                ctx.drawImage(img, 0, 0, w, h);
+                cb(canvas.toDataURL('image/jpeg', 0.6));
+            }
+        }
+    }
+
     function render(snap, tbodyId, path, cntId) {
         const tb = document.getElementById(tbodyId); tb.innerHTML = "";
         if(!snap.exists()) { 
@@ -578,9 +611,9 @@
         arr.reverse().forEach(v => {
             try {
                 let row = `<tr data-key="${v.k}">`;
-                const btnAcc = `<button onclick="upd('${path}','${v.k}','accepted')" class="act-btn bg-acc"><i class="fas fa-check"></i></button>`;
-                const btnRej = `<button onclick="upd('${path}','${v.k}','rejected')" class="act-btn bg-rej"><i class="fas fa-times"></i></button>`;
-                const btnDel = `<button onclick="del('${path}','${v.k}')" class="act-btn bg-rej"><i class="fas fa-trash"></i></button>`;
+                const btnAcc = `<button onclick="upd('${path}','${v.k}','accepted')" class="act-btn bg-acc" title="Setujui/Verifikasi"><i class="fas fa-check"></i></button>`;
+                const btnRej = `<button onclick="upd('${path}','${v.k}','rejected')" class="act-btn bg-rej" title="Tolak"><i class="fas fa-times"></i></button>`;
+                const btnDel = `<button onclick="del('${path}','${v.k}')" class="act-btn bg-rej" title="Hapus Permanen"><i class="fas fa-trash"></i></button>`;
                 const actions = `<div style="display:flex; justify-content:center;">${btnAcc}${btnRej}${btnDel}</div>`;
                 let stBadge = v.status==='accepted'?'<span class="badge bg-acc">OK</span>':(v.status==='rejected'?'<span class="badge bg-rej">NO</span>':'<span class="badge bg-wait">WAIT</span>');
                 const note = `<input id="n-${v.k}" value="${v.note||''}" placeholder="Catatan" onblur="saveNote('${path}','${v.k}',this.value)" style="width:100px;">`;
@@ -591,12 +624,19 @@
                    let fileBtn = v.images ? `<button onclick='showFiles("${v.k}")' class="btn" style="background:#8e44ad; padding:4px 8px; font-size:10px;">BERKAS</button>` : '-';
                    row += `<td>${v.tgl}</td><td>${v.jenis}</td><td><b>${v.wbp}</b></td><td><b>${v.penjamin}</b><br><small>NIK:${v.nik}</small><br><small>HP:${v.telp}</small></td><td>${v.hub}</td><td style="text-align:center">${fileBtn}</td><td style="text-align:center">${stBadge}</td><td>${note}</td><td>${actions}</td>`;
                 } else if (path === 'cek_wbp') {
-                   // Render baris Cek WBP Khusus
-                   let imgBtn = v.ktpUrl ? `<img src="${v.ktpUrl}" style="height:35px; border-radius:3px; cursor:pointer;" onclick="showSingleImg('${v.k}')">` : '-';
-                   let sdpInput = `<input id="sdp-${v.k}" value="${v.sdpStatus||''}" placeholder="Isi SDP cth: 2/3 bebas" onblur="saveSDP('${path}','${v.k}',this.value)" style="width:160px; font-size:11px;">`;
-                   row += `<td>${v.tgl}</td><td><b>${v.namaPengecek}</b></td><td style="text-align:center">${imgBtn}</td><td><b>${v.wbp}</b><br><small>Bin: ${v.bin}</small></td><td style="text-align:center">${stBadge}</td><td>${sdpInput}</td><td>${actions}</td>`;
+                   // Render baris Cek WBP dengan Upload Gambar/PDF
+                   let imgBtn = v.ktpUrl ? `<img src="${v.ktpUrl}" style="height:35px; border-radius:3px; cursor:pointer;" onclick="showSingleImg('${v.k}', 'ktpUrl')">` : '-';
+                   let sdpFileHtml = v.sdpFile ? `<button onclick="viewSDPAdmin('${v.k}')" class="btn" style="background:#2980b9; font-size:10px; padding:4px; margin-top:4px;">LIHAT FILE</button>` : '';
+                   
+                   let sdpInput = `
+                      <input id="sdp-${v.k}" value="${v.sdpStatus||''}" placeholder="Catatan cth: 2/3 bebas" onblur="saveSDP('${path}','${v.k}',this.value)" style="width:140px; font-size:11px; margin-bottom:4px;">
+                      <div style="font-size:10px; font-weight:bold; color:#777;">Upload Dokumen SDP:</div>
+                      <input type="file" accept="image/*,application/pdf" style="width:140px; font-size:10px; padding:2px;" onchange="uploadSDP('${v.k}', this)">
+                      ${sdpFileHtml}
+                   `;
+                   row += `<td>${v.tgl}</td><td><b>${v.namaPengecek}</b></td><td style="text-align:center">${imgBtn}</td><td><b>${v.wbp}</b><br><small>Bin: ${v.bin}</small></td><td>${v.hubungan||'-'}</td><td style="text-align:center">${stBadge}</td><td>${sdpInput}</td><td>${actions}</td>`;
                 } else {
-                   let imgBtn = v.ktpUrl ? `<img src="${v.ktpUrl}" style="height:35px; border-radius:3px; cursor:pointer;" onclick="showSingleImg('${v.k}')">` : '-';
+                   let imgBtn = v.ktpUrl ? `<img src="${v.ktpUrl}" style="height:35px; border-radius:3px; cursor:pointer;" onclick="showSingleImg('${v.k}', 'ktpUrl')">` : '-';
                    row += `<td style="font-weight:700;">${v.noAntrian||'-'}</td><td>${v.tgl}<br><small>${v.jam||''}</small></td><td><b>${v.nama}</b><br><small>NIK:${v.nik}</small><br><small>HP:${v.telp}</small></td><td>${v.wbp}</td><td style="text-align:center">${imgBtn}</td><td style="text-align:center">${stBadge}</td><td>${note}</td><td>${actions}</td>`;
                 }
                 row += "</tr>"; tb.insertAdjacentHTML('beforeend', row);
@@ -609,7 +649,43 @@
     function saveSDP(path, key, val) { db.ref(path+'/'+key).update({sdpStatus:val}); }
     function del(path, key) { if(confirm("Hapus?")) db.ref(path+'/'+key).remove(); }
 
-    window.showSingleImg = (key) => { const d = DATA_CACHE[key]; if(d && d.ktpUrl) { document.getElementById('imgView').src = d.ktpUrl; document.getElementById('imgModal').style.display = 'flex'; } }
+    // Upload Data SDP untuk WBP
+    window.uploadSDP = function(key, inputEl) {
+        const file = inputEl.files[0];
+        if(!file) return;
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            let result = e.target.result;
+            if(file.type.startsWith('image/')) {
+                compressImage(file, (b64) => {
+                    db.ref('cek_wbp/'+key).update({sdpFile: b64, sdpFileType: 'image'});
+                    alert("File SDP (Gambar) berhasil disimpan!");
+                });
+            } else if (file.type === 'application/pdf') {
+                if(file.size > 2 * 1024 * 1024) return alert("Ukuran PDF maksimal 2MB!");
+                db.ref('cek_wbp/'+key).update({sdpFile: result, sdpFileType: 'pdf'});
+                alert("File SDP (PDF) berhasil disimpan!");
+            } else {
+                alert("Format file tidak didukung!");
+            }
+        };
+        reader.readAsDataURL(file);
+    }
+
+    window.viewSDPAdmin = function(key) {
+        const d = DATA_CACHE[key];
+        if(!d || !d.sdpFile) return;
+        if(d.sdpFileType === 'pdf') {
+            let pdfWindow = window.open("");
+            pdfWindow.document.write(`<iframe width='100%' height='100%' style='border:none;' src='${d.sdpFile}'></iframe>`);
+        } else {
+            document.getElementById('imgView').src = d.sdpFile; 
+            document.getElementById('imgModal').style.display = 'flex';
+        }
+    }
+
+    window.showSingleImg = (key, field) => { const d = DATA_CACHE[key]; if(d && d[field]) { document.getElementById('imgView').src = d[field]; document.getElementById('imgModal').style.display = 'flex'; } }
+    
     window.showFiles = (key) => {
         const d = DATA_CACHE[key]; const grid = document.getElementById('galleryGrid'); grid.innerHTML = '';
         if(d && d.images) {
@@ -657,10 +733,10 @@
                 body.push([i + 1, c[0].innerText, c[1].innerText, c[2].innerText, c[3].innerText, c[4].innerText, c[6].innerText, c[7].querySelector('input')?c[7].querySelector('input').value:'']);
             });
         } else if (tableId === 'tbl_cekwbp') {
-            headers = [['No', 'Tanggal', 'Pengecek', 'WBP (Bin)', 'Status', 'Data SDP']];
+            headers = [['No', 'Tanggal', 'Pengecek', 'WBP (Bin)', 'Hubungan', 'Status', 'Catatan SDP']];
             Array.from(table.tBodies[0].rows).forEach((row, i) => {
                 const c = row.cells;
-                body.push([i + 1, c[0].innerText, c[1].innerText, c[3].innerText, c[4].innerText, c[5].querySelector('input')?c[5].querySelector('input').value:'']);
+                body.push([i + 1, c[0].innerText, c[1].innerText, c[3].innerText, c[4].innerText, c[5].innerText, c[6].querySelector('input')?c[6].querySelector('input').value:'']);
             });
         } else {
             headers = [['No', 'Tanggal', 'Kepuasan', 'Pesan']];
