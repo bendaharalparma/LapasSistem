@@ -78,7 +78,6 @@
         .spec-table td { padding: 10px; border-bottom: 1px solid #eee; }
         .schedule-card { border: 1px solid #eee; border-radius: 10px; overflow: hidden; margin-top: 5px; background: white; }
         .sch-row { display: flex; justify-content: space-between; padding: 12px 15px; border-bottom: 1px solid #f9f9f9; font-size: 12px; }
-
     </style>
 </head>
 <body>
@@ -91,9 +90,7 @@
 
 <div class="app-container">
     <div id="loader">
-    <img src="https://surviving-pink-xhrotxxwgh.edgeone.app/Gemini_Generated_Image_wijbcxwijbcxwijb-removebg-preview.png"
-      alt="Loading..." 
-      style="width: 150px; height: auto; object-fit: contain; animation: pulse 1.5s infinite ease-in-out;">
+    <img src="https://surviving-pink-xhrotxxwgh.edgeone.app/Gemini_Generated_Image_wijbcxwijbcxwijb-removebg-preview.png" alt="Loading..." style="width: 150px; height: auto; object-fit: contain; animation: pulse 1.5s infinite ease-in-out;">
 </div>
     
     <div class="header" id="header_bg">
@@ -116,8 +113,7 @@
         projectId: "lapassistem",
         storageBucket: "lapassistem.firebasestorage.app",
         messagingSenderId: "951059663532",
-        appId: "1:951059663532:web:716bc3010eecc741a4ed09",
-        measurementId: "G-25HSNZ35ZH"
+        appId: "1:951059663532:web:716bc3010eecc741a4ed09"
     };
 
     let clockInterval;
@@ -195,7 +191,6 @@
             
             const clockHtml = `
             <div style="display: flex; flex-direction: row; gap: 10px; margin-bottom: 12px; width: 100%; align-items: stretch;">
-                
                 <div style="flex: 1; background: linear-gradient(145deg, #ffffff, #f9f9f9); padding: 12px 10px; border-radius: 15px; border: 1px solid #eee; box-shadow: 3px 3px 8px #eeeeee, -3px -3px 8px #ffffff; display: flex; flex-direction: column; justify-content: center; box-sizing: border-box;">
                     <div id="live_date" style="font-size: 10px; color: #555; font-weight: 700; margin-bottom: 6px; text-align: center; border-bottom: 1px dashed #ddd; padding-bottom: 4px; width: 100%;">...</div>
                     <div style="display: flex; justify-content: center; align-items: center; gap: 6px; width: 100%; flex-wrap: wrap;">
@@ -218,7 +213,6 @@
                         </div>
                     </div>
                 </div>
-
             </div>`;
             
             appendMsg('bot', '', { customHtml: clockHtml, options: menu.options });
@@ -287,7 +281,7 @@
                 btn.className = isBack ? 'btn btn-back' : 'btn';
                 
                 let icon = 'fa-chevron-right';
-                if(o.text.includes("CEK WBP")) icon = 'fa-search';
+                if(o.text.includes("CEK WBP") || o.text.includes("STATUS WBP")) icon = 'fa-search';
                 else if(o.text.includes("TATAP MUKA") || o.text.includes("KUNJUNGAN")) icon = 'fa-user-friends';
                 else if(o.text.includes("VIDEO")) icon = 'fa-video';
                 else if(o.text.includes("PENGURUSAN")) icon = 'fa-folder-open';
@@ -296,7 +290,6 @@
                 else if(o.text.includes("SURVEI")) icon = 'fa-clipboard-list';
                 else if(o.text.includes("KEPUASAN") || o.text.includes("KRITIK")) icon = 'fa-star';
                 else if(o.text.includes("KONTAK")) icon = 'fa-address-book';
-                // Brand Icons
                 else if(o.text.includes("WHATSAPP")) icon = 'fa-whatsapp';
                 else if(o.text.includes("INSTAGRAM")) icon = 'fa-instagram';
                 else if(o.text.includes("FACEBOOK")) icon = 'fa-facebook';
@@ -318,6 +311,7 @@
             chatBox.appendChild(div);
         }
 
+        // ====================== FORM CEK WBP ======================
         window.renderFormCekWBP = function() {
             const html = `
             <div class="form-box">
@@ -329,8 +323,76 @@
                 <button onclick="submitCekWBP()" class="submit-btn">KIRIM PENGAJUAN</button>
                 <button onclick="respond('start')" style="background:transparent; border:none; padding:10px; width:100%; margin-top:5px; color:#666;">Batal</button>
             </div>`;
-            appendMsg('bot', "🔍 **FORM PENGAJUAN CEK WBP**\nSilakan lengkapi data untuk melakukan pengecekan.", { customHtml: html });
+            appendMsg('bot', "🔍 **FORM PENGAJUAN CEK WBP**\nSilakan lengkapi formulir pencarian.", { customHtml: html });
         }
+
+        window.submitCekWBP = function() {
+            const f_ktp = document.getElementById('cw_ktp').files[0];
+            const namaPengecek = document.getElementById('cw_nama_pengecek').value;
+            const wbp = document.getElementById('cw_nama_wbp').value;
+            const bin = document.getElementById('cw_bin').value;
+
+            if(!f_ktp || !namaPengecek || !wbp || !bin) return alert("Mohon lengkapi semua data dan Foto KTP!");
+
+            const btn = document.querySelector('.submit-btn'); 
+            btn.innerHTML = "Mengirim..."; btn.disabled = true;
+
+            compressImage(f_ktp, (base64) => {
+                const payload = {
+                    namaPengecek, wbp, bin, ktpUrl: base64,
+                    status: 'waiting', sdpStatus: '',
+                    tgl: new Date().toISOString().split('T')[0],
+                    createdAt: firebase.database.ServerValue.TIMESTAMP
+                };
+                db.ref('cek_wbp').push(payload).then(() => {
+                    chatBox.innerHTML = '';
+                    appendMsg('bot', `✅ **PENGAJUAN CEK WBP BERHASIL!**\nPermintaan cek nama **${wbp}** Bin **${bin}** telah dikirim ke Admin.\n\nSilakan gunakan menu **Cek Status WBP** secara berkala untuk melihat hasil pengecekan (seperti data masuk, lama penahanan, dan 2/3 bebas).`);
+                    showBtn([{text:"KEMBALI KE MENU UTAMA", val:"start"}]);
+                }).catch(e => {
+                    btn.disabled = false; btn.innerHTML = "KIRIM PENGAJUAN"; alert("Gagal: " + e.message);
+                });
+            });
+        }
+
+        window.askNamaForStatusWbp = function() {
+            appendMsg('bot', `🔍 **CEK STATUS WBP**\nMasukkan Nama WBP yang telah diajukan:`, {
+                customHtml: `<div class="form-box"><input id="cek_nama_wbp" class="inp" placeholder="Nama WBP"><input id="cek_bin_wbp" class="inp" placeholder="Bin / Binti (Opsional)"><button onclick="doCheckStatusWbp()" class="submit-btn">CARI DATA</button></div>`,
+                options: [{text:"Batal", val:"start"}]
+            });
+        }
+
+        window.doCheckStatusWbp = function() {
+            const nama = document.getElementById('cek_nama_wbp').value.toLowerCase().trim();
+            const bin = document.getElementById('cek_bin_wbp').value.toLowerCase().trim();
+            if(!nama) return alert("Isi Nama WBP!");
+            
+            const btn = document.querySelector('.submit-btn'); btn.innerText = "Mencari..."; btn.disabled = true;
+            db.ref('cek_wbp').orderByChild('createdAt').limitToLast(50).once('value').then(s => {
+                let found = null;
+                if(s.exists()) {
+                    s.forEach(c => {
+                        const d = c.val();
+                        if(String(d.wbp).toLowerCase().includes(nama)) {
+                            if(!bin || String(d.bin).toLowerCase().includes(bin)) { found = d; }
+                        }
+                    });
+                }
+                chatBox.innerHTML = '';
+                if(found) {
+                    let stBadge = found.status === 'accepted' ? '✅ TERVERIFIKASI' : (found.status === 'rejected' ? '❌ DITOLAK' : '🕒 MENUNGGU ADMIN');
+                    let sdpText = found.sdpStatus ? `**Format Data SDP:**\n${found.sdpStatus}` : `*Data WBP masih diproses atau belum diinput oleh petugas SDP.*`;
+                    
+                    appendMsg('bot', `📄 **HASIL CEK WBP**\n\nNama WBP: **${found.wbp}** (Bin ${found.bin})\nPengecek: **${found.namaPengecek}**\nStatus Laporan: **${stBadge}**\n\n${sdpText}`);
+                } else { 
+                    appendMsg('bot', "❌ **DATA TIDAK DITEMUKAN**\nPastikan Anda telah mengisi formulir pengecekan sebelumnya."); 
+                }
+                showBtn([{text:"KEMBALI KE MENU UTAMA", val:"start"}]);
+            }).catch(e => {
+                alert("Error: " + e.message);
+                btn.innerText = "CARI DATA"; btn.disabled = false;
+            });
+        }
+        // ==========================================================
 
         function renderFormStandard(text, type) {
             const formHtml = `
@@ -404,34 +466,6 @@
                 <button onclick="respond('start')" style="background:transparent; border:none; padding:10px; width:100%; margin-top:5px; color:#666;">Batal</button>
             </div>`;
             appendMsg('bot', "📢 **TINGKAT KEPUASAN & SARAN**", { customHtml: html });
-        }
-
-        window.submitCekWBP = function() {
-            const f_ktp = document.getElementById('cw_ktp').files[0];
-            const namaPengecek = document.getElementById('cw_nama_pengecek').value;
-            const wbp = document.getElementById('cw_nama_wbp').value;
-            const bin = document.getElementById('cw_bin').value;
-
-            if(!f_ktp || !namaPengecek || !wbp || !bin) return alert("Mohon lengkapi semua data dan Foto KTP!");
-
-            const btn = document.querySelector('.submit-btn'); 
-            btn.innerHTML = "Mengirim..."; btn.disabled = true;
-
-            compressImage(f_ktp, (base64) => {
-                const payload = {
-                    namaPengecek, wbp, bin, ktpUrl: base64,
-                    status: 'waiting', sdpStatus: '',
-                    tgl: new Date().toISOString().split('T')[0],
-                    createdAt: firebase.database.ServerValue.TIMESTAMP
-                };
-                db.ref('cek_wbp').push(payload).then(() => {
-                    chatBox.innerHTML = '';
-                    appendMsg('bot', `✅ **PENGAJUAN CEK WBP BERHASIL!**\nNama WBP: **${wbp}** Bin **${bin}**.\nSilakan gunakan menu **Cek Status WBP** secara berkala untuk melihat hasil pengecekan.`);
-                    showBtn([{text:"KEMBALI KE MENU UTAMA", val:"start"}]);
-                }).catch(e => {
-                    btn.disabled = false; btn.innerHTML = "KIRIM PENGAJUAN"; alert("Gagal: " + e.message);
-                });
-            });
         }
 
         window.submitForm = function(type) {
@@ -516,42 +550,6 @@
             });
         }
 
-        window.askNamaForStatusWbp = function() {
-            appendMsg('bot', `🔍 **CEK STATUS WBP**\nMasukkan Nama WBP yang telah diajukan:`, {
-                customHtml: `<div class="form-box"><input id="cek_nama_wbp" class="inp" placeholder="Nama WBP"><button onclick="doCheckStatusWbp()" class="submit-btn">CARI DATA</button></div>`,
-                options: [{text:"Batal", val:"start"}]
-            });
-        }
-
-        window.doCheckStatusWbp = function() {
-            const nama = document.getElementById('cek_nama_wbp').value.toLowerCase().trim();
-            if(!nama) return alert("Isi Nama WBP!");
-            
-            const btn = document.querySelector('.submit-btn'); btn.innerText = "Mencari..."; btn.disabled = true;
-            db.ref('cek_wbp').orderByChild('createdAt').limitToLast(50).once('value').then(s => {
-                let found = null;
-                if(s.exists()) {
-                    s.forEach(c => {
-                        const d = c.val();
-                        if(String(d.wbp).toLowerCase().includes(nama)) found = d;
-                    });
-                }
-                chatBox.innerHTML = '';
-                if(found) {
-                    let stBadge = found.status === 'accepted' ? '✅ TERVERIFIKASI' : (found.status === 'rejected' ? '❌ DITOLAK' : '🕒 DIPROSES');
-                    let sdpText = found.sdpStatus ? `**Format SDP:**\n${found.sdpStatus}` : `*Data SDP belum diisi petugas.*`;
-                    
-                    appendMsg('bot', `📄 **HASIL CEK WBP**\n\nNama WBP: **${found.wbp}** (Bin ${found.bin})\nPengecek: **${found.namaPengecek}**\nStatus: **${stBadge}**\n\n${sdpText}`);
-                } else { 
-                    appendMsg('bot', "❌ **DATA TIDAK DITEMUKAN**\nPastikan Anda telah mengajukan permohonan Cek WBP."); 
-                }
-                showBtn([{text:"KEMBALI KE MENU UTAMA", val:"start"}]);
-            }).catch(e => {
-                alert("Error: " + e.message);
-                btn.innerText = "CARI DATA"; btn.disabled = false;
-            });
-        }
-
         window.doCheckStatus = function(type) {
             const nik = document.getElementById('cek_nik').value;
             if(!nik) return alert("Isi NIK!");
@@ -626,12 +624,14 @@
 
     function getMenu(cfg) {
         const renderSafe = (content) => content ? content : "-";
-        const htmlJadwal = `
-        <div style="margin-bottom:8px; font-weight:600; font-size:12px; color:var(--primary);">KATEGORI LAYANAN:</div>
+        
+        // Gabungan Jadwal dan Syarat
+        const htmlJadwalSyarat = `
+        <div style="margin-bottom:8px; font-weight:600; font-size:12px; color:var(--primary);">KATEGORI LAYANAN KUNJUNGAN:</div>
         <table class="spec-table">
-        <tr><th>Jenis Tahanan</th><th>Hari Layanan</th></tr>
-        <tr><td><b>PIDUM</b></td><td>${cfg.sch_pidum || 'Senin & Rabu'}</td></tr>
-        <tr><td><b>NARKOBA</b></td><td>${cfg.sch_narkoba || 'Selasa & Kamis'}</td></tr>
+            <tr><th>Jenis Tahanan</th><th>Hari Layanan</th></tr>
+            <tr><td><b>PIDUM</b></td><td>${cfg.sch_pidum || 'Senin & Rabu'}</td></tr>
+            <tr><td><b>NARKOBA</b></td><td>${cfg.sch_narkoba || 'Selasa & Kamis'}</td></tr>
         </table>
         <div class="schedule-card">
             <div class="sch-row"><span>Pagi</span><span class="badge bg-green">${cfg.sch_mon_am || '-'}</span></div>
@@ -639,6 +639,12 @@
             <div class="sch-row"><span>Jumat</span><span class="badge bg-green">${cfg.sch_fri || '-'}</span></div>
             <div class="sch-row"><span>Sabtu</span><span class="badge bg-blue">${cfg.sch_sat || '-'}</span></div>
             <div class="sch-row"><span>Minggu</span><span class="badge bg-red">${cfg.sch_sun || 'TUTUP'}</span></div>
+        </div>
+        <div class="rich-content" style="margin-top:10px;">
+            <h3 style="margin:0 0 5px 0; border-bottom:1px solid #ddd; padding-bottom:5px;">📄 Dokumen</h3>
+            ${renderSafe(cfg.txt_doc)}
+            <h3 style="margin:15px 0 5px 0; border-bottom:1px solid #ddd; padding-bottom:5px;">📦 Aturan Barang</h3>
+            ${renderSafe(cfg.txt_item)}
         </div>`;
 
         return {
@@ -653,31 +659,29 @@
                     { text: "KONTAK & PENGADUAN", val: "kontak" }
                 ]
             },
-            'menu_cek_wbp': { text: "🔍 **LAYANAN CEK WBP**", options: [{ text: "PENGAJUAN CEK WBP", val: "form_cek_wbp" }, { text: "CEK STATUS WBP", val: "ask_cek_status_wbp" }, { text: "KEMBALI KE MENU UTAMA", val: "start" }] },
             
-            'menu_kunjungan': { 
-                text: "👥 **KUNJUNGAN & VIDEO CALL**\nSilakan pilih menu informasi atau pendaftaran:", 
+            // CEK WBP
+            'menu_cek_wbp': { 
+                text: "🔍 **LAYANAN CEK WBP**", 
                 options: [
-                    { text: "JADWAL KUNJUNGAN", val: "sub_jadwal" }, 
-                    { text: "SYARAT KUNJUNGAN & BARANG", val: "sub_syarat_kunjungan" }, 
-                    { text: "DAFTAR TATAP MUKA", val: "daftar_fisik" }, 
-                    { text: "DAFTAR VIDEO CALL", val: "daftar_online" },
+                    { text: "ISI FORMULIR CEK WBP", val: "form_cek_wbp" }, 
+                    { text: "CEK STATUS WBP", val: "ask_cek_status_wbp" }, 
                     { text: "KEMBALI KE MENU UTAMA", val: "start" }
                 ] 
             },
+            'form_cek_wbp': { text: "Menyiapkan formulir...", isForm: true, formType: "cek_wbp" },
 
-            'sub_jadwal': { text: "📅 **JADWAL LAYANAN:**", customHtml: htmlJadwal, backTo: 'menu_kunjungan' },
-            'sub_syarat_kunjungan': { 
-                text: "👜 **INFORMASI KUNJUNGAN:**", 
-                customHtml: `
-                <div class="rich-content">
-                    <h3 style="margin:0 0 5px 0; border-bottom:1px solid #ddd; padding-bottom:5px;">📄 Dokumen</h3>
-                    ${renderSafe(cfg.txt_doc)}
-                    <h3 style="margin:15px 0 5px 0; border-bottom:1px solid #ddd; padding-bottom:5px;">📦 Aturan Barang</h3>
-                    ${renderSafe(cfg.txt_item)}
-                </div>`, 
-                backTo: 'menu_kunjungan' 
+            // KUNJUNGAN & VIDEO CALL
+            'menu_kunjungan': { 
+                text: "👥 **DAFTAR KUNJUNGAN & VIDEO CALL**\nSilakan pilih informasi atau pendaftaran:", 
+                options: [
+                    { text: "JADWAL, SYARAT KUNJUNGAN & BARANG", val: "sub_jadwal_syarat" }, 
+                    { text: "DAFTAR KUNJUNGAN TATAP MUKA", val: "daftar_fisik" }, 
+                    { text: "DAFTAR KUNJUNGAN VIDEO CALL", val: "daftar_online" },
+                    { text: "KEMBALI KE MENU UTAMA", val: "start" }
+                ] 
             },
+            'sub_jadwal_syarat': { text: "📅 **JADWAL & SYARAT KUNJUNGAN:**", customHtml: htmlJadwalSyarat, backTo: 'menu_kunjungan' },
 
             'daftar_fisik': { text: "📝 **PENDAFTARAN TATAP MUKA**", options: [{ text: "ISI FORMULIR", val: "form_fisik" }, { text: "CEK STATUS", val: "cek_status_fisik" }, { text: "KEMBALI SEBELUMNYA", val: "menu_kunjungan" }] },
             'form_fisik': { text: "📝 **ISI DATA KUNJUNGAN:**", isForm: true, formType: "fisik" },
@@ -685,6 +689,7 @@
             'daftar_online': { text: "💻 **PENDAFTARAN VIDEO CALL**", options: [{ text: "ISI FORMULIR", val: "form_online" }, { text: "CEK STATUS", val: "cek_status_online" }, { text: "KEMBALI SEBELUMNYA", val: "menu_kunjungan" }] },
             'form_online': { text: "💻 **ISI DATA VIDEO CALL:**", isForm: true, formType: "online" },
             
+            // PENGURUSAN
             'menu_urus': { text: "📂 **LAYANAN PENGURUSAN INTEGRASI**", options: [{ text: "SYARAT PENGURUSAN PB/CB/CMB", val: "sub_syarat_pb" }, { text: "AJUKAN PERMOHONAN BARU", val: "form_urus" }, { text: "CEK STATUS PENGAJUAN", val: "cek_status_pengurusan" }, { text: "KEMBALI KE MENU UTAMA", val: "start" }] },
             'sub_syarat_pb': { 
                 text: "📂 **SYARAT PENGURUSAN PB/CB/CMB:**", 
@@ -693,11 +698,14 @@
             },
             'form_urus': { text: "Menyiapkan formulir...", isForm: true, formType: "pengurusan" },
             
+            // TOKO LAPAS
             'toko': { text: "🛒 **TOKO LAPAS:**\n" + (cfg.toko_announce || "-"), options: [{ text: "BUKA APLIKASI TOKO", type: "link", url: cfg.toko_link }, { text: "KEMBALI KE MENU UTAMA", val: "start" }] },
             
+            // SURVEI
             'menu_survei': { text: "📊 **SURVEI & TINGKAT KEPUASAN:**\n" + (cfg.info_survei || "Silakan pilih layanan di bawah ini:"), options: [{ text: "ISI SURVEI LAYANAN", type: "link", url: cfg.link_survei || "#" }, { text: "TINGKAT KEPUASAN", val: "menu_kritik" }, { text: "KEMBALI KE MENU UTAMA", val: "start" }] },
             'menu_kritik': { text: "Silakan berikan penilaian Anda terhadap layanan kami:", isForm: true, formType: "kritik" },
             
+            // KONTAK
             'kontak': { text: "📞 **PUSAT PENGADUAN:**", options: [{ text: "WHATSAPP PENGADUAN", type: "link", url: `https://wa.me/${cfg.wa_pengaduan}` }, { text: "SALURAN INFORMASI", type: "link", url: cfg.wa_channel }, { text: "MEDIA SOSIAL", val: "sosmed" }, { text: "KEMBALI KE MENU UTAMA", val: "start" }] },
             'sosmed': { text: "🌐 **MEDIA SOSIAL:**", options: [{ text: "INSTAGRAM", type: "link", url: cfg.soc_ig }, { text: "FACEBOOK", type: "link", url: cfg.soc_fb }, { text: "TWITTER / X", type: "link", url: cfg.soc_tw }, { text: "YOUTUBE", type: "link", url: cfg.soc_yt }, { text: "KEMBALI SEBELUMNYA", val: "kontak" }] }
         };
