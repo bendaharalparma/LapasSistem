@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <meta name="theme-color" content="#333333">
     <title>Layanan Lapas Digital</title>
+
     <link rel="icon" type="image/png" href="https://surviving-pink-xhrotxxwgh.edgeone.app/Gemini_Generated_Image_wijbcxwijbcxwijb-removebg-preview.png">
     <link rel="shortcut icon" type="image/png" href="https://surviving-pink-xhrotxxwgh.edgeone.app/Gemini_Generated_Image_wijbcxwijbcxwijb-removebg-preview.png">
     <script defer src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
@@ -12,6 +13,7 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700;800&display=swap" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    
     <style>
         * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
         :root { --primary: #555555; --accent: #FFD700; }
@@ -84,8 +86,7 @@
 
 <div id="resultModal">
     <button class="close-modal" onclick="closeResultModal()">&times;</button>
-    <img id="resultImg" src="" alt="Tiket">
-    <div style="color:white; text-align:center; margin-top:10px; font-size:12px;">Tekan tahan gambar untuk menyimpan</div>
+    <img id="resultImg" src="" alt="View">
 </div>
 
 <div class="app-container">
@@ -320,6 +321,7 @@
                 <input id="cw_nama_pengecek" class="inp" placeholder="Nama Anda (Pengecek)">
                 <input id="cw_nama_wbp" class="inp" placeholder="Nama WBP (Yang Dicari)">
                 <input id="cw_bin" class="inp" placeholder="Bin / Binti">
+                <input id="cw_hubungan" class="inp" placeholder="Hubungan dengan WBP (Cth: Istri/Anak)">
                 <button onclick="submitCekWBP()" class="submit-btn">KIRIM PENGAJUAN</button>
                 <button onclick="respond('start')" style="background:transparent; border:none; padding:10px; width:100%; margin-top:5px; color:#666;">Batal</button>
             </div>`;
@@ -331,15 +333,16 @@
             const namaPengecek = document.getElementById('cw_nama_pengecek').value;
             const wbp = document.getElementById('cw_nama_wbp').value;
             const bin = document.getElementById('cw_bin').value;
+            const hubungan = document.getElementById('cw_hubungan').value;
 
-            if(!f_ktp || !namaPengecek || !wbp || !bin) return alert("Mohon lengkapi semua data dan Foto KTP!");
+            if(!f_ktp || !namaPengecek || !wbp || !bin || !hubungan) return alert("Mohon lengkapi semua data dan Foto KTP!");
 
             const btn = document.querySelector('.submit-btn'); 
             btn.innerHTML = "Mengirim..."; btn.disabled = true;
 
             compressImage(f_ktp, (base64) => {
                 const payload = {
-                    namaPengecek, wbp, bin, ktpUrl: base64,
+                    namaPengecek, wbp, bin, hubungan, ktpUrl: base64,
                     status: 'waiting', sdpStatus: '',
                     tgl: new Date().toISOString().split('T')[0],
                     createdAt: firebase.database.ServerValue.TIMESTAMP
@@ -380,9 +383,14 @@
                 chatBox.innerHTML = '';
                 if(found) {
                     let stBadge = found.status === 'accepted' ? '✅ TERVERIFIKASI' : (found.status === 'rejected' ? '❌ DITOLAK' : '🕒 MENUNGGU ADMIN');
-                    let sdpText = found.sdpStatus ? `**Format Data SDP:**\n${found.sdpStatus}` : `*Data WBP masih diproses atau belum diinput oleh petugas SDP.*`;
+                    let sdpText = found.sdpStatus ? `**Catatan Data SDP:**\n${found.sdpStatus}` : (found.sdpFile ? `*Dokumen SDP tersedia (Silakan klik tombol di bawah).*` : `*Data WBP masih diproses atau belum diinput oleh petugas SDP.*`);
                     
-                    appendMsg('bot', `📄 **HASIL CEK WBP**\n\nNama WBP: **${found.wbp}** (Bin ${found.bin})\nPengecek: **${found.namaPengecek}**\nStatus Laporan: **${stBadge}**\n\n${sdpText}`);
+                    let sdpFileBtn = '';
+                    if(found.sdpFile) {
+                        sdpFileBtn = `<button onclick="viewSDP('${found.sdpFileType}', '${found.sdpFile}')" class="submit-btn" style="background:#2980b9; margin-top:10px;"><i class="fas fa-file-download"></i> LIHAT DOKUMEN SDP</button>`;
+                    }
+
+                    appendMsg('bot', `📄 **HASIL CEK WBP**\n\nNama WBP: **${found.wbp}** (Bin ${found.bin})\nPengecek: **${found.namaPengecek}**\nHubungan: **${found.hubungan}**\nStatus Laporan: **${stBadge}**\n\n${sdpText}`, { customHtml: sdpFileBtn });
                 } else { 
                     appendMsg('bot', "❌ **DATA TIDAK DITEMUKAN**\nPastikan Anda telah mengisi formulir pengecekan sebelumnya."); 
                 }
@@ -391,6 +399,20 @@
                 alert("Error: " + e.message);
                 btn.innerText = "CARI DATA"; btn.disabled = false;
             });
+        }
+
+        window.viewSDP = function(type, data) {
+            if(type === 'pdf') {
+                let a = document.createElement("a");
+                a.href = data;
+                a.download = "Dokumen_SDP.pdf";
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+            } else {
+                document.getElementById('resultImg').src = data;
+                document.getElementById('resultModal').style.display = 'flex';
+            }
         }
         // ==========================================================
 
