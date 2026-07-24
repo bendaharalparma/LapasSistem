@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <meta name="theme-color" content="#333333">
     <title>Layanan Lapas Digital</title>
-
+ 
     <link rel="icon" type="image/png" href="https://surviving-pink-xhrotxxwgh.edgeone.app/Gemini_Generated_Image_wijbcxwijbcxwijb-removebg-preview.png">
     <link rel="shortcut icon" type="image/png" href="https://surviving-pink-xhrotxxwgh.edgeone.app/Gemini_Generated_Image_wijbcxwijbcxwijb-removebg-preview.png">
     <script defer src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
@@ -29,10 +29,10 @@
         .logo-area { width: auto; height: 80px; margin: 0 auto 5px; padding: 0; display: flex; justify-content: center; align-items: center; filter: drop-shadow(0 5px 5px rgba(0,0,0,0.5)); transform: perspective(500px) translateZ(20px); }
         .logo-area img { height: 100%; width: auto; object-fit: contain; }
         .app-name { font-weight: 800; font-size: 22px; margin: 0; text-transform: uppercase; letter-spacing: 1px; text-shadow: 0 2px 5px rgba(0,0,0,0.8); line-height: 1.2; }
-
+ 
         /* INFO PENTING 3D EMAS */
         #announcement { background: linear-gradient(145deg, #FFD700, #FFC107); color: #3e2723; padding: 15px 20px; font-size: 13px; text-align: center; display: none; font-weight: 800; text-transform: uppercase; box-shadow: 0 8px 15px rgba(0,0,0,0.2), inset 0 2px 3px rgba(255,255,255,0.4); position: relative; z-index: 11; margin: -30px 15px 10px 15px; border-radius: 15px; line-height: 1.4; border: 2px solid #fff; }
-
+ 
         /* CHAT BOX */
         #chat-box { flex: 1; padding: 20px; overflow-y: auto; display: flex; flex-direction: column; gap: 12px; background: #fff; scroll-behavior: smooth; padding-bottom: 50px; }
         .msg { max-width: 90%; padding: 14px 18px; border-radius: 16px; font-size: 14px; line-height: 1.5; animation: popIn 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
@@ -44,7 +44,7 @@
         .btn:active { transform: scale(0.98); box-shadow: inset 5px 5px 10px #bebebe, inset -5px -5px 10px #ffffff; }
         .btn-back { background: linear-gradient(145deg, #FFD700, #FDB931); justify-content: center; color: #5a4a00; margin-top: 15px; border: none; box-shadow: 0 4px 10px rgba(255, 215, 0, 0.4); }
         .btn-back i { color: #5a4a00; margin-left: 5px; }
-
+ 
         /* FORM & LAINNYA */
         .form-box { display: flex; flex-direction: column; gap: 12px; margin-top: 5px; background: rgba(0,0,0,0.02); padding: 15px; border-radius: 15px; border: 1px solid #eee; }
         .inp { padding: 12px; border: 1px solid #ccc; border-radius: 8px; font-size: 15px; width: 100%; outline: none; transition: 0.3s; background: #fff; }
@@ -52,7 +52,7 @@
         .upload-group { border: 2px dashed #ccc; padding: 10px; border-radius: 8px; background: #fff; margin-bottom: 5px; }
         .upload-label { font-size: 12px; font-weight: 600; color: #555; display: block; margin-bottom: 5px; }
         .submit-btn { background: linear-gradient(to right, #444, #222); color: white; border: none; padding: 16px; border-radius: 10px; font-weight: bold; margin-top: 10px; cursor: pointer; font-size: 14px; box-shadow: 0 5px 15px rgba(0,0,0,0.2); width: 100%; }
-
+ 
         /* TICKET */
         .ticket-card { border: 2px dashed var(--primary); padding: 20px; border-radius: 15px; text-align: center; margin-top: 10px; background: #fff; position: relative; box-shadow: 0 5px 20px rgba(0,0,0,0.05); }
         .ticket-number { font-size: 36px; font-weight: 800; color: #333; margin: 15px 0; letter-spacing: 2px; }
@@ -83,12 +83,12 @@
     </style>
 </head>
 <body>
-
+ 
 <div id="resultModal">
     <button class="close-modal" onclick="closeResultModal()">&times;</button>
     <img id="resultImg" src="" alt="View">
 </div>
-
+ 
 <div class="app-container">
     <div id="loader">
     <img src="https://surviving-pink-xhrotxxwgh.edgeone.app/Gemini_Generated_Image_wijbcxwijbcxwijb-removebg-preview.png" alt="Loading..." style="width: 150px; height: auto; object-fit: contain; animation: pulse 1.5s infinite ease-in-out;">
@@ -105,7 +105,7 @@
     <div id="chat-box"></div>
     <div style="text-align:center; padding:15px; font-size:11px; color:#aaa; margin-top: auto;">&copy; 2026 Sistem Lapas Digital</div>
 </div>
-
+ 
 <script>
     const firebaseConfig = {
         apiKey: "AIzaSyDvpFZtiG_fXLOf8okjafNm7gqbJZr2pSY",
@@ -116,22 +116,22 @@
         messagingSenderId: "951059663532",
         appId: "1:951059663532:web:716bc3010eecc741a4ed09"
     };
-
+ 
     let clockInterval;
-
+ 
     window.addEventListener('load', () => {
         if (!firebase.apps.length) firebase.initializeApp(firebaseConfig);
         const db = firebase.database();
         let config = {};
-
+ 
         db.ref('app_config').on('value', (snap) => {
             if(snap.exists()) config = snap.val();
             updateUI(config);
         });
-
+ 
         function updateUI(cfg) {
-            document.getElementById('app_title').innerText = cfg.app_name || "Lapas App";
-            document.getElementById('logo_img').src = cfg.logo_url || "";
+           document.getElementById('app_title').innerText = cfg.app_name || "Lapas App";
+           document.getElementById('logo_img').src = cfg.logo_url || "";
             if(cfg.header_bg) document.getElementById('header_bg').style.backgroundImage = `url('${cfg.header_bg}')`;
             
             const ann = document.getElementById('announcement');
@@ -140,19 +140,19 @@
                 ann.innerHTML = "📢 INFO PENTING:<br><div style='margin-top:5px; color:#3e2723;'>" + cfg.announcement + "</div>"; 
             } else { ann.style.display = 'none'; }
             
-            document.getElementById('loader').style.display = 'none';
+           document.getElementById('loader').style.display = 'none';
             startChat();
         }
-
+ 
         const chatBox = document.getElementById('chat-box');
-
+ 
         window.updateClock = function() {
             const timeEl = document.getElementById('live_time');
             const dateEl = document.getElementById('live_date');
             const statusEl = document.getElementById('live_status');
             
             if(!timeEl) return;
-
+ 
             const now = new Date();
             const days = ['Minggu','Senin','Selasa','Rabu','Kamis','Jumat','Sabtu'];
             const months = ['Jan','Feb','Mar','Apr','Mei','Jun','Jul','Agt','Sep','Okt','Nov','Des'];
@@ -180,11 +180,11 @@
                 }
             }
         }
-
+ 
         window.startChat = function() { 
             chatBox.innerHTML = '';
             if(clockInterval) clearInterval(clockInterval);
-
+ 
             const menu = getMenu(config)['start'];
             const napi = parseInt(config.jml_napi) || 0;
             const tahanan = parseInt(config.jml_tahanan) || 0;
@@ -199,7 +199,7 @@
                         <div id="live_status" style="font-size: 9px; padding: 4px 6px; border-radius: 6px; font-weight: 700; text-align: center;">...</div>
                     </div>
                 </div>
-
+ 
                 <div style="flex: 1; background: linear-gradient(145deg, #ffffff, #f9f9f9); padding: 12px 8px; border-radius: 15px; border: 1px solid #eee; box-shadow: 3px 3px 8px #eeeeee, -3px -3px 8px #ffffff; display: flex; flex-direction: row; justify-content: center; align-items: center; box-sizing: border-box; gap: 6px;">
                     <div style="display: flex; flex-direction: column; align-items: center; justify-content: center; border-right: 1px dashed #ddd; padding-right: 6px;">
                         <div style="font-size: 9px; font-weight: 800; color: #555; text-transform: uppercase; margin-bottom: 2px;">Total WBP</div>
@@ -207,26 +207,26 @@
                     </div>
                     <div style="display: flex; flex-direction: column; gap: 4px; padding-left: 2px;">
                         <div style="display: flex; align-items: center; justify-content: space-between; font-size: 9px; font-weight: 600; color: #777; gap: 4px;">
-                            <span>Napi:</span> <b style="color:#d35400; font-size: 11px;">${napi}</b>
+                           <span>Napi:</span> <b style="color:#d35400; font-size: 11px;">${napi}</b>
                         </div>
                         <div style="display: flex; align-items: center; justify-content: space-between; font-size: 9px; font-weight: 600; color: #777; gap: 4px;">
-                            <span>Thn:</span> <b style="color:#2980b9; font-size: 11px;">${tahanan}</b>
+                           <span>Thn:</span> <b style="color:#2980b9; font-size: 11px;">${tahanan}</b>
                         </div>
                     </div>
                 </div>
             </div>`;
             
             appendMsg('bot', '', { customHtml: clockHtml, options: menu.options });
-
+ 
             updateClock();
             clockInterval = setInterval(updateClock, 1000);
         }
-
+ 
         window.respond = function(key) {
             if (key !== 'start' && clockInterval) {
                 clearInterval(clockInterval);
             }
-
+ 
             if (key === 'start') {
                 startChat();
                 return;
@@ -237,22 +237,21 @@
                 askNikForStatus(type);
                 return;
             }
-
+ 
             if (key === 'ask_cek_status_wbp') {
                 askNamaForStatusWbp();
                 return;
             }
-
+ 
             const menu = getMenu(config)[key];
             if(!menu) return;
-
+ 
             let opts = menu.options || [];
             if(menu.back) opts.push({text:"KEMBALI KE MENU UTAMA", val:"start"});
             if(menu.backTo) opts.push({text:"KEMBALI SEBELUMNYA", val: menu.backTo});
-
+ 
             if(menu.isForm) {
                 if(menu.formType === 'pengurusan') renderFormPengurusan();
-                else if(menu.formType === 'kritik') renderFormKritik();
                 else if(menu.formType === 'cek_wbp') renderFormCekWBP();
                 else renderFormStandard(menu.text, menu.formType);
             } else if (menu.customHtml) {
@@ -261,7 +260,7 @@
                 appendMsg('bot', menu.text, { options: opts });
             }
         }
-
+ 
         function appendMsg(sender, text, extra = {}) {
             const div = document.createElement('div');
             div.className = `msg ${sender}`;
@@ -272,7 +271,7 @@
             if(!extra.isForm && extra.options) showBtn(extra.options);
             setTimeout(() => div.scrollIntoView({ behavior: 'smooth' }), 100);
         }
-
+ 
         function showBtn(opts) {
             const div = document.createElement('div');
             opts.forEach(o => {
@@ -285,11 +284,11 @@
                 if(o.text.includes("CEK WBP") || o.text.includes("STATUS WBP")) icon = 'fa-search';
                 else if(o.text.includes("TATAP MUKA") || o.text.includes("KUNJUNGAN")) icon = 'fa-user-friends';
                 else if(o.text.includes("VIDEO")) icon = 'fa-video';
+                else if(o.text.includes("LARANGAN")) icon = 'fa-ban';
                 else if(o.text.includes("PENGURUSAN")) icon = 'fa-folder-open';
                 else if(o.text.includes("TOKO")) icon = 'fa-shopping-cart';
                 else if(o.text.includes("JADWAL")) icon = 'fa-calendar-alt';
                 else if(o.text.includes("SURVEI")) icon = 'fa-clipboard-list';
-                else if(o.text.includes("KEPUASAN") || o.text.includes("KRITIK")) icon = 'fa-star';
                 else if(o.text.includes("KONTAK")) icon = 'fa-address-book';
                 else if(o.text.includes("WHATSAPP")) icon = 'fa-whatsapp';
                 else if(o.text.includes("INSTAGRAM")) icon = 'fa-instagram';
@@ -297,9 +296,9 @@
                 else if(o.text.includes("TWITTER")) icon = 'fa-twitter';
                 else if(o.text.includes("YOUTUBE")) icon = 'fa-youtube';
                 else if(isBack) icon = 'fa-arrow-left';
-
+ 
                 const faClass = (['fa-whatsapp','fa-instagram','fa-facebook','fa-twitter','fa-youtube'].includes(icon)) ? 'fab' : 'fas';
-
+ 
                 btn.innerHTML = `<span>${o.text}</span> <i class="${faClass} ${icon}"></i>`;
                 btn.onclick = () => {
                     div.remove();
@@ -311,7 +310,7 @@
             });
             chatBox.appendChild(div);
         }
-
+ 
         // ====================== FORM CEK WBP ======================
         window.renderFormCekWBP = function() {
             const html = `
@@ -327,19 +326,19 @@
             </div>`;
             appendMsg('bot', "🔍 **FORM PENGAJUAN CEK WBP**\nSilakan lengkapi formulir pencarian.", { customHtml: html });
         }
-
+ 
         window.submitCekWBP = function() {
             const f_ktp = document.getElementById('cw_ktp').files[0];
             const namaPengecek = document.getElementById('cw_nama_pengecek').value;
             const wbp = document.getElementById('cw_nama_wbp').value;
             const bin = document.getElementById('cw_bin').value;
             const hubungan = document.getElementById('cw_hubungan').value;
-
+ 
             if(!f_ktp || !namaPengecek || !wbp || !bin || !hubungan) return alert("Mohon lengkapi semua data dan Foto KTP!");
-
+ 
             const btn = document.querySelector('.submit-btn'); 
             btn.innerHTML = "Mengirim..."; btn.disabled = true;
-
+ 
             compressImage(f_ktp, (base64) => {
                 const payload = {
                     namaPengecek, wbp, bin, hubungan, ktpUrl: base64,
@@ -356,14 +355,14 @@
                 });
             });
         }
-
+ 
         window.askNamaForStatusWbp = function() {
             appendMsg('bot', `🔍 **CEK STATUS WBP**\nMasukkan Nama WBP yang telah diajukan:`, {
                 customHtml: `<div class="form-box"><input id="cek_nama_wbp" class="inp" placeholder="Nama WBP"><input id="cek_bin_wbp" class="inp" placeholder="Bin / Binti (Opsional)"><button onclick="doCheckStatusWbp()" class="submit-btn">CARI DATA</button></div>`,
                 options: [{text:"Batal", val:"start"}]
             });
         }
-
+ 
         window.doCheckStatusWbp = function() {
             const nama = document.getElementById('cek_nama_wbp').value.toLowerCase().trim();
             const bin = document.getElementById('cek_bin_wbp').value.toLowerCase().trim();
@@ -389,7 +388,7 @@
                     if(found.sdpFile) {
                         sdpFileBtn = `<button onclick="viewSDP('${found.sdpFileType}', '${found.sdpFile}')" class="submit-btn" style="background:#2980b9; margin-top:10px;"><i class="fas fa-file-download"></i> LIHAT DOKUMEN SDP</button>`;
                     }
-
+ 
                     appendMsg('bot', `📄 **HASIL CEK WBP**\n\nNama WBP: **${found.wbp}** (Bin ${found.bin})\nPengecek: **${found.namaPengecek}**\nHubungan: **${found.hubungan}**\nStatus Laporan: **${stBadge}**\n\n${sdpText}`, { customHtml: sdpFileBtn });
                 } else { 
                     appendMsg('bot', "❌ **DATA TIDAK DITEMUKAN**\nPastikan Anda telah mengisi formulir pengecekan sebelumnya."); 
@@ -400,7 +399,7 @@
                 btn.innerText = "CARI DATA"; btn.disabled = false;
             });
         }
-
+ 
         window.viewSDP = function(type, data) {
             if(type === 'pdf') {
                 let a = document.createElement("a");
@@ -410,12 +409,12 @@
                 a.click();
                 document.body.removeChild(a);
             } else {
-                document.getElementById('resultImg').src = data;
-                document.getElementById('resultModal').style.display = 'flex';
+               document.getElementById('resultImg').src = data;
+               document.getElementById('resultModal').style.display = 'flex';
             }
         }
         // ==========================================================
-
+ 
         function renderFormStandard(text, type) {
             const formHtml = `
             <div class="form-box">
@@ -438,7 +437,7 @@
             </div>`;
             appendMsg('bot', text, { customHtml: formHtml });
         }
-
+ 
         window.renderFormPengurusan = function() {
             const fields = [
                 {id:'u_ktp_wbp', l:'KTP WBP'}, {id:'u_kk_wbp', l:'KK WBP'},
@@ -472,24 +471,7 @@
             </div>`;
             appendMsg('bot', "📝 **FORMULIR PENGURUSAN INTEGRASI**", { customHtml: html });
         }
-
-        window.renderFormKritik = function() {
-            const html = `
-            <div class="form-box">
-                <label style="font-size:12px;">Tingkat Kepuasan:</label>
-                <select id="k_puas" class="inp">
-                    <option value="Sangat Puas">😍 Sangat Puas</option>
-                    <option value="Puas">🙂 Puas</option>
-                    <option value="Cukup">😐 Cukup</option>
-                    <option value="Kurang">☹️ Kurang</option>
-                </select>
-                <textarea id="k_pesan" class="inp" rows="4" placeholder="Berikan saran dan masukan Anda..."></textarea>
-                <button onclick="submitKritik()" class="submit-btn">KIRIM PENILAIAN</button>
-                <button onclick="respond('start')" style="background:transparent; border:none; padding:10px; width:100%; margin-top:5px; color:#666;">Batal</button>
-            </div>`;
-            appendMsg('bot', "📢 **TINGKAT KEPUASAN & SARAN**", { customHtml: html });
-        }
-
+ 
         window.submitForm = function(type) {
             const f_ktp = document.getElementById('f_ktp').files[0];
             const nama = document.getElementById('f_nama').value;
@@ -500,13 +482,13 @@
             const tgl = document.getElementById('f_tgl').value;
             const jam = document.getElementById('f_jam').value;
             if(!f_ktp || !nama || !nik || !wbp || !tgl) return alert("Lengkapi data & foto KTP!");
-
+ 
             const btn = document.querySelector('.submit-btn'); btn.innerHTML = "Mengirim..."; btn.disabled = true;
             const path = type === 'fisik' ? 'registrations' : 'online_registrations';
             const prefix = type === 'fisik' ? 'A' : 'V';
             const sess = jam === 'Pagi' ? 'P' : 'S';
             const counterPath = `counters/${tgl}/${type}/${jam}`;
-
+ 
             compressImage(f_ktp, (base64) => {
                 db.ref(counterPath).transaction(c => (c||0)+1, (e, comm, s) => {
                     if(comm) {
@@ -521,7 +503,7 @@
                 });
             });
         }
-
+ 
         window.submitPengurusan = async function() {
             const ids = ['u_ktp_wbp','u_kk_wbp','u_ktp_penj','u_kk_penj','u_surat_1','u_surat_2','u_foto'];
             const inputs = {}; let missing = false;
@@ -532,14 +514,14 @@
             inputs.alamat = document.getElementById('p_alamat').value;
             inputs.hub = document.getElementById('p_hub').value;
             inputs.telp = document.getElementById('p_telp').value;
-
+ 
             if(!inputs.wbp || !inputs.penjamin || !inputs.nik) return alert("Lengkapi data!");
             for(let id of ids) { if(!document.getElementById(id).files[0]) missing = true; }
             if(missing) return alert("Unggah semua 7 dokumen!");
-
+ 
             const btn = document.querySelector('.submit-btn'); const oldTxt = btn.innerText;
             btn.innerText = "Mengunggah..."; btn.disabled = true;
-
+ 
             try {
                 const images = {};
                 for(let id of ids) {
@@ -553,25 +535,14 @@
                 showBtn([{text:"KEMBALI KE MENU UTAMA", val:"start"}]);
             } catch(e) { alert("Gagal: " + e.message); btn.innerText = oldTxt; btn.disabled = false; }
         }
-
-        window.submitKritik = function() {
-            const puas = document.getElementById('k_puas').value;
-            const pesan = document.getElementById('k_pesan').value;
-            if(!pesan) return alert("Isi pesan.");
-            db.ref('kritik_saran').push({kepuasan: puas, pesan: pesan, tgl: new Date().toISOString().split('T')[0], createdAt: firebase.database.ServerValue.TIMESTAMP}).then(() => {
-                chatBox.innerHTML = '';
-                appendMsg('bot', "🙏 **TERIMA KASIH!**\nPenilaian Anda telah kami terima.");
-                showBtn([{text:"KEMBALI KE MENU UTAMA", val:"start"}]);
-            });
-        }
-
+ 
         window.askNikForStatus = function(type) {
             appendMsg('bot', `🔍 **CEK STATUS ${type.toUpperCase().replace('_', ' ')}**\nMasukkan NIK Penjamin/Pengunjung:`, {
                 customHtml: `<div class="form-box"><input id="cek_nik" class="inp" type="number" placeholder="NIK"><button onclick="doCheckStatus('${type}')" class="submit-btn">CARI DATA</button></div>`,
                 options: [{text:"Batal", val:"start"}]
             });
         }
-
+ 
         window.doCheckStatus = function(type) {
             const nik = document.getElementById('cek_nik').value;
             if(!nik) return alert("Isi NIK!");
@@ -598,7 +569,7 @@
                 showBtn([{text:"KEMBALI KE MENU UTAMA", val:"start"}]);
             });
         }
-
+ 
         function compressImage(file, cb) {
             const reader = new FileReader(); reader.readAsDataURL(file);
             reader.onload = function(e) {
@@ -613,7 +584,7 @@
                 }
             }
         }
-
+ 
         function renderTicket(data, label) {
             let stBadge = data.status === 'accepted' ? '<span class="badge bg-green">✅ DISETUJUI</span>' : (data.status === 'rejected' ? '<span class="badge bg-red">❌ DITOLAK</span>' : '<span class="badge bg-gray">MENUNGGU VERIFIKASI</span>');
             const noteHtml = data.note ? `<div class="ticket-note"><b>✉️ Pesan:</b> "${data.note}"</div>` : '';
@@ -624,9 +595,9 @@
                <div class="ticket-number">${data.noAntrian}</div>
                <div style="font-size:12px; text-align:left; border-top:2px dashed #eee; padding-top:10px;">
                  <table style="width:100%">
-                     <tr><td>Nama</td><td>: <b>${data.nama}</b></td></tr>
-                     <tr><td>Tujuan</td><td>: ${data.wbp}</td></tr>
-                     <tr><td>Jadwal</td><td>: ${data.tgl} (${data.jam})</td></tr>
+                    <tr><td>Nama</td><td>: <b>${data.nama}</b></td></tr>
+                    <tr><td>Tujuan</td><td>: ${data.wbp}</td></tr>
+                    <tr><td>Jadwal</td><td>: ${data.tgl} (${data.jam})</td></tr>
                  </table>
              </div>
              ${noteHtml}
@@ -636,28 +607,32 @@
             appendMsg('bot', "✅ **TIKET ANDA:**", { customHtml: ticketHtml });
         }
         window.downloadTicket = function() {
-            html2canvas(document.getElementById('ticket-node'), {scale:2, backgroundColor:"#fff"}).then(canvas => {
-                document.getElementById('resultImg').src = canvas.toDataURL("image/jpeg");
-                document.getElementById('resultModal').style.display = 'flex';
+           html2canvas(document.getElementById('ticket-node'), {scale:2, backgroundColor:"#fff"}).then(canvas => {
+               document.getElementById('resultImg').src = canvas.toDataURL("image/jpeg");
+               document.getElementById('resultModal').style.display = 'flex';
             });
         }
         window.closeResultModal = () => document.getElementById('resultModal').style.display = 'none';
     });
-
+ 
     function getMenu(cfg) {
         const renderSafe = (content) => content ? content : "-";
         
         const pdfDocBtn = cfg.pdf_doc ? `<a href="${cfg.pdf_doc}" download="Syarat_Kunjungan.pdf" style="display:inline-block; margin-top:10px; padding:8px 12px; background:#e74c3c; color:#fff; text-decoration:none; border-radius:5px; font-size:12px; font-weight:bold;"><i class="fas fa-file-pdf"></i> Unduh Dokumen PDF</a>` : '';
         const pdfItemBtn = cfg.pdf_item ? `<a href="${cfg.pdf_item}" download="Aturan_Barang.pdf" style="display:inline-block; margin-top:10px; padding:8px 12px; background:#e74c3c; color:#fff; text-decoration:none; border-radius:5px; font-size:12px; font-weight:bold;"><i class="fas fa-file-pdf"></i> Unduh Dokumen PDF</a>` : '';
         const pdfPbBtn = cfg.pdf_pb_cb ? `<a href="${cfg.pdf_pb_cb}" download="Syarat_PB_CB_CMB.pdf" style="display:inline-block; margin-top:10px; padding:8px 12px; background:#e74c3c; color:#fff; text-decoration:none; border-radius:5px; font-size:12px; font-weight:bold;"><i class="fas fa-file-pdf"></i> Unduh Dokumen PDF</a>` : '';
-
+        
+        // Link Tambahan
+        const pdfLaranganBtn = cfg.pdf_larangan ? `<a href="${cfg.pdf_larangan}" download="Daftar_Larangan_WBP.pdf" style="display:inline-block; margin-top:10px; padding:8px 12px; background:#e74c3c; color:#fff; text-decoration:none; border-radius:5px; font-size:12px; font-weight:bold;"><i class="fas fa-file-pdf"></i> Unduh Dokumen PDF</a>` : '';
+        const pdfCaraVcBtn = cfg.pdf_cara_vc ? `<a href="${cfg.pdf_cara_vc}" download="Cara_Video_Call.pdf" style="display:inline-block; margin-top:10px; padding:8px 12px; background:#e74c3c; color:#fff; text-decoration:none; border-radius:5px; font-size:12px; font-weight:bold;"><i class="fas fa-file-pdf"></i> Unduh Dokumen PDF</a>` : '';
+ 
         // Gabungan Jadwal dan Syarat
         const htmlJadwalSyarat = `
         <div style="margin-bottom:8px; font-weight:600; font-size:12px; color:var(--primary);">KATEGORI LAYANAN KUNJUNGAN:</div>
         <table class="spec-table">
             <tr><th>Jenis Tahanan</th><th>Hari Layanan</th></tr>
-            <tr><td><b>PIDUM</b></td><td>${cfg.sch_pidum || 'Senin & Rabu'}</td></tr>
-            <tr><td><b>NARKOBA</b></td><td>${cfg.sch_narkoba || 'Selasa & Kamis'}</td></tr>
+           <tr><td><b>PIDUM</b></td><td>${cfg.sch_pidum || 'Senin & Rabu'}</td></tr>
+           <tr><td><b>NARKOBA</b></td><td>${cfg.sch_narkoba || 'Selasa & Kamis'}</td></tr>
         </table>
         <div class="schedule-card">
             <div class="sch-row"><span>Pagi</span><span class="badge bg-green">${cfg.sch_mon_am || '-'}</span></div>
@@ -675,7 +650,16 @@
             ${renderSafe(cfg.txt_item)}
             ${pdfItemBtn}
         </div>`;
-
+        
+        // Survey Options Dinamis
+        let surveiOptions = [];
+        if (cfg.survei_1_link) surveiOptions.push({ text: cfg.survei_1_nama || "SURVEI LAYANAN 1", type: "link", url: cfg.survei_1_link });
+        if (cfg.survei_2_link) surveiOptions.push({ text: cfg.survei_2_nama || "SURVEI LAYANAN 2", type: "link", url: cfg.survei_2_link });
+        if (cfg.survei_3_link) surveiOptions.push({ text: cfg.survei_3_nama || "SURVEI LAYANAN 3", type: "link", url: cfg.survei_3_link });
+        // Fallback backward compatibility
+        if (surveiOptions.length === 0 && cfg.link_survei) surveiOptions.push({ text: "ISI SURVEI LAYANAN", type: "link", url: cfg.link_survei });
+        surveiOptions.push({ text: "KEMBALI KE MENU UTAMA", val: "start" });
+ 
         return {
             'start': {
                 text: "Silakan pilih layanan yang ingin Anda gunakan:",
@@ -684,7 +668,7 @@
                     { text: "DAFTAR KUNJUNGAN & VIDEO CALL", val: "menu_kunjungan" },
                     { text: "PENGURUSAN (PB/CB/CMB)", val: "menu_urus" },
                     { text: "TOKO LAPAS", val: "toko" },
-                    { text: "SURVEI & TINGKAT KEPUASAN", val: "menu_survei" },
+                    { text: "SURVEI LAYANAN", val: "menu_survei" },
                     { text: "KONTAK & PENGADUAN", val: "kontak" }
                 ]
             },
@@ -699,19 +683,31 @@
                 ] 
             },
             'form_cek_wbp': { text: "Menyiapkan formulir...", isForm: true, formType: "cek_wbp" },
-
+ 
             // KUNJUNGAN & VIDEO CALL
             'menu_kunjungan': { 
                 text: "👥 **DAFTAR KUNJUNGAN & VIDEO CALL**\nSilakan pilih informasi atau pendaftaran:", 
                 options: [
-                    { text: "JADWAL, SYARAT KUNJUNGAN & BARANG", val: "sub_jadwal_syarat" }, 
+                    { text: "JADWAL DAN SYARAT KUNJUNGAN TATAP MUKA", val: "sub_jadwal_syarat" }, 
+                    { text: "LARANGAN KUNJUNGAN TERHADAP WBP", val: "sub_larangan" },
+                    { text: "CARA KUNJUNGAN VIDEO CALL", val: "sub_cara_vc" },
                     { text: "DAFTAR KUNJUNGAN TATAP MUKA", val: "daftar_fisik" }, 
                     { text: "DAFTAR KUNJUNGAN VIDEO CALL", val: "daftar_online" },
                     { text: "KEMBALI KE MENU UTAMA", val: "start" }
                 ] 
             },
             'sub_jadwal_syarat': { text: "📅 **JADWAL & SYARAT KUNJUNGAN:**", customHtml: htmlJadwalSyarat, backTo: 'menu_kunjungan' },
-
+            'sub_larangan': {
+                text: "🚫 **LARANGAN KUNJUNGAN TERHADAP WBP:**",
+                customHtml: `<div class="rich-content">${renderSafe(cfg.txt_larangan)}${pdfLaranganBtn}</div>`,
+                backTo: 'menu_kunjungan'
+            },
+            'sub_cara_vc': {
+                text: "📹 **CARA KUNJUNGAN VIDEO CALL:**",
+                customHtml: `<div class="rich-content">${renderSafe(cfg.txt_cara_vc)}${pdfCaraVcBtn}</div>`,
+                backTo: 'menu_kunjungan'
+            },
+ 
             'daftar_fisik': { text: "📝 **PENDAFTARAN TATAP MUKA**", options: [{ text: "ISI FORMULIR", val: "form_fisik" }, { text: "CEK STATUS", val: "cek_status_fisik" }, { text: "KEMBALI SEBELUMNYA", val: "menu_kunjungan" }] },
             'form_fisik': { text: "📝 **ISI DATA KUNJUNGAN:**", isForm: true, formType: "fisik" },
             
@@ -731,8 +727,10 @@
             'toko': { text: "🛒 **TOKO LAPAS:**\n" + (cfg.toko_announce || "-"), options: [{ text: "BUKA APLIKASI TOKO", type: "link", url: cfg.toko_link }, { text: "KEMBALI KE MENU UTAMA", val: "start" }] },
             
             // SURVEI
-            'menu_survei': { text: "📊 **SURVEI & TINGKAT KEPUASAN:**\n" + (cfg.info_survei || "Silakan pilih layanan di bawah ini:"), options: [{ text: "ISI SURVEI LAYANAN", type: "link", url: cfg.link_survei || "#" }, { text: "TINGKAT KEPUASAN", val: "menu_kritik" }, { text: "KEMBALI KE MENU UTAMA", val: "start" }] },
-            'menu_kritik': { text: "Silakan berikan penilaian Anda terhadap layanan kami:", isForm: true, formType: "kritik" },
+            'menu_survei': { 
+                text: "📊 **SURVEI LAYANAN:**\n" + (cfg.info_survei || "Silakan pilih layanan di bawah ini:"), 
+                options: surveiOptions 
+            },
             
             // KONTAK
             'kontak': { text: "📞 **PUSAT PENGADUAN:**", options: [{ text: "WHATSAPP PENGADUAN", type: "link", url: `https://wa.me/${cfg.wa_pengaduan}` }, { text: "SALURAN INFORMASI", type: "link", url: cfg.wa_channel }, { text: "MEDIA SOSIAL", val: "sosmed" }, { text: "KEMBALI KE MENU UTAMA", val: "start" }] },
