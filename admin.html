@@ -264,7 +264,7 @@
                <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap:0;">
                  <div style="border-right:1px solid #eee; border-bottom:1px solid #eee;">
                      <div class="setting-row">
-                         <label>Syarat Kunjungan Tatap Muka</label>
+                         <label>Syarat Kunjungan & Aturan Barang</label>
                          <div class="rich-box">
                                 <div class="rich-toolbar">
                                     <button class="tool-btn" onclick="fmt('txt_doc_edit', 'bold')"><b>B</b></button>
@@ -277,24 +277,6 @@
                              <input type="file" id="inp_pdf_doc" accept="application/pdf" style="font-size:11px; padding:4px;" onchange="encodeFile(this, 'pdf_doc')">
                              <input type="hidden" id="pdf_doc">
                              <div id="stat_pdf_doc" style="font-size:11px; margin-top:5px;"></div>
-                         </div>
-                     </div>
-                 </div>
-                 <div style="border-right:1px solid #eee; border-bottom:1px solid #eee;">
-                     <div class="setting-row">
-                         <label>Aturan Barang</label>
-                         <div class="rich-box">
-                                <div class="rich-toolbar">
-                                    <button class="tool-btn" onclick="fmt('txt_item_edit', 'bold')"><b>B</b></button>
-                                    <button class="tool-btn" onclick="fmt('txt_item_edit', 'insertUnorderedList')"><i class="fas fa-list-ul"></i></button>
-                                </div>
-                                <div id="txt_item_edit" class="rich-edit" contenteditable="true"></div>
-                         </div>
-                         <div class="pdf-upload-area">
-                             <label>📄 Lampiran Dokumen PDF (Opsional)</label>
-                             <input type="file" id="inp_pdf_item" accept="application/pdf" style="font-size:11px; padding:4px;" onchange="encodeFile(this, 'pdf_item')">
-                             <input type="hidden" id="pdf_item">
-                             <div id="stat_pdf_item" style="font-size:11px; margin-top:5px;"></div>
                          </div>
                      </div>
                  </div>
@@ -593,8 +575,8 @@
     window.fmt = function(id, cmd, val=null) { document.getElementById(id).focus(); document.execCommand(cmd, false, val); }
     window.insImg = function(id) { const url = prompt("Masukkan URL Gambar:"); if(url) { document.getElementById(id).focus(); document.execCommand('insertImage', false, url); } }
  
-    const simpleFields = ['app_name','logo_url','header_bg','kop_1','kop_2','kop_3','kop_4','sch_pidum','sch_narkoba','sch_mon_am','sch_mon_pm','sch_fri','sch_sat','sch_sun','toko_announce','toko_link','wa_pengaduan','wa_channel','soc_ig','soc_fb','soc_tw','soc_yt', 'info_survei', 'link_survei', 'survei_1_nama', 'survei_1_link', 'survei_2_nama', 'survei_2_link', 'survei_3_nama', 'survei_3_link', 'jml_napi', 'jml_tahanan', 'pdf_doc', 'pdf_item', 'pdf_pb_cb', 'pdf_larangan', 'pdf_cara_vc'];
-    const htmlFields = {'announcement': 'announcement_edit', 'txt_doc': 'txt_doc_edit', 'txt_item': 'txt_item_edit', 'txt_pb_cb': 'txt_pb_cb_edit', 'txt_larangan': 'txt_larangan_edit', 'txt_cara_vc': 'txt_cara_vc_edit'};
+    const simpleFields = ['app_name','logo_url','header_bg','kop_1','kop_2','kop_3','kop_4','sch_pidum','sch_narkoba','sch_mon_am','sch_mon_pm','sch_fri','sch_sat','sch_sun','toko_announce','toko_link','wa_pengaduan','wa_channel','soc_ig','soc_fb','soc_tw','soc_yt', 'info_survei', 'link_survei', 'survei_1_nama', 'survei_1_link', 'survei_2_nama', 'survei_2_link', 'survei_3_nama', 'survei_3_link', 'jml_napi', 'jml_tahanan', 'pdf_doc', 'pdf_pb_cb', 'pdf_larangan', 'pdf_cara_vc'];
+    const htmlFields = {'announcement': 'announcement_edit', 'txt_doc': 'txt_doc_edit', 'txt_pb_cb': 'txt_pb_cb_edit', 'txt_larangan': 'txt_larangan_edit', 'txt_cara_vc': 'txt_cara_vc_edit'};
  
     // Fungsi Konversi File Informasi (PDF)
     window.encodeFile = function(input, targetId) {
@@ -622,7 +604,7 @@
                 for(let key in htmlFields) { if(document.getElementById(htmlFields[key])) document.getElementById(htmlFields[key]).innerHTML = d[key] || ""; }
                 
                 // Load Informasi PDF tersimpan
-                ['pdf_doc', 'pdf_item', 'pdf_pb_cb', 'pdf_larangan', 'pdf_cara_vc'].forEach(id => {
+                ['pdf_doc', 'pdf_pb_cb', 'pdf_larangan', 'pdf_cara_vc'].forEach(id => {
                     if(d[id]) {
                        document.getElementById('stat_'+id).innerHTML = `<a href="${d[id]}" target="_blank" style="color:#2980b9; text-decoration:none;">📄 Lihat PDF Tersimpan</a> <button onclick="removePdf('${id}', 'inp_${id}')" style="font-size:10px; padding:2px 5px; cursor:pointer;">Hapus</button>`;
                     }
